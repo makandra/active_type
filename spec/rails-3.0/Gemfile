@@ -1,0 +1,12 @@
+source :rubygems
+
+gem 'rails', '~>3.0.17'
+gem 'rspec'
+gem 'rspec-rails'
+gem 'mysql2', '~>0.2.0'
+gem 'ruby-debug', :platforms => :ruby_18
+gem 'database_cleaner', '=1.0.1'
+gem 'andand'
+gem 'has_defaults'
+
+gem 'active_type', :path => '../..'

@@ -1,0 +1,15 @@
+language: ruby
+rvm:
+  - "1.8.7"
+  - "1.9.3"
+  - ree
+services:
+  - mysql
+before_script: rake travis_ci:prepare
+script: rake all:bundle all:spec
+notifications:
+  email:
+    - fail@makandra.de
+branches:
+  only:
+    - master
