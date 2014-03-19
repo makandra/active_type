@@ -7,11 +7,6 @@
 # wie ein leichtgewichtiges Update zu ActiveRecord
 
 
-class User < ActiveType::Record
-
-# Ist wie ActiveRecord::Base + noch ein paar Goodies
-# wie z. B. virtuelle Attribute mit Coercion
-
 
 class User::AsSignUp < ActiveType::Role[User]
 
@@ -33,9 +28,23 @@ class User::Report < ActiveType::Object
 # - Virtuelle Attribute mit Coercion (Virtus?) und Dirty-Tracking (??)
 # - (Wenn ichs hinkriege): accepts_nested_attributes_for
 
+class User < ActiveType::Record
+
+# Ist wie ActiveRecord::Base + noch ein paar Goodies
+# wie z. B. virtuelle Attribute mit Coercion
 
 
-describe ActiveObject::Object do
+
+
+describe ActiveType::Record do
+
+  it 'should be like ActiveRecord::Base'
+  it_should_behave_like 'virtual attributes with coercion and dirty tracking'
+
+end
+
+
+describe ActiveType::Object do
 
   it_should_behave_like 'constructor to set attributes'
   it_should_behave_like 'mass assignment with strong parameters'
@@ -43,20 +52,14 @@ describe ActiveObject::Object do
   it_should_behave_like 'validatations with callback'
   it_should_behave_like 'save with callbacks'
   it_should_behave_like 'batch updates of nested records'
+  it_should_behave_like 'belongs_to association where the foreign key sets the instance and vice versa'  
 
 end
 
 
-describe ActiveObject::Extension do
+describe ActiveType::Role do
 
-  it 'should extend ActiveRecord objects'
-  
-  it 'should extend ActiveObject objects'
-  
-  it 'should not extend other objects'
-  
   it 'should preserve original model name'
-  
   it 'should work with STI'
   
   it_should_behave_like 'constructor to set attributes'
@@ -65,12 +68,15 @@ describe ActiveObject::Extension do
   it_should_behave_like 'validatations with callback'
   it_should_behave_like 'save with callbacks'
   it_should_behave_like 'batch updates of nested records'
+  it_should_behave_like 'belongs_to association where the foreign key sets the instance and vice versa'
 
+  it 'should extend ActiveRecord objects'
+  
+  it 'should extend ActiveType objects'
+  
+  it 'should not extend other objects'
+  
 end
-
-
-
-Strong Params?
 
 
 
