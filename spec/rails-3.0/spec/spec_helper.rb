@@ -8,7 +8,6 @@ ENV['RAILS_ROOT'] = 'app_root'
 # Load the Rails environment and testing framework
 require "#{File.dirname(__FILE__)}/../app_root/config/environment"
 require 'rspec/rails'
-require 'active_type/development'
 DatabaseCleaner.strategy = :truncation
 
 # Run the migrations

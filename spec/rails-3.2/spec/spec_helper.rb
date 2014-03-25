@@ -8,18 +8,15 @@ ENV['RAILS_ROOT'] = 'app_root'
 # Load the Rails environment and testing framework
 require "#{File.dirname(__FILE__)}/../app_root/config/environment"
 require 'rspec/rails'
-require 'active_type/development'
-DatabaseCleaner.strategy = :truncation
 
-# Dir["#{File.dirname(__FILE__)}/../../shared/spec/shared_examples"].each {|f| require f}
+require 'edge_rider/development'
+
+Dir["#{File.dirname(__FILE__)}/../../shared/spec/shared_examples/*"].each {|f| require f}
 
 # Run the migrations
-ActiveType::Development.migrate_test_database
+EdgeRider::Development.migrate_test_database
 
 RSpec.configure do |config|
-  config.use_transactional_fixtures = false
+  config.use_transactional_fixtures = true
   config.use_instantiated_fixtures  = false
-  config.before(:each) do
-    DatabaseCleaner.clean
-  end
 end

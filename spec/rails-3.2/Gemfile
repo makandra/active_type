@@ -1,13 +1,11 @@
-source :rubygems
+source 'https://rubygems.org'
 
 gem 'rails', '~>3.2.0'
 gem 'rspec'
 gem 'rspec-rails'
-gem 'mysql2'
+gem 'sqlite3'
 gem 'rspec_candy'
-gem 'ruby-debug', :platforms => :ruby_18
-gem 'database_cleaner', '=1.0.1'
-gem 'andand'
-gem 'has_defaults'
+
+gem 'edge_rider', :require => false
 
 gem 'active_type', :path => '../..'
