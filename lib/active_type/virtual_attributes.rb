@@ -108,7 +108,7 @@ module ActiveType
         end
       end
 
-      def virtual_attribute(name, type)
+      def attribute(name, type)
         self.virtual_columns_hash = virtual_columns_hash.merge(name.to_s => VirtualColumn.new(name, type))
         AccessorGenerator.new(generated_attribute_methods).generate_accessors(name)
       end

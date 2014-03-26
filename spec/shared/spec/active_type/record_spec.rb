@@ -4,11 +4,11 @@ module RecordSpec
 
   class Record < ActiveType::Record
 
-    virtual_attribute :virtual_string, :string
-    virtual_attribute :virtual_integer, :integer
-    virtual_attribute :virtual_time, :datetime
-    virtual_attribute :virtual_date, :date
-    virtual_attribute :virtual_boolean, :boolean
+    attribute :virtual_string, :string
+    attribute :virtual_integer, :integer
+    attribute :virtual_time, :datetime
+    attribute :virtual_date, :date
+    attribute :virtual_boolean, :boolean
 
   end
 
@@ -22,7 +22,7 @@ module RecordSpec
 
   class RecordWithOverrides < Record
 
-    virtual_attribute :overridable_test, :string
+    attribute :overridable_test, :string
 
     def overridable_test
       super + super
@@ -71,7 +71,7 @@ describe ActiveType::Record do
       klass = Class.new(ActiveType::Record)
       expect {
         klass.class_eval do
-          virtual_attribute :"<attr>", :string
+          attribute :"<attr>", :string
         end
       }.to raise_error(ActiveType::InvalidAttributeNameError)
     end

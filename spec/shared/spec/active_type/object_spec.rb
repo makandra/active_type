@@ -4,11 +4,11 @@ module ObjectSpec
 
   class Object < ActiveType::Object
 
-    virtual_attribute :virtual_string, :string
-    virtual_attribute :virtual_integer, :integer
-    virtual_attribute :virtual_time, :datetime
-    virtual_attribute :virtual_date, :date
-    virtual_attribute :virtual_boolean, :boolean
+    attribute :virtual_string, :string
+    attribute :virtual_integer, :integer
+    attribute :virtual_time, :datetime
+    attribute :virtual_date, :date
+    attribute :virtual_boolean, :boolean
 
   end
 
@@ -22,7 +22,7 @@ module ObjectSpec
 
   class ObjectWithOverrides < Object
 
-    virtual_attribute :overridable_test, :string
+    attribute :overridable_test, :string
 
     def overridable_test
       super + super
@@ -32,7 +32,7 @@ module ObjectSpec
 
 
   class InheritingObject < Object
-    virtual_attribute :another_virtual_string, :string
+    attribute :another_virtual_string, :string
   end
 
 
@@ -42,7 +42,7 @@ module ObjectSpec
       extend ActiveSupport::Concern
 
       included do
-        virtual_attribute :another_virtual_string, :string
+        attribute :another_virtual_string, :string
       end
     end
 
@@ -100,7 +100,7 @@ describe ActiveType::Object do
       klass = Class.new(ActiveType::Object)
       expect {
         klass.class_eval do
-          virtual_attribute :"<attr>", :string
+          attribute :"<attr>", :string
         end
       }.to raise_error(ActiveType::InvalidAttributeNameError)
     end

@@ -11,15 +11,15 @@ module ExtendedRecordSpec
   class BaseActiveTypeRecord < ActiveType::Record
     self.table_name = 'records'
 
-    virtual_attribute :virtual_string, :string
+    attribute :virtual_string, :string
   end
 
   class ExtendedRecord < ActiveType::Record[BaseRecord]
-    virtual_attribute :another_virtual_string, :string
+    attribute :another_virtual_string, :string
   end
 
   class ExtendedActiveTypeRecord < ActiveType::Record[BaseActiveTypeRecord]
-    virtual_attribute :another_virtual_string, :string
+    attribute :another_virtual_string, :string
   end
 
 
