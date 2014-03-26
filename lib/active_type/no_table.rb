@@ -39,6 +39,9 @@ module ActiveType
 
     end
 
+    def id
+      nil
+    end
 
     def transaction(&block)
       @_current_transaction_records ||= []

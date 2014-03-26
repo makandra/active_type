@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 module ObjectSpec
+
   class Object < ActiveType::Object
 
     virtual_attribute :virtual_string, :string
@@ -11,11 +12,13 @@ module ObjectSpec
 
   end
 
+
   class ObjectWithValidations < Object
 
     validates :virtual_string, :presence => true
 
   end
+
 
   class ObjectWithOverrides < Object
 
@@ -27,9 +30,11 @@ module ObjectSpec
 
   end
 
+
   class InheritingObject < Object
     virtual_attribute :another_virtual_string, :string
   end
+
 
   class IncludingObject < Object
 
@@ -61,6 +66,7 @@ module ObjectSpec
     end
 
   end
+
 end
 
 
