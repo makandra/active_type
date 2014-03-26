@@ -46,6 +46,10 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
     it_should_behave_like 'ActiveRecord-like constructors', { :persisted_string => "persisted string", :another_virtual_string => "another virtual string" }
   end
 
+  describe 'accessors' do
+    it_should_behave_like 'ActiveRecord-like accessors', { :persisted_string => "persisted string", :another_virtual_string => "another virtual string" }
+  end
+
   describe 'persistence' do
     it 'persists to the database' do
       subject.persisted_string = "persisted string"
@@ -70,6 +74,10 @@ describe "ActiveType::Record[ActiveType::Record]" do
     subject { ExtendedRecordSpec::ExtendedActiveTypeRecord }
 
     it_should_behave_like 'ActiveRecord-like constructors', { :persisted_string => "persisted string", :virtual_string => "virtual string", :another_virtual_string => "another virtual string" }
+  end
+
+  describe 'accessors' do
+    it_should_behave_like 'ActiveRecord-like accessors', { :persisted_string => "persisted string", :virtual_string => "virtual string", :another_virtual_string => "another virtual string" }
   end
 
   describe 'validations' do
