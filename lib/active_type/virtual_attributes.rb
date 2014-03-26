@@ -77,6 +77,12 @@ module ActiveType
       self.virtual_columns_hash = {}
     end
 
+    def initialize(*)
+      @virtual_attributes = {}
+      @virtual_attributes_cache = {}
+      super
+    end
+
     def read_virtual_attribute(name)
       name = name.to_s
       @virtual_attributes_cache[name] ||= begin
@@ -88,13 +94,6 @@ module ActiveType
       name = name.to_s
       @virtual_attributes_cache.delete(name)
       @virtual_attributes[name] = value
-    end
-
-    private
-
-    def initialize_virtual_attributes
-      @virtual_attributes = {}
-      @virtual_attributes_cache = {}
     end
 
     module ClassMethods

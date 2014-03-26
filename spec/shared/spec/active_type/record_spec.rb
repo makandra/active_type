@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 module RecordSpec
+
   class Record < ActiveType::Record
 
     virtual_attribute :virtual_string, :string
@@ -115,6 +116,16 @@ describe ActiveType::Record do
       expect do
         subject.read_virtual_attribute('foo')
       end.to raise_error(ActiveType::MissingAttributeError)
+    end
+  end
+
+  describe 'persistence' do
+
+    it 'persists to the database' do
+      subject.persisted_string = "persisted string"
+      subject.save.should be_true
+
+      subject.class.find(subject.id).persisted_string.should == "persisted string"
     end
   end
 

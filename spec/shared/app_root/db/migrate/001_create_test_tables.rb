@@ -14,6 +14,11 @@ class CreateTestTables < ActiveRecord::Migration
       t.integer :record_id
     end
 
+    create_table :sti_records do |t|
+      t.string :persisted_string
+      t.string :type
+    end
+
   end
 
   def self.down

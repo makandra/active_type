@@ -8,11 +8,6 @@ module ActiveType
     include NoTable
     include VirtualAttributes
 
-    def initialize(attributes = nil, options = {})
-      initialize_virtual_attributes
-      super
-    end
-
   end
 
 end
