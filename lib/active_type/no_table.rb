@@ -20,21 +20,8 @@ module ActiveType
       end
 
 
-      case ActiveRecord::VERSION::MAJOR
-      when 3
-
-        def all(*)
-          []
-        end
-
-      when 4
-
-        def find_by_sql(*)
-          []
-        end
-
-      else
-        raise NotImplementedError.new("Unsupported ActiveRecord version")
+      def find_by_sql(*)
+        []
       end
 
     end

@@ -208,4 +208,27 @@ describe ActiveType::Object do
 
   end
 
+  describe '.find' do
+    it 'raises an error' do
+      expect do
+        ObjectSpec::Object.find(1)
+      end.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
+  describe '.all' do
+    it 'returns []' do
+      ObjectSpec::Object.all.should == []
+    end
+  end
+
+  describe '.create' do
+    it 'returns an object' do
+      object = ObjectSpec::Object.create(:virtual_string => "string")
+
+      object.should be_a(ObjectSpec::Object)
+      object.virtual_string.should == "string"
+    end
+  end
+
 end
