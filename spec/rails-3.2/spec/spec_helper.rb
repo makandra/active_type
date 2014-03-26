@@ -11,6 +11,7 @@ require 'rspec/rails'
 
 require 'edge_rider/development'
 
+Dir["#{File.dirname(__FILE__)}/../../shared/spec/support/*"].each {|f| require f}
 Dir["#{File.dirname(__FILE__)}/../../shared/spec/shared_examples/*"].each {|f| require f}
 
 # Run the migrations
