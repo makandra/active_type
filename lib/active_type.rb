@@ -3,5 +3,4 @@
 require 'active_type/version'
 
 require 'active_type/record'
-
-
+require 'active_type/object'
