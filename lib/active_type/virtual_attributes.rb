@@ -1,6 +1,7 @@
 module ActiveType
 
   class InvalidAttributeNameError < StandardError; end
+  class MissingAttributeError < StandardError; end
 
   module VirtualAttributes
 
@@ -73,12 +74,14 @@ module ActiveType
 
     included do
       class_attribute :virtual_columns_hash
-      self.virtual_columns_hash ||= {}
+      self.virtual_columns_hash = {}
     end
 
     def read_virtual_attribute(name)
       name = name.to_s
-      @virtual_attributes_cache[name] ||= self.class.virtual_columns_hash[name].type_cast(@virtual_attributes[name])
+      @virtual_attributes_cache[name] ||= begin
+        self.singleton_class._virtual_column(name).type_cast(@virtual_attributes[name])
+      end
     end
 
     def write_virtual_attribute(name, value)
@@ -95,6 +98,16 @@ module ActiveType
     end
 
     module ClassMethods
+
+      def _virtual_column(name)
+        virtual_columns_hash[name.to_s] || begin
+          if defined?(super)
+            super
+          else
+            raise MissingAttributeError.new("Undefined attribute '#{name}'")
+          end
+        end
+      end
 
       def virtual_attribute(name, type)
         self.virtual_columns_hash = virtual_columns_hash.merge(name.to_s => VirtualColumn.new(name, type))

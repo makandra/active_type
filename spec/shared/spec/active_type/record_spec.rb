@@ -9,16 +9,24 @@ module RecordSpec
     virtual_attribute :virtual_date, :date
     virtual_attribute :virtual_boolean, :boolean
 
+  end
+
+  class RecordWithValidations < Record
 
     validates :persisted_string, :presence => true
     validates :virtual_string, :presence => true
 
+  end
+
+
+  class RecordWithOverrides < Record
 
     virtual_attribute :overridable_test, :string
 
     def overridable_test
       super + super
     end
+
   end
 end
 
@@ -47,6 +55,9 @@ describe ActiveType::Record do
   end
 
   describe 'overridable attributes' do
+
+    subject { RecordSpec::RecordWithOverrides.new }
+
     it 'is possible to override attributes with super' do
       subject.overridable_test = "test"
 
@@ -93,8 +104,18 @@ describe ActiveType::Record do
   end
 
   describe 'validations' do
+    subject { RecordSpec::RecordWithValidations.new }
+
     it { should have(1).error_on(:persisted_string) }
     it { should have(1).error_on(:virtual_string) }
+  end
+
+  describe 'undefined columns' do
+    it 'raises an error when trying to access an undefined virtual attribute' do
+      expect do
+        subject.read_virtual_attribute('foo')
+      end.to raise_error(ActiveType::MissingAttributeError)
+    end
   end
 
 end
