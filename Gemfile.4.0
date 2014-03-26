@@ -1,0 +1,7 @@
+source 'https://www.rubygems.org'
+
+gem 'rails', '~>4.0.0'
+gem 'rspec'
+gem 'sqlite3'
+
+gem 'active_type', :path => '.'
