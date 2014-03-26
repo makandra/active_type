@@ -1,0 +1,11 @@
+source 'https://www.rubygems.org'
+
+gem 'rails', '~>4.1.0.rc2'
+gem 'rspec'
+gem 'rspec-rails'
+gem 'sqlite3'
+gem 'rspec_candy'
+
+gem 'edge_rider', :require => false
+
+gem 'active_type', :path => '../..'
