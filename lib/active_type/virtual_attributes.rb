@@ -83,6 +83,22 @@ module ActiveType
       super
     end
 
+    def [](name)
+      if self.singleton_class._has_virtual_column?(name)
+        read_virtual_attribute(name)
+      else
+        super
+      end
+    end
+
+    def []=(name, value)
+      if self.singleton_class._has_virtual_column?(name)
+        write_virtual_attribute(name, value)
+      else
+        super
+      end
+    end
+
     def read_virtual_attribute(name)
       name = name.to_s
       @virtual_attributes_cache[name] ||= begin
@@ -104,6 +120,16 @@ module ActiveType
             super
           else
             raise MissingAttributeError.new("Undefined attribute '#{name}'")
+          end
+        end
+      end
+
+      def _has_virtual_column?(name)
+        virtual_columns_hash.has_key?(name.to_s) || begin
+          if defined?(super)
+            super
+          else
+            false
           end
         end
       end

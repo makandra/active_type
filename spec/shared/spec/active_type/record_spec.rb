@@ -55,6 +55,12 @@ describe ActiveType::Record do
     it_should_behave_like 'ActiveRecord-like mass assignment', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => Time.now, :virtual_date => Date.today, :virtual_boolean => true }
   end
 
+  describe 'accessors' do
+    it_should_behave_like 'ActiveRecord-like accessors', { :persisted_string => "string", :persisted_integer => 100, :persisted_time => Time.now, :persisted_date => Date.today, :persisted_boolean => true }
+
+    it_should_behave_like 'ActiveRecord-like accessors', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => Time.now, :virtual_date => Date.today, :virtual_boolean => true }
+  end
+
   describe 'overridable attributes' do
 
     subject { RecordSpec::RecordWithOverrides.new }

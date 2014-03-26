@@ -67,6 +67,18 @@ module ObjectSpec
 
   end
 
+  class Child < ActiveRecord::Base
+  end
+
+  class ObjectWithBelongsTo < Object
+
+    attribute :child_id, :integer
+
+    belongs_to :child
+
+  end
+
+
 end
 
 
@@ -83,6 +95,10 @@ describe ActiveType::Object do
 
   describe 'mass assignment' do
     it_should_behave_like 'ActiveRecord-like mass assignment', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => Time.now, :virtual_date => Date.today, :virtual_boolean => true }
+  end
+
+  describe 'accessors' do
+    it_should_behave_like 'ActiveRecord-like accessors', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => Time.now, :virtual_date => Date.today, :virtual_boolean => true }
   end
 
   describe 'overridable attributes' do
@@ -177,6 +193,12 @@ describe ActiveType::Object do
     it 'causes #save to return false' do
       subject.save.should be_false
     end
+  end
+
+  describe '#belongs_to' do
+    subject { ObjectSpec::ObjectWithBelongsTo.new }
+
+    it_should_behave_like 'a belongs_to association', :child, ObjectSpec::Child
   end
 
   describe '#save' do
