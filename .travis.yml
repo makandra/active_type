@@ -10,7 +10,7 @@ gemfile:
 script: bundle exec rspec spec
 notifications:
   email:
-    - tobias.kraze@makandra.de
+    - fail@makandra.de
 branches:
   only:
     - master
