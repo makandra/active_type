@@ -50,6 +50,41 @@ class SignUp < ActiveType::Record[User]
 end
 ```
 
+ActiveType::Object
+------------------
+
+Inherit from `ActiveType::Object` if you want an `ActiveRecord`-kind class that is not backed by a database table.
+
+You can define "columns" by saying `attribute`:
+
+```ruby
+class SignIn < ActiveType::Object
+  
+  attribute :email, :string
+  attribute :date_of_birth, :date
+  attribute :accepted_terms, :boolean
+  
+end
+```
+
+These attributes can be assigned via constructor, mass-assignment, and are automatically typecast:
+
+```ruby
+sign_in = SignIn.new(date_of_birth: "1980-01-01", accepted_terms: "1")
+sign_in.date_of_birth.class # Date
+sign_in.accepted_terms # true
+```
+
+**`ActiveType::Object` actually inherits from `ActiveRecord::Base`, but simply skips all database access, inspired by ([ActiveRecord Tableless](https://github.com/softace/activerecord-tableless)).**
+
+This means your object has all usual `ActiveRecord::Base` methods. Some of those might not work properly, however. What does work:
+
+- validations
+- callbacks
+- "saving" (returning `true` or `false`, without actually persisting)
+- belongs_to (after saying `attribute :child_id, :integer`)
+
+
 
 Supported Rails versions
 ------------------------
