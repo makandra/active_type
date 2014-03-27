@@ -94,7 +94,13 @@ This means your object has all usual `ActiveRecord::Base` methods. Some of those
 
 `ActiveType::Record[BaseClass]` is used to extend a given `BaseClass` (that itself has to be an `ActiveRecord` model) with additional functionality, that is not meant to be shared to the rest of the application.
 
-You class will inherit from `BaseClass`. You can add additional methods, validations, callbacks, as well as use (virtual) attributes like an `ActiveType::Object`.
+You class will inherit from `BaseClass`. You can add additional methods, validations, callbacks, as well as use (virtual) attributes like an `ActiveType::Object`:
+
+```ruby
+class SignUp < ActiveType::Record[User]
+  # ...
+end
+```
 
 
 
