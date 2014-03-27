@@ -5,6 +5,10 @@ end
 
 shared_examples_for 'a coercible string column' do |column|
 
+  it 'is nil by default' do
+    subject.send(column).should be_nil
+  end
+
   it 'leaves strings alone' do
     subject.send(:"#{column}=", "string")
 
@@ -21,6 +25,10 @@ end
 
 
 shared_examples_for 'a coercible integer column' do |column|
+
+  it 'is nil by default' do
+    subject.send(column).should be_nil
+  end
 
   it 'leaves integers alone' do
     subject.send(:"#{column}=", 10)
@@ -44,6 +52,10 @@ end
 
 
 shared_examples_for 'a coercible date column' do |column|
+
+  it 'is nil by default' do
+    subject.send(column).should be_nil
+  end
 
   it 'leaves dates alone' do
     date = Date.today
@@ -98,6 +110,10 @@ shared_examples_for 'a coercible time column' do |column|
   end
 
 
+  it 'is nil by default' do
+    subject.send(column).should be_nil
+  end
+
   it 'leaves times alone' do
     time = Time.now
     subject.send(:"#{column}=", time)
@@ -143,6 +159,10 @@ end
 
 
 shared_examples_for 'a coercible boolean column' do |column|
+
+  it 'is nil by default' do
+    subject.send(column).should be_nil
+  end
 
   it 'leaves booleans alone' do
     subject.send(:"#{column}=", true)

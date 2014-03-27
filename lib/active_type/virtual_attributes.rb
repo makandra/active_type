@@ -20,7 +20,7 @@ module ActiveType
             0
           when TrueClass
             1
-          when ""
+          when "", nil
             nil
           else
             value.to_i
