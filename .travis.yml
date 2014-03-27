@@ -2,14 +2,12 @@ language: ruby
 rvm:
   - "1.8.7"
   - "1.9.3"
-  - ree
-services:
-  - mysql
-before_script: rake travis_ci:prepare
+  - "2.0.0"
+  - "2.1.0"
 script: rake all:bundle all:spec
 notifications:
   email:
-    - fail@makandra.de
+    - tobias.kraze@makandra.de
 branches:
   only:
     - master
