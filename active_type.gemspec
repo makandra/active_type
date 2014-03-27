@@ -4,8 +4,8 @@ require "active_type/version"
 Gem::Specification.new do |s|
   s.name = 'active_type'
   s.version = ActiveType::VERSION
-  s.authors = ["Henning Koch"]
-  s.email = 'henning.koch@makandra.de'
+  s.authors = ["Tobias Kraze", "Henning Koch"]
+  s.email = 'tobias.kraze@makandra.de'
   s.homepage = 'https://github.com/makandra/active_type'
   s.summary = 'Make any Ruby object quack like ActiveRecord'
   s.description = s.summary
