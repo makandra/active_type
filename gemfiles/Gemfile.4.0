@@ -4,4 +4,4 @@ gem 'activerecord', '~>4.0.0'
 gem 'rspec'
 gem 'sqlite3'
 
-gem 'active_type', :path => '.'
+gem 'active_type', :path => '..'

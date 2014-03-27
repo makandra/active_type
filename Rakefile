@@ -28,7 +28,7 @@ end
 
 def for_each_gemfile
   version = ENV['VERSION'] || '*'
-  Dir["Gemfile.#{version}"].sort.each do |gemfile|
+  Dir["gemfiles/Gemfile.#{version}"].sort.each do |gemfile|
     next if gemfile =~ /.lock/
     puts '', "\033[44m#{gemfile}\033[0m", ''
     ENV['BUNDLE_GEMFILE'] = gemfile
