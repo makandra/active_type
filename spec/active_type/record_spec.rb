@@ -29,6 +29,13 @@ module RecordSpec
     end
 
   end
+
+  class RecordCopy < ActiveType::Record
+    self.table_name = 'records'
+
+    attribute :virtual_string, :string
+
+  end
 end
 
 
@@ -80,6 +87,17 @@ describe ActiveType::Record do
           attribute :"<attr>", :string
         end
       }.to raise_error(ActiveType::InvalidAttributeNameError)
+    end
+  end
+
+  describe '.reset_column_information' do
+    it 'does not affect virtual attributes' do
+      RecordSpec::RecordCopy.new.persisted_string = "string"
+      RecordSpec::RecordCopy.reset_column_information
+
+      expect do
+        RecordSpec::RecordCopy.new.virtual_string = "string"
+      end.to_not raise_error
     end
   end
 
