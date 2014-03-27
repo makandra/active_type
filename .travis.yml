@@ -3,7 +3,11 @@ rvm:
   - "1.9.3"
   - "2.0.0"
   - "2.1.0"
-script: rake all:bundle all:spec
+gemfile:
+  - gemfiles/Gemfile.3.2
+  - gemfiles/Gemfile.4.0
+  - gemfiles/Gemfile.4.1
+script: bundle exec rspec spec
 notifications:
   email:
     - tobias.kraze@makandra.de
