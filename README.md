@@ -4,11 +4,11 @@ ActiveType [![Build Status](https://travis-ci.org/makandra/active_type.svg?branc
 Make any Ruby object quack like ActiveRecord
 --------------------------------------------
 
-ActiveType is our take on doing "presenter models" (or "form models") in Rails. We want to have controllers (and views) talk to models that either are not backed by a database table, or have additional functionality that should not be shared to the rest of the application.
+ActiveType is our take on "presenter models" (or "form models") in Rails. We want to have controllers (and forms) talk to models that are either not backed by a database table, or have additional functionality that should not be shared to the rest of the application.
 
-We do not want to lose ActiveRecord's amenities, like validations and callbacks.
+However, we do not want to lose ActiveRecord's amenities, like validations, callbacks, etc.
 
-Examples for both use case are a models to support sign in:
+Examples for use cases are models to support sign in:
 
 ```ruby
 class SignIn < ActiveType::Object
@@ -26,7 +26,7 @@ class SignIn < ActiveType::Object
 end
 ```
 
-and model to support sign up:
+Or models to support sign up:
 
 ```ruby
 class User < ActiveRecord::Base
