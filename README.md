@@ -50,8 +50,8 @@ class SignUp < ActiveType::Record[User]
 end
 ```
 
-ActiveType::Object
-------------------
+### ActiveType::Object
+
 
 Inherit from `ActiveType::Object` if you want an `ActiveRecord`-kind class that is not backed by a database table.
 
@@ -75,7 +75,7 @@ sign_in.date_of_birth.class # Date
 sign_in.accepted_terms # true
 ```
 
-**`ActiveType::Object` actually inherits from `ActiveRecord::Base`, but simply skips all database access, inspired by ([ActiveRecord Tableless](https://github.com/softace/activerecord-tableless)).**
+**`ActiveType::Object` actually inherits from `ActiveRecord::Base`, but simply skips all database access, inspired by [ActiveRecord Tableless](https://github.com/softace/activerecord-tableless).**
 
 This means your object has all usual `ActiveRecord::Base` methods. Some of those might not work properly, however. What does work:
 
