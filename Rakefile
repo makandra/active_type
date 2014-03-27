@@ -10,7 +10,7 @@ namespace :all do
   desc "Run specs on all versions"
   task :spec do
     success = true
-    for_each_gemfile do |gemfile|
+    for_each_gemfile do
       env = "SPEC=../../#{ENV['SPEC']} " if ENV['SPEC']
       success &= system("#{env} bundle exec rspec spec")
     end
@@ -19,7 +19,7 @@ namespace :all do
 
   desc "Bundle all versions"
   task :bundle do
-    for_each_gemfile do |gemfile|
+    for_each_gemfile do
       system('bundle install')
     end
   end
