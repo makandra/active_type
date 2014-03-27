@@ -19,4 +19,8 @@ ActiveRecord::Migration.class_eval do
     t.string :type
   end
 
+  create_table :other_records do |t|
+    t.string :other_string
+  end
+
 end

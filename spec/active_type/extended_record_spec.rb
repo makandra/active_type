@@ -1,7 +1,5 @@
 require 'spec_helper'
 
-require 'spec_helper'
-
 module ExtendedRecordSpec
 
   class BaseRecord < ActiveRecord::Base

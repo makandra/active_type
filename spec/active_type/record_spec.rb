@@ -36,6 +36,9 @@ module RecordSpec
     attribute :virtual_string, :string
 
   end
+
+  class OtherRecord < ActiveType::Record
+  end
 end
 
 
@@ -45,6 +48,10 @@ describe ActiveType::Record do
 
   it 'is a ActiveRecord::Base' do
     subject.should be_a(ActiveRecord::Base)
+  end
+
+  it 'is an abstract class' do
+    ActiveType::Record.should be_abstract_class
   end
 
   describe 'constructors' do
@@ -150,6 +157,16 @@ describe ActiveType::Record do
       subject.save.should be_true
 
       subject.class.find(subject.id).persisted_string.should == "persisted string"
+    end
+  end
+
+  describe 'isolation' do
+    it 'does not let column information bleed into different models' do
+      record = RecordSpec::Record.new
+      other_record = RecordSpec::OtherRecord.new
+
+      record.should_not respond_to(:other_string)
+      other_record.should_not respond_to(:persisted_string)
     end
   end
 

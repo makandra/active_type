@@ -5,6 +5,8 @@ module ActiveType
 
   class Record < ActiveRecord::Base
 
+    @abstract_class = true
+
     include VirtualAttributes
     include ExtendedRecord
 
