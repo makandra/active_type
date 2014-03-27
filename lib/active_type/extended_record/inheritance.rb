@@ -20,6 +20,9 @@ module ActiveType
           extended_record_base_class.sti_name
         end
 
+
+        private
+
         def find_sti_class(type_name)
           sti_class = super
           if self <= sti_class

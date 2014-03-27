@@ -11,9 +11,11 @@ module ActiveType
 
       def [](base)
         Class.new(base) do
-          include VirtualAttributes
+          @abstract_class = true
 
+          include VirtualAttributes
           include Inheritance
+
           self.extended_record_base_class = base
         end
       end

@@ -57,6 +57,14 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
     end
   end
 
+  describe '.find' do
+    it 'returns an instance of the extended model' do
+      subject.save
+
+      subject.class.find(subject.id).should be_a(subject.class)
+    end
+  end
+
 end
 
 
@@ -66,6 +74,10 @@ describe "ActiveType::Record[ActiveType::Record]" do
 
   it 'is inherits from the base type' do
     subject.should be_a(ExtendedRecordSpec::BaseActiveTypeRecord)
+  end
+
+  it 'has the same model name as the base class' do
+    subject.class.model_name.singular.should == ExtendedRecordSpec::BaseActiveTypeRecord.model_name.singular
   end
 
   describe 'constructors' do
@@ -92,6 +104,14 @@ describe "ActiveType::Record[ActiveType::Record]" do
       subject.save.should be_true
 
       subject.class.find(subject.id).persisted_string.should == "persisted string"
+    end
+  end
+
+  describe '.find' do
+    it 'returns an instance of the extended model' do
+      subject.save
+
+      subject.class.find(subject.id).should be_a(subject.class)
     end
   end
 
