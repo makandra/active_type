@@ -80,7 +80,7 @@ sign_in.accepted_terms # true
 This means your object has all usual `ActiveRecord::Base` methods. Some of those might not work properly, however. What does work:
 
 - validations
-- callbacks
+- callbacks (use `before_save`, `after_save`, not `before_create`, or `before_update`)
 - "saving" (returning `true` or `false`, without actually persisting)
 - belongs_to (after saying `attribute :child_id, :integer`)
 
