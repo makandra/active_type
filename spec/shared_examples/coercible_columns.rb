@@ -1,3 +1,8 @@
+module TimeConversionSpec
+  class Record < ActiveRecord::Base
+  end
+end
+
 shared_examples_for 'a coercible string column' do |column|
 
   it 'leaves strings alone' do
@@ -64,6 +69,35 @@ end
 
 shared_examples_for 'a coercible time column' do |column|
 
+  around do |example|
+    begin
+      old_time_zone = Time.zone
+      old_time_zone_aware_attributes = ActiveRecord::Base.time_zone_aware_attributes
+      old_default_timezone = ActiveRecord::Base.default_timezone
+      example.run
+    ensure
+      Time.zone = old_time_zone
+      ActiveRecord::Base.time_zone_aware_attributes = old_time_zone_aware_attributes
+      ActiveRecord::Base.default_timezone = old_default_timezone
+      subject.class.reset_column_information
+    end
+  end
+
+  def it_should_convert_like_active_record(column)
+    time = "2010-10-01 12:15"
+    TimeConversionSpec::Record.reset_column_information
+    subject.class.reset_column_information
+
+    comparison = TimeConversionSpec::Record.new
+    subject.send(:"#{column}=", time)
+    comparison.persisted_time = time
+
+    result = subject.send(column)
+    result.should == comparison.persisted_time
+    result.zone.should == comparison.persisted_time.zone
+  end
+
+
   it 'leaves times alone' do
     time = Time.now
     subject.send(:"#{column}=", time)
@@ -75,6 +109,34 @@ shared_examples_for 'a coercible time column' do |column|
     subject.send(:"#{column}=", "2010-10-01 12:15")
 
     subject.send(column).should == Time.new(2010, 10, 1, 12, 15)
+  end
+
+  it 'behaves consistently with ActiveRecord' do
+    Time.zone = 'Hawaii'
+
+    it_should_convert_like_active_record(column)
+  end
+
+  it 'behaves consistently with ActiveRecord if time_zone_aware_attributes is set' do
+    Time.zone = 'Hawaii'
+    ActiveRecord::Base.time_zone_aware_attributes = true
+
+    it_should_convert_like_active_record(column)
+  end
+
+  it 'behaves consistently with ActiveRecord if default_timezone is :utc' do
+    Time.zone = 'Hawaii'
+    ActiveRecord::Base.default_timezone = :utc
+
+    it_should_convert_like_active_record(column)
+  end
+
+  it 'behaves consistently with ActiveRecord if time_zone_aware_attributes is set, default_timezone is :utc' do
+    Time.zone = 'Hawaii'
+    ActiveRecord::Base.default_timezone = :utc
+    ActiveRecord::Base.time_zone_aware_attributes = true
+
+    it_should_convert_like_active_record(column)
   end
 
 end

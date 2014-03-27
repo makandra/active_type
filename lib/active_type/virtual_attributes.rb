@@ -13,7 +13,8 @@ module ActiveType
       end
 
       def type_cast(value)
-        if @type == :integer
+        case @type
+        when :integer
           case value
           when FalseClass
             0
@@ -23,6 +24,17 @@ module ActiveType
             nil
           else
             value.to_i
+          end
+        when :timestamp, :datetime
+          if ActiveRecord::Base.time_zone_aware_attributes
+            time = super
+            if time
+              ActiveSupport::TimeWithZone.new(nil, Time.zone, time)
+            else
+              time
+            end
+          else
+            super
           end
         else
           super
