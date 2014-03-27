@@ -72,22 +72,24 @@ Now run `bundle install` and restart your server.
 Development
 -----------
 
-- Test applications for various Rails versions lives in `spec`.
-- You need to create a MySQL database and put credentials into `spec/shared/app_root/config/database.yml`.
-- You can bundle all test applications by saying `bundle exec rake all:bundle`
-- You can run specs from the project root by saying `bundle exec rake all:spec`.
+- We run tests against several ActiveRecord versions.
+- You can bundle all versions with `rake all:bundle`.
+- You can run specs against all versions with `rake`.
+- You can run specs against a single version with `VERSION=4.0 rake`.
 
 If you would like to contribute:
 
 - Fork the repository.
 - Push your changes **with passing specs**.
-- Send me a pull request.
+- Send us a pull request.
 
 I'm very eager to keep this gem leightweight and on topic. If you're unsure whether a change would make it into the gem, [talk to me beforehand](mailto:henning.koch@makandra.de).
 
 
 Credits
 -------
+
+Tobias Kraze from [makandra](http://makandra.com/)
 
 Henning Koch from [makandra](http://makandra.com/)
 
