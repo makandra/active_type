@@ -85,6 +85,18 @@ This means your object has all usual `ActiveRecord::Base` methods. Some of those
 - belongs_to (after saying `attribute :child_id, :integer`)
 
 
+### ActiveType::Record
+
+`ActiveType::Record` is simply `ActiveRecord::Base` plus the (virtual) attributes from `ActiveType::Object`. You can declare, assign, validate etc those attributes, but they will not be persisted.
+
+
+### ActiveType::Record[BaseClass]
+
+`ActiveType::Record[BaseClass]` is used to extend a given `BaseClass` (that itself has to be an `ActiveRecord` model) with additional functionality, that is not meant to be shared to the rest of the application.
+
+You class will inherit from `BaseClass`. You can add additional methods, validations, callbacks, as well as use (virtual) attributes like an `ActiveType::Object`.
+
+
 
 Supported Rails versions
 ------------------------
