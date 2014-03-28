@@ -124,7 +124,7 @@ shared_examples_for 'a coercible time column' do |column|
   it 'converts strings to times' do
     subject.send(:"#{column}=", "2010-10-01 12:15")
 
-    subject.send(column).should == Time.new(2010, 10, 1, 12, 15)
+    subject.send(column).should == Time.local(2010, 10, 1, 12, 15)
   end
 
   it 'behaves consistently with ActiveRecord' do
