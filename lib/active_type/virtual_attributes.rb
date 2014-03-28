@@ -117,6 +117,12 @@ module ActiveType
       end
     end
 
+    def attributes
+      self.class._virtual_column_names.each_with_object(super) do |name, attrs|
+        attrs[name] = read_virtual_attribute(name)
+      end
+    end
+
     def read_virtual_attribute(name)
       name = name.to_s
       @virtual_attributes_cache[name] ||= begin
@@ -139,6 +145,16 @@ module ActiveType
           else
             raise MissingAttributeError.new("Undefined attribute '#{name}'")
           end
+        end
+      end
+
+      def _virtual_column_names
+        @virtual_column_names ||= begin
+          names = virtual_columns_hash.keys
+          if defined?(super)
+            names += super
+          end
+          names
         end
       end
 

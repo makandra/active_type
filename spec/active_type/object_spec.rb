@@ -183,6 +183,56 @@ describe ActiveType::Object do
 
   end
 
+  describe '#attributes' do
+
+    it 'returns a hash of virtual attributes' do
+      subject.virtual_string = "string"
+      subject.virtual_integer = "17"
+
+      subject.attributes.should == {
+        "virtual_string" => "string",
+        "virtual_integer" => 17,
+        "virtual_time" => nil,
+        "virtual_date" => nil,
+        "virtual_boolean" => nil,
+        "virtual_attribute" => nil,
+      }
+    end
+
+    it 'also includes inherited attributes' do
+      object = ObjectSpec::InheritingObject.new
+      object.virtual_string = "string"
+      object.virtual_integer = "17"
+
+      object.attributes.should == {
+        "virtual_string" => "string",
+        "virtual_integer" => 17,
+        "virtual_time" => nil,
+        "virtual_date" => nil,
+        "virtual_boolean" => nil,
+        "virtual_attribute" => nil,
+        "another_virtual_string" => nil,
+      }
+    end
+
+    it 'also includes included attributes' do
+      object = ObjectSpec::IncludingObject.new
+      object.virtual_string = "string"
+      object.virtual_integer = "17"
+
+      object.attributes.should == {
+        "virtual_string" => "string",
+        "virtual_integer" => 17,
+        "virtual_time" => nil,
+        "virtual_date" => nil,
+        "virtual_boolean" => nil,
+        "virtual_attribute" => nil,
+        "another_virtual_string" => nil,
+      }
+    end
+
+  end
+
   describe 'inherited classes' do
 
     it 'sees attributes of both classes' do

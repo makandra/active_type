@@ -44,6 +44,25 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
     it_should_behave_like 'ActiveRecord-like constructors', { :persisted_string => "persisted string", :another_virtual_string => "another virtual string" }
   end
 
+  describe '#attributes' do
+
+    it 'returns a hash of virtual and persisted attributes' do
+      subject.persisted_string = "string"
+      subject.another_virtual_string = "string"
+
+      subject.attributes.should == {
+        "another_virtual_string" => "string",
+        "id" => nil,
+        "persisted_string" => "string",
+        "persisted_integer" => nil,
+        "persisted_time" => nil,
+        "persisted_date" => nil,
+        "persisted_boolean" => nil
+      }
+    end
+
+  end
+
   describe 'accessors' do
     it_should_behave_like 'ActiveRecord-like accessors', { :persisted_string => "persisted string", :another_virtual_string => "another virtual string" }
   end
@@ -84,6 +103,26 @@ describe "ActiveType::Record[ActiveType::Record]" do
     subject { ExtendedRecordSpec::ExtendedActiveTypeRecord }
 
     it_should_behave_like 'ActiveRecord-like constructors', { :persisted_string => "persisted string", :virtual_string => "virtual string", :another_virtual_string => "another virtual string" }
+  end
+
+  describe '#attributes' do
+
+    it 'returns a hash of virtual and persisted attributes' do
+      subject.persisted_string = "string"
+      subject.virtual_string = "string"
+
+      subject.attributes.should == {
+        "virtual_string" => "string",
+        "another_virtual_string" => nil,
+        "id" => nil,
+        "persisted_string" => "string",
+        "persisted_integer" => nil,
+        "persisted_time" => nil,
+        "persisted_date" => nil,
+        "persisted_boolean" => nil
+      }
+    end
+
   end
 
   describe 'accessors' do

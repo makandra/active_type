@@ -140,6 +140,31 @@ describe ActiveType::Record do
     end
   end
 
+  describe '#attributes' do
+
+    it 'returns a hash of virtual and persisted attributes' do
+      subject.persisted_string = "string"
+      subject.virtual_string = "string"
+      subject.virtual_integer = "17"
+
+      subject.attributes.should == {
+        "virtual_string" => "string",
+        "virtual_integer" => 17,
+        "virtual_time" => nil,
+        "virtual_date" => nil,
+        "virtual_boolean" => nil,
+        "virtual_attribute" => nil,
+        "id" => nil,
+        "persisted_string" => "string",
+        "persisted_integer" => nil,
+        "persisted_time" => nil,
+        "persisted_date" => nil,
+        "persisted_boolean" => nil
+      }
+    end
+
+  end
+
   describe 'validations' do
     subject { RecordSpec::RecordWithValidations.new }
 

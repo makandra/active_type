@@ -30,6 +30,10 @@ module ActiveType
       nil
     end
 
+    def attribute_names
+      []
+    end
+
     def transaction(&block)
       @_current_transaction_records ||= []
       yield
