@@ -84,6 +84,12 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
     end
   end
 
+  describe '.base_class' do
+    it 'is the base class inherited from' do
+      subject.class.base_class.should == ExtendedRecordSpec::BaseRecord
+    end
+  end
+
 end
 
 
@@ -151,6 +157,12 @@ describe "ActiveType::Record[ActiveType::Record]" do
       subject.save
 
       subject.class.find(subject.id).should be_a(subject.class)
+    end
+  end
+
+  describe '.base_class' do
+    it 'is the base class inherited from' do
+      subject.class.base_class.should == ExtendedRecordSpec::BaseActiveTypeRecord
     end
   end
 

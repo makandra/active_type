@@ -11,7 +11,6 @@ module ActiveType
 
       def [](base)
         Class.new(base) do
-          @abstract_class = true
 
           include VirtualAttributes
           include Inheritance
