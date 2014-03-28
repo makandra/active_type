@@ -201,3 +201,28 @@ shared_examples_for 'a coercible boolean column' do |column|
   end
 
 end
+
+shared_examples_for 'an untyped column' do |column|
+  it 'is nil by default' do
+    subject.send(column).should be_nil
+  end
+
+  it 'leaves strings alone' do
+    subject.send(:"#{column}=", "string")
+
+    subject.send(column).should == "string"
+  end
+
+  it 'leaves integers alone' do
+    subject.send(:"#{column}=", 17)
+
+    subject.send(column).should == 17
+  end
+
+  it 'leaves objects alone' do
+    object = Object.new
+    subject.send(:"#{column}=", object)
+
+    subject.send(column).should == object
+  end
+end

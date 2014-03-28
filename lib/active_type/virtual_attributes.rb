@@ -36,6 +36,8 @@ module ActiveType
           else
             super
           end
+        when nil
+          value
         else
           super
         end
@@ -154,7 +156,7 @@ module ActiveType
         end
       end
 
-      def attribute(name, type)
+      def attribute(name, type = nil)
         self.virtual_columns_hash = virtual_columns_hash.merge(name.to_s => VirtualColumn.new(name, type))
         AccessorGenerator.new(generated_virtual_attribute_methods).generate_accessors(name)
       end

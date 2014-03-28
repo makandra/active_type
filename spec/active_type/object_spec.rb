@@ -9,6 +9,7 @@ module ObjectSpec
     attribute :virtual_time, :datetime
     attribute :virtual_date, :date
     attribute :virtual_boolean, :boolean
+    attribute :virtual_attribute
 
   end
 
@@ -141,6 +142,10 @@ describe ActiveType::Object do
 
     describe 'boolean columns' do
       it_should_behave_like 'a coercible boolean column', :virtual_boolean
+    end
+
+    describe 'untyped columns' do
+      it_should_behave_like 'an untyped column', :virtual_attribute
     end
   end
 
