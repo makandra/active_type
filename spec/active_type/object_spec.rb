@@ -149,6 +149,40 @@ describe ActiveType::Object do
     end
   end
 
+  describe 'query methods' do
+
+    it 'returns true for true' do
+      subject.virtual_attribute = true
+
+      subject.virtual_attribute?.should == true
+    end
+
+    it 'returns false for false' do
+      subject.virtual_attribute = false
+
+      subject.virtual_attribute?.should == false
+    end
+
+    it 'returns false for nil' do
+      subject.virtual_attribute = nil
+
+      subject.virtual_attribute?.should == false
+    end
+
+    it 'returns true for 1' do
+      subject.virtual_attribute = 1
+
+      subject.virtual_attribute?.should == true
+    end
+
+    it 'returns true for an object' do
+      subject.virtual_attribute = Object.new
+
+      subject.virtual_attribute?.should == true
+    end
+
+  end
+
   describe 'inherited classes' do
 
     it 'sees attributes of both classes' do

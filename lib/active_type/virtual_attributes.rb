@@ -64,6 +64,10 @@ module ActiveType
           def #{name}
             read_virtual_attribute('#{name}')
           end
+
+          def #{name}?
+            read_virtual_attribute('#{name}').present?
+          end
         BODY
       end
 
