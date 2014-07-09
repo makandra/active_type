@@ -95,10 +95,12 @@ module ActiveType
       self.virtual_columns_hash = {}
     end
 
-    def initialize(*)
-      @virtual_attributes = {}
-      @virtual_attributes_cache = {}
-      super
+    def virtual_attributes
+      @virtual_attributes ||= {}
+    end
+
+    def virtual_attributes_cache
+      @virtual_attributes_cache ||= {}
     end
 
     def [](name)
@@ -125,15 +127,15 @@ module ActiveType
 
     def read_virtual_attribute(name)
       name = name.to_s
-      @virtual_attributes_cache[name] ||= begin
-        self.singleton_class._virtual_column(name).type_cast(@virtual_attributes[name])
+      virtual_attributes_cache[name] ||= begin
+        self.singleton_class._virtual_column(name).type_cast(virtual_attributes[name])
       end
     end
 
     def write_virtual_attribute(name, value)
       name = name.to_s
-      @virtual_attributes_cache.delete(name)
-      @virtual_attributes[name] = value
+      virtual_attributes_cache.delete(name)
+      virtual_attributes[name] = value
     end
 
     module ClassMethods
