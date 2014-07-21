@@ -10,13 +10,17 @@ module ActiveType
     module ClassMethods
 
       def [](base)
-        Class.new(base) do
+        @cached_classes ||= {}
+        @cached_classes[base] ||= begin
+          Class.new(base) do
 
-          include VirtualAttributes
-          include Inheritance
+            include VirtualAttributes
+            include Inheritance
 
-          self.extended_record_base_class = base
+            self.extended_record_base_class = base
+          end
         end
+        @cached_classes[base]
       end
 
     end
