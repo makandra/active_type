@@ -20,6 +20,9 @@ module ExtendedRecordSpec
     attribute :another_virtual_string, :string
   end
 
+  class InheritingFromExtendedRecord < ExtendedRecord
+    attribute :yet_another_virtual_string, :string
+  end
 
   class ExtendedRecordWithValidations < ExtendedActiveTypeRecord
     validates :persisted_string, :presence => true
@@ -36,6 +39,10 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
 
   it 'is inherits from the base type' do
     subject.should be_a(ExtendedRecordSpec::BaseRecord)
+  end
+
+  it 'has the same model name as the base class' do
+    subject.class.model_name.singular.should == ExtendedRecordSpec::BaseRecord.model_name.singular
   end
 
   describe 'constructors' do
@@ -92,6 +99,57 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
 
 end
 
+describe "class ... < ActiveType::Record[ActiveRecord::Base]" do
+
+  subject { ExtendedRecordSpec::InheritingFromExtendedRecord.new }
+
+  it 'is inherits from the base type' do
+    subject.should be_a(ExtendedRecordSpec::ExtendedRecord)
+  end
+
+  it 'has the same model name as the base class' do
+    subject.class.model_name.singular.should == ExtendedRecordSpec::BaseRecord.model_name.singular
+  end
+
+  describe '#attributes' do
+
+    it 'returns a hash of virtual and persisted attributes' do
+      subject.persisted_string = "string"
+      subject.another_virtual_string = "string"
+      subject.yet_another_virtual_string = "string"
+
+      subject.attributes.should == {
+        "another_virtual_string" => "string",
+        "yet_another_virtual_string" => "string",
+        "id" => nil,
+        "persisted_string" => "string",
+        "persisted_integer" => nil,
+        "persisted_time" => nil,
+        "persisted_date" => nil,
+        "persisted_boolean" => nil
+      }
+    end
+
+  end
+
+  describe 'persistence' do
+    it 'persists to the database' do
+      subject.persisted_string = "persisted string"
+      subject.save.should be_true
+
+      subject.class.find(subject.id).persisted_string.should == "persisted string"
+    end
+  end
+
+  describe '.find' do
+    it 'returns an instance of the inheriting model' do
+      subject.save
+
+      subject.class.find(subject.id).should be_a(subject.class)
+    end
+  end
+
+end
 
 describe "ActiveType::Record[ActiveType::Record]" do
 

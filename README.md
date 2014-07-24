@@ -102,6 +102,20 @@ class SignUp < ActiveType::Record[User]
 end
 ```
 
+### Inheriting from ActiveType:: objects
+
+If you want to inherit from an ActiveType class, simply do
+
+```ruby
+  class SignUp < ActiveType::Record[User]
+    # ...
+  end
+
+  class SpecialSignUp < SignUp
+    # ...
+  end
+```
+
 
 
 Supported Rails versions
