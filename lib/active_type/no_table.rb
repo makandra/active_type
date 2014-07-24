@@ -39,22 +39,6 @@ module ActiveType
       yield
     end
 
-    def create(*)
-      true
-    end
-
-    def create_record(*)
-      true
-    end
-
-    def update(*)
-      true
-    end
-
-    def update_record(*)
-      true
-    end
-
     def destroy
       @destroyed = true
       freeze
@@ -62,6 +46,35 @@ module ActiveType
 
     def reload
       self
+    end
+
+
+    private
+
+    def create(*)
+      true
+    end
+
+    def update(*)
+      true
+    end
+
+    if ActiveRecord::Base.private_method_defined?(:create_record)
+      def create_record(*)
+        true
+      end
+
+      def update_record(*)
+        true
+      end
+    else
+      def _create_record(*)
+        true
+      end
+
+      def _update_record(*)
+        true
+      end
     end
 
   end

@@ -7,28 +7,27 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (4.0.4)
-      activesupport (= 4.0.4)
+    activemodel (4.0.8)
+      activesupport (= 4.0.8)
       builder (~> 3.1.0)
-    activerecord (4.0.4)
-      activemodel (= 4.0.4)
+    activerecord (4.0.8)
+      activemodel (= 4.0.8)
       activerecord-deprecated_finders (~> 1.0.2)
-      activesupport (= 4.0.4)
+      activesupport (= 4.0.8)
       arel (~> 4.0.0)
     activerecord-deprecated_finders (1.0.3)
-    activesupport (4.0.4)
+    activesupport (4.0.8)
       i18n (~> 0.6, >= 0.6.9)
       minitest (~> 4.2)
       multi_json (~> 1.3)
       thread_safe (~> 0.1)
       tzinfo (~> 0.3.37)
     arel (4.0.2)
-    atomic (1.1.16)
     builder (3.1.4)
     diff-lcs (1.2.5)
-    i18n (0.6.9)
+    i18n (0.6.11)
     minitest (4.7.5)
-    multi_json (1.9.2)
+    multi_json (1.10.1)
     rspec (2.14.1)
       rspec-core (~> 2.14.0)
       rspec-expectations (~> 2.14.0)
@@ -38,9 +37,8 @@ GEM
       diff-lcs (>= 1.1.3, < 2.0)
     rspec-mocks (2.14.6)
     sqlite3 (1.3.9)
-    thread_safe (0.3.1)
-      atomic (>= 1.1.7, < 2)
-    tzinfo (0.3.39)
+    thread_safe (0.3.4)
+    tzinfo (0.3.40)
 
 PLATFORMS
   ruby
@@ -48,5 +46,5 @@ PLATFORMS
 DEPENDENCIES
   active_type!
   activerecord (~> 4.0.0)
-  rspec
+  rspec (< 2.99)
   sqlite3
