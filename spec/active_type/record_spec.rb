@@ -40,6 +40,17 @@ module RecordSpec
 
   class OtherRecord < ActiveType::Record
   end
+
+  class Child < ActiveRecord::Base
+  end
+
+  class RecordWithBelongsTo < Record
+
+    attribute :child_id, :integer
+
+    belongs_to :child
+
+  end
 end
 
 
@@ -198,6 +209,12 @@ describe ActiveType::Record do
       record.should_not respond_to(:other_string)
       other_record.should_not respond_to(:persisted_string)
     end
+  end
+
+  describe '#belongs_to' do
+    subject { RecordSpec::RecordWithBelongsTo.new }
+
+    it_should_behave_like 'a belongs_to association', :child, RecordSpec::Child
   end
 
 end
