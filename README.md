@@ -63,6 +63,7 @@ class SignIn < ActiveType::Object
   attribute :email, :string
   attribute :date_of_birth, :date
   attribute :accepted_terms, :boolean
+  attribute :account_type
   
 end
 ```
@@ -70,10 +71,12 @@ end
 These attributes can be assigned via constructor, mass-assignment, and are automatically typecast:
 
 ```ruby
-sign_in = SignIn.new(date_of_birth: "1980-01-01", accepted_terms: "1")
+sign_in = SignIn.new(date_of_birth: "1980-01-01", accepted_terms: "1", account_type: Trial.new)
 sign_in.date_of_birth.class # Date
 sign_in.accepted_terms? # true
 ```
+
+ActiveType knows all the types that are allowed in migrations (i.e. `:string`, `:integer`, `:float`, `:decimal`, `:datetime`, `:time`, `:date`, `:boolean`). You can also skip the type to have a virtual attribute without typecasting. 
 
 **`ActiveType::Object` actually inherits from `ActiveRecord::Base`, but simply skips all database access, inspired by [ActiveRecord Tableless](https://github.com/softace/activerecord-tableless).**
 
