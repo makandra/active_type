@@ -71,7 +71,7 @@ end
 These attributes can be assigned via constructor, mass-assignment, and are automatically typecast:
 
 ```ruby
-sign_in = SignIn.new(date_of_birth: "1980-01-01", accepted_terms: "1", account_type: Trial.new)
+sign_in = SignIn.new(date_of_birth: "1980-01-01", accepted_terms: "1", account_type: AccountType::Trial.new)
 sign_in.date_of_birth.class # Date
 sign_in.accepted_terms? # true
 ```
