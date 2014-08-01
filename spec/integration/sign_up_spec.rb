@@ -1,4 +1,16 @@
+# Usecase: implement a sign up form
+# The sign up is tied to a user model
+
+
 require 'spec_helper'
+
+ActiveRecord::Migration.class_eval do
+  create_table :users do |t|
+    t.string :email
+    t.string :password
+  end
+end
+
 
 module SignUpSpec
 

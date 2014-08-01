@@ -11,8 +11,7 @@ namespace :all do
   task :spec do
     success = true
     for_each_gemfile do
-      env = "SPEC=../../#{ENV['SPEC']} " if ENV['SPEC']
-      success &= system("#{env} bundle exec rspec spec")
+      success &= system("bundle exec rspec spec")
     end
     fail "Tests failed" unless success
   end

@@ -1,7 +1,10 @@
+require 'active_type/nested_attributes/builder'
+
 module ActiveType
 
-  class InvalidAttributeNameError < StandardError; end
-  class MissingAttributeError < StandardError; end
+  class InvalidAttributeNameError < ::StandardError; end
+  class MissingAttributeError < ::StandardError; end
+  class ArgumentError < ::ArgumentError; end
 
   module VirtualAttributes
 
@@ -45,21 +48,24 @@ module ActiveType
 
     end
 
-    class AccessorGenerator
+    class Builder
 
-      def initialize(mod)
+      def initialize(owner, mod)
+        @owner = owner
         @module = mod
       end
 
-      def generate_accessors(name)
+      def build(name, options)
+        options.assert_valid_keys(:accepts_nested_attributes)
         validate_attribute_name!(name)
-        generate_reader(name)
-        generate_writer(name)
+        build_reader(name)
+        build_writer(name)
+        build_extensions(name, options)
       end
 
       private
 
-      def generate_reader(name)
+      def build_reader(name)
         @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
           def #{name}
             read_virtual_attribute('#{name}')
@@ -71,7 +77,7 @@ module ActiveType
         BODY
       end
 
-      def generate_writer(name)
+      def build_writer(name)
         @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
           def #{name}=(value)
             write_virtual_attribute('#{name}', value)
@@ -82,6 +88,18 @@ module ActiveType
       def validate_attribute_name!(name)
         unless name.to_s =~ /\A[A-z0-9_]*\z/
           raise InvalidAttributeNameError.new("'#{name}' is not a valid name for a virtual attribute")
+        end
+      end
+
+      def build_extensions(name, options)
+        options.each do |extension, config|
+          config = {} if config == true
+          case extension
+          when :accepts_nested_attributes
+            NestedAttributes::Builder.new(@owner, @module).build(name, config)
+          else
+            raise ArgumentError, "unknown option #{extension.inspect}"
+          end
         end
       end
 
@@ -178,9 +196,12 @@ module ActiveType
         end
       end
 
-      def attribute(name, type = nil)
+      def attribute(name, *args)
+        options = args.extract_options!
+        type = args.first
+
         self.virtual_columns_hash = virtual_columns_hash.merge(name.to_s => VirtualColumn.new(name, type))
-        AccessorGenerator.new(generated_virtual_attribute_methods).generate_accessors(name)
+        Builder.new(self, generated_virtual_attribute_methods).build(name, options)
       end
 
     end

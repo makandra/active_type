@@ -1,3 +1,6 @@
+# Usecase: implement a sign in form
+# The sign in is not tied to a database record
+
 require 'spec_helper'
 
 module SignInSpec

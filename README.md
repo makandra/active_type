@@ -121,6 +121,102 @@ If you want to inherit from an ActiveType class, simply do
   end
 ```
 
+### Nested attributes
+
+ActiveType supports its own variant of nested attributes. The aim is to be mostly compatible
+with `ActiveRecord`'s `accepts_nested_attributes` functionality.
+
+Assume you have a list of records, say representing holidays, and you want to support bulk
+editing. Then you could do something like:
+
+```ruby
+class Holiday < ActiveRecord::Base
+  validates :date, presence: true
+end
+
+class HolidaysForm < ActiveType::Object
+  attribute :holidays, accepts_nested_attributes: {
+    scope: Holiday,
+    reject_if: :all_blank
+  }
+end
+
+class HolidaysController < ApplicationController
+  def edit
+    load_form
+  end
+
+  def update
+    load_form
+    @holidays_form.attributes = params[:holidays_form]
+    if @holidays_form.save
+      redirect_to root_url, notice: "Success!"
+    else
+      render :edit
+    end
+  end
+
+  private
+
+  def load_form
+    @holidays_form = HolidaysForm.new
+    @holidays_form.holidays = Holiday.all
+  end
+end
+
+# and in the view
+<%= form_for @holidays_form, url: '/holidays', method: :put do |form| %>
+  <ul>
+    <%= form.fields_for :holidays do |holiday_form| %>
+      <li><%= holiday_form.text_field :date %></li>
+    <% end %>
+  </ul>
+<% end %>
+```
+
+- You have to say `attribute :records, :accepts_nested_attributes => { some: "options" }`
+- `records` will be validated and saved automatically
+- The generated `.records_attributes =` expects parameters like `ActiveRecord`'s nested attributes, and words together with the `fields_for` helper:
+
+  - either as a hash (where the keys are meaningless)
+
+    ```ruby
+    {
+      '1' => { date: "new record's date" },
+      '2' => { id: '3', date: "existing record's date" }
+    }
+    ```
+
+  - or as an array
+
+    ```ruby
+    {
+      [ date: "new record's date" ],
+      [ id: '3', date: "existing record's date" ]
+    }
+    ```
+
+It will also work for single records (like `has_one`).
+
+Supported options are:
+- `scope`
+
+  You need to supply this if you want to allow `ActiveType` to build new, or retrieve existing records. Should be either an `ActiveRecord::Relation` or simply a model.
+
+- `allow_destroy`
+
+  Allow to destroy records if the attributes contain `_destroy => '1'`
+
+- `reject_if`
+
+  Pass either a proc of the form `proc { |attributes| ... }`, or a symbol indicating a method, or `:all_blank`.
+
+  Will reject attributes for which the proc or the method returns true, or with only blank values (for `:all_blank`).
+
+- `many`
+
+  `ActiveType` tries to autodetect whether the attribute is a collection or a single record, by looking at the name. If this fails, you can override with `many: true` or `many: false`.
+
 
 
 Supported Rails versions
@@ -128,7 +224,12 @@ Supported Rails versions
 
 ActiveType is tested against ActiveRecord 3.2, 4.0 and 4.1.
 
-Later versions might work, earlier version will not.
+Later versions might work, earlier will not.
+
+Supported Ruby versions
+------------------------
+
+ActiveType is tested against MRI 1.8.7 (for 3.2 only), 1.9.3, 2.0.0, 2.1.2.
 
 
 Installation
