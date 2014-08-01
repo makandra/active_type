@@ -90,7 +90,9 @@ This means your object has all usual `ActiveRecord::Base` methods. Some of those
 
 ### ActiveType::Record
 
-`ActiveType::Record` is simply `ActiveRecord::Base` plus the (virtual) attributes from `ActiveType::Object`. You can declare, assign, validate etc those attributes, but they will not be persisted.
+If you have a database backed record (that inherits from `ActiveRecord::Base`), but also want to declare virtual attributes, simply inherit from `ActiveType::Record`.
+
+Virtual attributes will not be persisted.
 
 
 ### ActiveType::Record[BaseClass]
