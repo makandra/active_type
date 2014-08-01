@@ -149,7 +149,7 @@ module ActiveType
       end
 
       def fetch_child(record, id)
-        assigned = assigned_children(record).detect { |record| record.id == id }
+        assigned = assigned_children(record).detect { |r| r.id == id }
         return assigned if assigned
 
         if @scope
