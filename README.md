@@ -149,8 +149,9 @@ SignIn.new(email: "tobias@example.org", :nickname => "kratob").nickname # "krato
 
 ### Nested attributes
 
-ActiveType supports its own variant of nested attributes. The aim is to be mostly compatible
-with `ActiveRecord`'s `accepts_nested_attributes` functionality.
+ActiveType supports its own variant of nested attributes via the `nests_one` /
+`nests_many` macros. The intention is to be mostly compatible with
+`ActiveRecord`'s `accepts_nested_attributes` functionality.
 
 Assume you have a list of records, say representing holidays, and you want to support bulk
 editing. Then you could do something like:
@@ -161,20 +162,16 @@ class Holiday < ActiveRecord::Base
 end
 
 class HolidaysForm < ActiveType::Object
-  attribute :holidays, accepts_nested_attributes: {
-    scope: Holiday,
-    reject_if: :all_blank
-  }
+  nests_many :holidays, reject_if: :all_blank, default: proc { Holiday.all }
 end
 
 class HolidaysController < ApplicationController
   def edit
-    load_form
+    @holidays_form = HolidaysForm.new
   end
 
   def update
-    load_form
-    @holidays_form.attributes = params[:holidays_form]
+    @holidays_form = HolidaysForm.new(params[:holidays_form])
     if @holidays_form.save
       redirect_to root_url, notice: "Success!"
     else
@@ -182,12 +179,6 @@ class HolidaysController < ApplicationController
     end
   end
 
-  private
-
-  def load_form
-    @holidays_form = HolidaysForm.new
-    @holidays_form.holidays = Holiday.all
-  end
 end
 
 # and in the view
@@ -200,7 +191,7 @@ end
 <% end %>
 ```
 
-- You have to say `attribute :records, :accepts_nested_attributes => { some: "options" }`
+- You have to say `nests_many :records`
 - `records` will be validated and saved automatically
 - The generated `.records_attributes =` expects parameters like `ActiveRecord`'s nested attributes, and words together with the `fields_for` helper:
 
@@ -222,12 +213,42 @@ end
     }
     ```
 
-It will also work for single records (like `has_one`).
+To use it with single records, use `nests_one`. It works like `accept_nested_attributes` does for `has_one`.
 
-Supported options are:
+Supported options for `nests_many` / `nests_one` are:
+- `build_scope`
+
+  Used to build new records, for example:
+
+  ```ruby
+  nests_many :documents, build_scope: proc { Document.where(:state => "fresh") }
+  ```
+
+- `find_scope`
+
+  Used to find existing records (in order to update them).
+
 - `scope`
 
-  You need to supply this if you want to allow `ActiveType` to build new, or retrieve existing records. Should be either an `ActiveRecord::Relation` or simply a model.
+  Sets `find_scope` and `build_scope` together.
+
+  If you don't supply a scope, `ActiveType` will guess from the association name, i.e. saying
+
+  ```ruby
+  nests_many :documents
+  ```
+
+  is the same as saying
+
+  ```ruby
+  nests_many :documents, scope: proc { Document }
+  ```
+
+  which is identical to
+
+  ```ruby
+  nests_many :documents, build_scope: proc { Document }, find_scope: proc { Document }
+  ```
 
 - `allow_destroy`
 
@@ -239,10 +260,13 @@ Supported options are:
 
   Will reject attributes for which the proc or the method returns true, or with only blank values (for `:all_blank`).
 
-- `many`
+- `default`
 
-  `ActiveType` tries to autodetect whether the attribute is a collection or a single record, by looking at the name. If this fails, you can override with `many: true` or `many: false`.
+  Initializes the association on first access with the given proc:
 
+  ```ruby
+  nests_many :documents, default: proc { Documents.all }
+  ```
 
 
 Supported Rails versions
