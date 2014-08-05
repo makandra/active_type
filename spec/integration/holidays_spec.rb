@@ -16,7 +16,7 @@ module HolidaySpec
   end
 
   class HolidayForm < ActiveType::Object
-    nests_many :holidays, :scope => Holiday, :reject_if => :all_blank, :allow_destroy => true
+    nests_many :holidays, :scope => Holiday, :default => proc { Holiday.all }, :reject_if => :all_blank, :allow_destroy => true
   end
 
 end
@@ -38,9 +38,7 @@ describe HolidaySpec::HolidayForm do
   end
 
   def update(params)
-    form = HolidaySpec::HolidayForm.new
-    form.holidays = HolidaySpec::Holiday.all
-    form.holidays_attributes = params
+    form = HolidaySpec::HolidayForm.new(:holidays_attributes => params)
     if form.save
       ids = form.holidays.collect(&:id)
       params.each_with_index do |(key, attributes), index|
@@ -48,6 +46,12 @@ describe HolidaySpec::HolidayForm do
       end
       true
     end
+  end
+
+  it 'will return holidays including updated ones' do
+    HolidaySpec::Holiday.create!(:name => 'New Year', :date => '2014-01-01')
+    form = HolidaySpec::HolidayForm.new(:holidays_attributes => params.slice('2'))
+    form.holidays.collect(&:name).should == ["New Year", "Epiphany"]
   end
 
   it 'can create a list of holidays' do

@@ -141,10 +141,14 @@ module ActiveType
 
     def read_virtual_attribute(name)
       name = name.to_s
-      virtual_attributes_cache.delete(name) do
-        virtual_column = self.singleton_class._virtual_column(name)
-        raw_value = virtual_attributes.fetch(name) { virtual_column.default_value(self) }
-        virtual_column.type_cast(raw_value)
+      if virtual_attributes_cache.has_key?(name)
+        virtual_attributes_cache[name]
+      else
+        virtual_attributes_cache[name] = begin
+          virtual_column = self.singleton_class._virtual_column(name)
+          raw_value = virtual_attributes.fetch(name) { virtual_column.default_value(self) }
+          virtual_column.type_cast(raw_value)
+        end
       end
     end
 
