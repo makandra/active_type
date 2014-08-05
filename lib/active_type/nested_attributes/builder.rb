@@ -13,7 +13,6 @@ module ActiveType
       end
 
       def build(name, one_or_many, options)
-        options.assert_valid_keys(:scope, :allow_destroy, :reject_if)
         add_attribute(name)
         association = build_association(name, one_or_many == :one, options)
         add_writer_method(name, association)

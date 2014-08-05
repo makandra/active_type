@@ -60,6 +60,10 @@ module ActiveType
         parent[@target_name] = children
       end
 
+      def derive_class_name
+        @target_name.to_s.classify
+      end
+
     end
 
   end

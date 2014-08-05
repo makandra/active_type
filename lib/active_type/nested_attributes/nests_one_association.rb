@@ -4,6 +4,8 @@ module ActiveType
 
   module NestedAttributes
 
+    class AssignmentError < StandardError; end
+
     class NestsOneAssociation < Association
 
       def assign_attributes(parent, attributes)
@@ -41,6 +43,10 @@ module ActiveType
 
       def assign_children(parent, children)
         parent[@target_name] = children.first
+      end
+
+      def derive_class_name
+        @target_name.to_s.camelize
       end
 
     end

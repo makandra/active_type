@@ -26,6 +26,10 @@ module NestedAttributesSpec
 
 end
 
+class GlobalRecord < ActiveRecord::Base
+  self.table_name = 'records'
+end
+
 
 describe "ActiveType::Object" do
 
@@ -120,6 +124,7 @@ describe "ActiveType::Object" do
 
         should_assign_and_persist(["good value"])
       end
+
       it 'does not build records that match a :reject_if method taking attributes' do
         extra_options.merge!(:reject_if => :bad)
         subject.records_attributes = {
@@ -469,83 +474,97 @@ describe "ActiveType::Object" do
 
   end
 
-  context 'inheritance' do
+  context '.nests_one/nests_many' do
 
-    let(:base_class) do
-      Class.new(ActiveType::Object) do
-        nests_one :record, :scope => NestedAttributesSpec::Record
-      end
-    end
+    context 'inheritance' do
 
-    it 'works across inheritance hierarchy' do
-      subject = Class.new(base_class) do
-        nests_one :another_record, :scope => NestedAttributesSpec::Record
-      end.new
-
-      subject.record_attributes = { :persisted_string => "string" }
-      subject.another_record_attributes = {:persisted_string => "another string"}
-
-      subject.record.persisted_string.should == "string"
-      subject.another_record.persisted_string.should == "another string"
-      subject.save.should be_true
-      NestedAttributesSpec::Record.all.map(&:persisted_string).should =~ ["string", "another string"]
-    end
-
-    it 'allows overriding of the accessor' do
-      subject = Class.new(base_class) do
-        def record_attributes=(attributes)
-          reached
-          super
+      let(:base_class) do
+        Class.new(ActiveType::Object) do
+          nests_one :record, :scope => NestedAttributesSpec::Record
         end
-
-        def reached
-        end
-      end.new
-
-      subject.should_receive(:reached)
-      subject.record_attributes = { :persisted_string => "string" }
-
-      subject.record.persisted_string.should == "string"
-      subject.save.should be_true
-      NestedAttributesSpec::Record.all.map(&:persisted_string).should =~ ["string"]
-    end
-
-  end
-
-  context 'when not giving a scope' do
-
-    subject do
-      Class.new(ActiveType::Object) do
-        nests_many :records
-      end.new
-    end
-
-    context 'when assigning records without ids' do
-
-      it 'raises an error when trying to build records' do
-        expect do
-          subject.records_attributes = { 1 => { :persisted_string => "string" } }
-        end.to raise_error(ActiveType::NestedAttributes::AssignmentError)
       end
 
-    end
+      it 'works across inheritance hierarchy' do
+        subject = Class.new(base_class) do
+          nests_one :another_record, :scope => NestedAttributesSpec::Record
+        end.new
 
-    context 'when assigning records with ids' do
+        subject.record_attributes = { :persisted_string => "string" }
+        subject.another_record_attributes = {:persisted_string => "another string"}
 
-      it 'updates the record with the id if already assigned' do
-        subject.records = [
-          NestedAttributesSpec::Record.new(:persisted_string => "existing string 1"),
-        ]
-        subject.records[0].id = 100
-
-        subject.records_attributes = { 1 => { :id => 100, :persisted_string => "updated string" } }
-
-        subject.records.map(&:persisted_string).should == ["updated string"]
+        subject.record.persisted_string.should == "string"
+        subject.another_record.persisted_string.should == "another string"
         subject.save.should be_true
-        NestedAttributesSpec::Record.all.map(&:persisted_string).should =~ ["updated string"]
+        NestedAttributesSpec::Record.all.map(&:persisted_string).should =~ ["string", "another string"]
+      end
+
+      it 'allows overriding of the accessor' do
+        subject = Class.new(base_class) do
+          def record_attributes=(attributes)
+            reached
+            super
+          end
+
+          def reached
+          end
+        end.new
+
+        subject.should_receive(:reached)
+        subject.record_attributes = { :persisted_string => "string" }
+
+        subject.record.persisted_string.should == "string"
+        subject.save.should be_true
+        NestedAttributesSpec::Record.all.map(&:persisted_string).should =~ ["string"]
       end
 
     end
+
+    context 'when not giving a scope' do
+
+      subject do
+        Class.new(ActiveType::Object) do
+          nests_many :global_records
+          nests_one :global_record
+        end.new
+      end
+
+      it 'infers the scope from the association name' do
+        subject.global_records_attributes = { 1 => { :persisted_string => "string" } }
+        subject.global_record_attributes = { :persisted_string => "string" }
+
+        subject.global_records.first.should be_a(GlobalRecord)
+        subject.global_record.should be_a(GlobalRecord)
+      end
+
+    end
+
+    context 'when giving a scope via a proc' do
+
+      subject do
+        Class.new(ActiveType::Object) do
+          nests_many :records, :scope => proc { NestedAttributesSpec::Record.where("persisted_string <> 'invisible'") }
+          nests_one :record, :scope => proc { NestedAttributesSpec::Record }
+        end.new
+      end
+
+      it 'uses the scope' do
+        subject.records_attributes = { 1 => { :persisted_string => "string" } }
+        subject.record_attributes = { :persisted_string => "string" }
+
+        subject.records.first.should be_a(NestedAttributesSpec::Record)
+        subject.record.should be_a(NestedAttributesSpec::Record)
+      end
+
+      it 'raises an error if the child record is not found via the scope' do
+        record = NestedAttributesSpec::Record.create!(:persisted_string => 'invisible')
+
+        expect do
+          subject.records_attributes = { 1 => { :id => record.id, :persisted_string => "updated string" } }
+        end.to raise_error(ActiveType::NestedAttributes::RecordNotFound, "could not find a child record with id '#{record.id}' for 'records'")
+      end
+    end
+
   end
+
 
 end
