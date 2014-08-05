@@ -614,7 +614,39 @@ describe "ActiveType::Object" do
 
     end
 
-  end
+    context 'defaults' do
 
+      subject do
+        Class.new(ActiveType::Object) do
+          nests_many :records, :default => proc { [default_record] }
+          nests_one :record, :default => proc { default_record }
+
+          nests_many :global_records
+
+          nests_many :other_records, :scope => proc { NestedAttributesSpec::Record }
+          nests_one :other_record, :scope => proc { NestedAttributesSpec::Record }
+
+          nests_many :records_without_default, :default => nil
+
+          def default_record
+            NestedAttributesSpec::Record.new(:persisted_string => "default")
+          end
+        end.new
+      end
+
+      it 'accepts a :default value' do
+        subject.records.map(&:persisted_string).should == ["default"]
+        subject.record.persisted_string.should == "default"
+      end
+
+      it 'computes the value lazily' do
+        subject.stub :default_record => NestedAttributesSpec::Record.new(:persisted_string => "other default")
+        subject.records.map(&:persisted_string).should == ["other default"]
+        subject.record.persisted_string.should == "other default"
+      end
+
+    end
+
+  end
 
 end

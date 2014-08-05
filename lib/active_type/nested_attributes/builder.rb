@@ -13,8 +13,8 @@ module ActiveType
       end
 
       def build(name, one_or_many, options)
-        add_attribute(name)
-        association = build_association(name, one_or_many == :one, options)
+        add_attribute(name, options.slice(:default))
+        association = build_association(name, one_or_many == :one, options.except(:default))
         add_writer_method(name, association)
         add_autosave(name, association)
         add_validation(name, association)
@@ -27,8 +27,8 @@ module ActiveType
         (singular ? NestsOneAssociation : NestsManyAssociation).new(@owner, name, options)
       end
 
-      def add_attribute(name)
-        @owner.attribute(name)
+      def add_attribute(name, options)
+        @owner.attribute(name, options)
       end
 
       def add_writer_method(name, association)
