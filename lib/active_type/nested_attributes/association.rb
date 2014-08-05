@@ -9,7 +9,7 @@ module ActiveType
     class Association
 
       def initialize(owner, target_name, options = {})
-        options.assert_valid_keys(:scope, :allow_destroy, :reject_if)
+        options.assert_valid_keys(:build_scope, :find_scope, :scope, :allow_destroy, :reject_if)
 
         @owner = owner
         @target_name = target_name.to_sym
@@ -66,17 +66,30 @@ module ActiveType
       end
 
       def build_child(attributes)
-        scope.new(attributes)
+        build_scope.new(attributes)
+      end
+
+      def build_scope
+        @build_scope ||= begin
+          build_scope || scope
+        end
       end
 
       def scope
-        @scope ||= begin
-          scope = @options[:scope]
-          if scope.respond_to?(:call)
-            scope = scope.call
-          end
-          scope || derive_class_name.constantize
-        end
+        @scope ||= scope_from(:scope) || derive_class_name.constantize
+      end
+
+      def build_scope
+        @build_scope ||= scope_from(:build_scope) || scope
+      end
+
+      def find_scope
+        @find_scope ||= scope_from(:find_scope) || scope
+      end
+
+      def scope_from(key)
+        scope = @options[key]
+        scope.respond_to?(:call) ? scope.call : scope
       end
 
       def derive_class_name
@@ -87,15 +100,11 @@ module ActiveType
         assigned = assigned_children(parent).detect { |r| r.id == id }
         return assigned if assigned
 
-        if scope
-          if child = scope.find_by_id(id)
-            add_child(parent, child)
-            child
-          else
-            raise RecordNotFound, "could not find a child record with id '#{id}' for '#{@target_name}'"
-          end
+        if child = find_scope.find_by_id(id)
+          add_child(parent, child)
+          child
         else
-          raise RecordNotFound, "could not find a child record with id '#{id}' for '#{@target_name}'; perhaps you need to supply a :scope?"
+          raise RecordNotFound, "could not find a child record with id '#{id}' for '#{@target_name}'"
         end
       end
 

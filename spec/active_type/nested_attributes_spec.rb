@@ -564,6 +564,56 @@ describe "ActiveType::Object" do
       end
     end
 
+    context 'separate scopes for build and find' do
+
+      subject do
+        find_scope = proc { NestedAttributesSpec::Record.where(:persisted_string => 'findable') }
+        build_scope = proc { NestedAttributesSpec::Record.where(:persisted_string => 'buildable') }
+        Class.new(ActiveType::Object) do
+          nests_many :records, :build_scope => build_scope, :find_scope => find_scope
+          nests_one :record, :build_scope => build_scope, :find_scope => find_scope
+        end.new
+      end
+
+      it 'nests_many uses the find_scope to find records' do
+        record = NestedAttributesSpec::Record.create!(:persisted_string => 'findable')
+        hidden_record = NestedAttributesSpec::Record.create!(:persisted_string => 'hidden')
+
+        expect do
+          subject.records_attributes = [{ :id => record.id, :persisted_string => 'updated' }]
+        end.to_not raise_error
+
+        expect do
+          subject.records_attributes = [{ :id => hidden_record.id, :persisted_string => 'updated' }]
+        end.to raise_error(ActiveType::NestedAttributes::RecordNotFound)
+      end
+
+      it 'nests_many uses the build_scope to find records' do
+        subject.records_attributes = [{}]
+        subject.records.first.persisted_string.should == 'buildable'
+      end
+
+      it 'nests_one uses the find_scope to find records' do
+        record = NestedAttributesSpec::Record.create!(:persisted_string => 'findable')
+        hidden_record = NestedAttributesSpec::Record.create!(:persisted_string => 'hidden')
+
+        expect do
+          subject.record_attributes = { :id => record.id, :persisted_string => 'updated' }
+        end.to_not raise_error
+
+        subject.record = nil
+        expect do
+          subject.record_attributes = { :id => hidden_record.id, :persisted_string => 'updated' }
+        end.to raise_error(ActiveType::NestedAttributes::RecordNotFound)
+      end
+
+      it 'nests_one uses the build_scope to find records' do
+        subject.record_attributes = {}
+        subject.record.persisted_string.should == 'buildable'
+      end
+
+    end
+
   end
 
 
