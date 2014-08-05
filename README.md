@@ -121,6 +121,32 @@ If you want to inherit from an ActiveType class, simply do
   end
 ```
 
+### Defaults ####
+
+Attributes can have defaults. Those are lazily evaluated on the first read, if no value has been set.
+
+```ruby
+class SignIn < ActiveType::Object
+
+  attribute :created_at, :datetime, default: proc { Time.now }
+
+end
+```
+
+The proc is evaluated in the context of the object, so you can do
+
+```ruby
+class SignIn < ActiveType::Object
+
+  attribute :email, :string
+  attribute :nickname, :string, default: proc { email.split('@').first }
+
+end
+
+SignIn.new(email: "tobias@example.org").nickname # "tobias"
+SignIn.new(email: "tobias@example.org", :nickname => "kratob").nickname # "kratob"
+```
+
 ### Nested attributes
 
 ActiveType supports its own variant of nested attributes. The aim is to be mostly compatible
