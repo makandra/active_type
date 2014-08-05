@@ -250,6 +250,8 @@ Supported options for `nests_many` / `nests_one` are:
   nests_many :documents, build_scope: proc { Document }, find_scope: proc { Document }
   ```
 
+  All `...scope` options are evaled in the context of the record on first use, and cached. 
+
 - `allow_destroy`
 
   Allow to destroy records if the attributes contain `_destroy => '1'`
