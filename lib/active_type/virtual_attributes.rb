@@ -1,5 +1,3 @@
-require 'active_type/nested_attributes/builder'
-
 module ActiveType
 
   class InvalidAttributeNameError < ::StandardError; end
@@ -56,11 +54,9 @@ module ActiveType
       end
 
       def build(name, options)
-        options.assert_valid_keys(:accepts_nested_attributes)
         validate_attribute_name!(name)
         build_reader(name)
         build_writer(name)
-        build_extensions(name, options)
       end
 
       private
@@ -88,18 +84,6 @@ module ActiveType
       def validate_attribute_name!(name)
         unless name.to_s =~ /\A[A-z0-9_]*\z/
           raise InvalidAttributeNameError.new("'#{name}' is not a valid name for a virtual attribute")
-        end
-      end
-
-      def build_extensions(name, options)
-        options.each do |extension, config|
-          config = {} if config == true
-          case extension
-          when :accepts_nested_attributes
-            NestedAttributes::Builder.new(@owner, @module).build(name, config)
-          else
-            raise ArgumentError, "unknown option #{extension.inspect}"
-          end
         end
       end
 

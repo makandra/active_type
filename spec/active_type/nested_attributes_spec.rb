@@ -27,16 +27,16 @@ module NestedAttributesSpec
 end
 
 
-describe "ActiveType::Object nested attributes" do
+describe "ActiveType::Object" do
 
-  context 'with a collection attribute' do
+  context '.nests_many' do
 
     let(:extra_options) { {} }
 
     subject do
       extra = extra_options
       Class.new(ActiveType::Object) do
-        attribute :records, :accepts_nested_attributes => extra.merge(:scope => NestedAttributesSpec::Record)
+        nests_many :records, extra.merge(:scope => NestedAttributesSpec::Record)
 
         def bad(attributes)
           attributes[:persisted_string] =~ /bad/
@@ -311,20 +311,28 @@ describe "ActiveType::Object nested attributes" do
   end
 
 
-  context 'with a single record' do
+  context '.nests_one' do
 
     let(:extra_options) { {} }
 
     subject do
       extra = extra_options
       Class.new(ActiveType::Object) do
-        attribute :record, :accepts_nested_attributes => extra.merge(:scope => NestedAttributesSpec::Record)
+        nests_one :record, extra.merge(:scope => NestedAttributesSpec::Record)
+
+        def bad(attributes)
+          attributes[:persisted_string] =~ /bad/
+        end
       end.new
     end
 
     def should_assign_and_persist(assign, persist = assign)
-      subject.record.should be_present
-      subject.record.persisted_string.should == assign
+      if assign
+        subject.record.should be_present
+        subject.record.persisted_string.should == assign
+      else
+        subject.record.should be_nil
+      end
       subject.save.should be_true
       NestedAttributesSpec::Record.all.map(&:persisted_string).should == (persist ? [persist] : [])
     end
@@ -350,18 +358,34 @@ describe "ActiveType::Object nested attributes" do
     context 'when assigning a records without an id' do
 
       it 'builds a nested records' do
-        subject.record_attributes = {:persisted_string => "string"}
+        subject.record_attributes = { :persisted_string => "string" }
 
         should_assign_and_persist("string")
+      end
+
+      it 'does not build a record that matchs a :reject_if proc' do
+        extra_options.merge!(:reject_if => proc { |attributes| attributes['persisted_string'] =~ /bad/ })
+        subject.record_attributes = { :persisted_string => "bad" }
+
+        should_assign_and_persist(nil)
       end
 
 
       it 'updates an assigned record' do
         subject.record = NestedAttributesSpec::Record.create!(:persisted_string => "existing string")
-        subject.record_attributes = {:persisted_string => "new string" }
+        subject.record_attributes = { :persisted_string => "new string" }
 
         should_assign_and_persist("new string")
       end
+
+      it 'does not update a record that matchs a :reject_if proc' do
+        extra_options.merge!(:reject_if => proc { |attributes| attributes['persisted_string'] =~ /bad/ })
+        subject.record = NestedAttributesSpec::Record.create!(:persisted_string => "existing string")
+        subject.record_attributes = { :persisted_string => "bad" }
+
+        should_assign_and_persist("existing string")
+      end
+
 
     end
 
@@ -449,16 +473,16 @@ describe "ActiveType::Object nested attributes" do
 
     let(:base_class) do
       Class.new(ActiveType::Object) do
-        attribute :record, :accepts_nested_attributes => { :scope => NestedAttributesSpec::Record }
+        nests_one :record, :scope => NestedAttributesSpec::Record
       end
     end
 
     it 'works across inheritance hierarchy' do
       subject = Class.new(base_class) do
-        attribute :another_record, :accepts_nested_attributes => { :scope => NestedAttributesSpec::Record }
+        nests_one :another_record, :scope => NestedAttributesSpec::Record
       end.new
 
-      subject.record_attributes = {:persisted_string => "string"}
+      subject.record_attributes = { :persisted_string => "string" }
       subject.another_record_attributes = {:persisted_string => "another string"}
 
       subject.record.persisted_string.should == "string"
@@ -479,7 +503,7 @@ describe "ActiveType::Object nested attributes" do
       end.new
 
       subject.should_receive(:reached)
-      subject.record_attributes = {:persisted_string => "string"}
+      subject.record_attributes = { :persisted_string => "string" }
 
       subject.record.persisted_string.should == "string"
       subject.save.should be_true
@@ -492,7 +516,7 @@ describe "ActiveType::Object nested attributes" do
 
     subject do
       Class.new(ActiveType::Object) do
-        attribute :records, :accepts_nested_attributes => true
+        nests_many :records
       end.new
     end
 
@@ -500,7 +524,7 @@ describe "ActiveType::Object nested attributes" do
 
       it 'raises an error when trying to build records' do
         expect do
-          subject.records_attributes = { 1 => {:persisted_string => "string"} }
+          subject.records_attributes = { 1 => { :persisted_string => "string" } }
         end.to raise_error(ActiveType::NestedAttributes::AssignmentError)
       end
 
@@ -514,7 +538,7 @@ describe "ActiveType::Object nested attributes" do
         ]
         subject.records[0].id = 100
 
-        subject.records_attributes = { 1 => {:id => 100, :persisted_string => "updated string"} }
+        subject.records_attributes = { 1 => { :id => 100, :persisted_string => "updated string" } }
 
         subject.records.map(&:persisted_string).should == ["updated string"]
         subject.save.should be_true
@@ -522,27 +546,6 @@ describe "ActiveType::Object nested attributes" do
       end
 
     end
-  end
-
-  context 'overriding array detection' do
-
-    subject do
-      Class.new(ActiveType::Object) do
-        attribute :collection, :accepts_nested_attributes => { :scope => NestedAttributesSpec::Record, :many => true }
-        attribute :settings, :accepts_nested_attributes => { :scope => NestedAttributesSpec::Record, :many => false }
-      end.new
-    end
-
-    it 'allows to assign an array when given :many => true' do
-      subject.collection_attributes = { 1 => { :persisted_string => "string"} }
-      subject.collection.should be_a(Array)
-    end
-
-    it 'allows to assign a single record when given :many => false' do
-      subject.settings_attributes = { :persisted_string => "string"}
-      subject.settings.should be_a(NestedAttributesSpec::Record)
-    end
-
   end
 
 end

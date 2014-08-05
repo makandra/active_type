@@ -16,11 +16,7 @@ module HolidaySpec
   end
 
   class HolidayForm < ActiveType::Object
-    attribute :holidays, :accepts_nested_attributes => {
-      :scope => Holiday,
-      :reject_if => :all_blank,
-      :allow_destroy => true
-    }
+    nests_many :holidays, :scope => Holiday, :reject_if => :all_blank, :allow_destroy => true
   end
 
 end
@@ -57,7 +53,7 @@ describe HolidaySpec::HolidayForm do
   it 'can create a list of holidays' do
     update(params).should be_true
 
-    holidays = HolidaySpec::Holiday.order(:date).all
+    holidays = HolidaySpec::Holiday.order(:date)
     holidays.collect(&:name).should == ["New Year", "Epiphany"]
     holidays.collect(&:date).should == [Date.civil(2014, 1, 1), Date.civil(2014, 1, 6)]
   end
@@ -69,7 +65,7 @@ describe HolidaySpec::HolidayForm do
     params['2']['name'] += ' 2014'
     update(params).should be_true
 
-    holidays = HolidaySpec::Holiday.order(:date).all
+    holidays = HolidaySpec::Holiday.order(:date)
     holidays.collect(&:name).should == ["New Year 2014", "Epiphany 2014"]
     holidays.collect(&:date).should == [Date.civil(2014, 1, 1), Date.civil(2014, 1, 6)]
   end
@@ -80,7 +76,7 @@ describe HolidaySpec::HolidayForm do
     params['1']['_destroy'] = '1'
     update(params).should be_true
 
-    holidays = HolidaySpec::Holiday.order(:date).all
+    holidays = HolidaySpec::Holiday.order(:date)
     holidays.collect(&:name).should == ["Epiphany"]
     holidays.collect(&:date).should == [Date.civil(2014, 1, 6)]
   end
@@ -93,7 +89,7 @@ describe HolidaySpec::HolidayForm do
     params['2']['name'] = ''  # invalid
     update(params).should be_false
 
-    holidays = HolidaySpec::Holiday.order(:date).all
+    holidays = HolidaySpec::Holiday.order(:date)
     holidays.collect(&:name).should == ["New Year", "Epiphany"]
     holidays.collect(&:date).should == [Date.civil(2014, 1, 1), Date.civil(2014, 1, 6)]
   end

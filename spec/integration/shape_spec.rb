@@ -25,7 +25,7 @@ module ShapeSpec
   end
 
   class ShapeForm < ActiveType::Object
-    attribute :child, :accepts_nested_attributes => true
+    nests_one :child
 
     def child_type=(type)
       case type

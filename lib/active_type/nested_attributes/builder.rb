@@ -1,4 +1,5 @@
-require 'active_type/nested_attributes/association'
+require 'active_type/nested_attributes/nests_one_association'
+require 'active_type/nested_attributes/nests_many_association'
 
 module ActiveType
 
@@ -11,9 +12,10 @@ module ActiveType
         @module = mod
       end
 
-      def build(name, options)
-        options.assert_valid_keys(:scope, :allow_destroy, :many, :reject_if)
-        association = Association.new(@owner, name, options)
+      def build(name, one_or_many, options)
+        options.assert_valid_keys(:scope, :allow_destroy, :reject_if)
+        add_attribute(name)
+        association = build_association(name, one_or_many == :one, options)
         add_writer_method(name, association)
         add_autosave(name, association)
         add_validation(name, association)
@@ -22,11 +24,19 @@ module ActiveType
 
       private
 
+      def build_association(name, singular, options)
+        (singular ? NestsOneAssociation : NestsManyAssociation).new(@owner, name, options)
+      end
+
+      def add_attribute(name)
+        @owner.attribute(name)
+      end
+
       def add_writer_method(name, association)
         write_method = "#{name}_attributes="
         @module.module_eval do
           define_method write_method do |attributes|
-            association.assign(self, attributes)
+            association.assign_attributes(self, attributes)
           end
         end
       end
