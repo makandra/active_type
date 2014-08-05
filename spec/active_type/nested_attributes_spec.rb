@@ -544,6 +544,9 @@ describe "ActiveType::Object" do
         Class.new(ActiveType::Object) do
           nests_many :records, :scope => proc { NestedAttributesSpec::Record.where("persisted_string <> 'invisible'") }
           nests_one :record, :scope => proc { NestedAttributesSpec::Record }
+
+          attribute :default_value, :string
+          nests_many :default_records, :scope => proc { NestedAttributesSpec::Record.where(:persisted_string => default_value) }
         end.new
       end
 
@@ -553,6 +556,33 @@ describe "ActiveType::Object" do
 
         subject.records.first.should be_a(NestedAttributesSpec::Record)
         subject.record.should be_a(NestedAttributesSpec::Record)
+      end
+
+      it 'evals the scope lazily in the instance' do
+        subject.default_value = "default value"
+        subject.default_records_attributes = [{}]
+
+        subject.default_records.map(&:persisted_string).should == ["default value"]
+      end
+
+      it 'caches the scope' do
+        subject.default_value = "default value"
+        subject.default_records_attributes = [{}]
+        subject.default_value = "another default value"
+        subject.default_records_attributes = [{}]
+
+        subject.default_records.map(&:persisted_string).should == ["default value", "default value"]
+      end
+
+      it 'caches the scope per instance' do
+        subject.default_value = "default value"
+        subject.default_records_attributes = [{}]
+
+        another_subject = subject.class.new
+        another_subject.default_value = "another default value"
+        another_subject.default_records_attributes = [{}]
+
+        another_subject.default_records.map(&:persisted_string).should == ["another default value"]
       end
 
       it 'raises an error if the child record is not found via the scope' do

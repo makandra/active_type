@@ -38,7 +38,7 @@ module ActiveType
               child.attributes = attributes
             end
           elsif !destroy
-            new_records << build_child(attributes)
+            new_records << build_child(parent, attributes)
           end
         end
 

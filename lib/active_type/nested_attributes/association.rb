@@ -65,31 +65,28 @@ module ActiveType
         assigned_children(parent).select(&:changed_for_autosave?)
       end
 
-      def build_child(attributes)
-        build_scope.new(attributes)
+      def build_child(parent, attributes)
+        build_scope(parent).new(attributes)
       end
 
-      def build_scope
-        @build_scope ||= begin
-          build_scope || scope
+      def scope(parent)
+        scope_for(parent, :scope) || derive_class_name.constantize
+      end
+
+      def build_scope(parent)
+        scope_for(parent, :build_scope) || scope(parent)
+      end
+
+      def find_scope(parent)
+        scope_for(parent, :find_scope) || scope(parent)
+      end
+
+      def scope_for(parent, key)
+        parent._nested_attribute_scopes ||= {}
+        parent._nested_attribute_scopes[[self, key]] ||= begin
+          scope = @options[key]
+          scope.respond_to?(:call) ? parent.instance_eval(&scope) : scope
         end
-      end
-
-      def scope
-        @scope ||= scope_from(:scope) || derive_class_name.constantize
-      end
-
-      def build_scope
-        @build_scope ||= scope_from(:build_scope) || scope
-      end
-
-      def find_scope
-        @find_scope ||= scope_from(:find_scope) || scope
-      end
-
-      def scope_from(key)
-        scope = @options[key]
-        scope.respond_to?(:call) ? scope.call : scope
       end
 
       def derive_class_name
@@ -100,7 +97,7 @@ module ActiveType
         assigned = assigned_children(parent).detect { |r| r.id == id }
         return assigned if assigned
 
-        if child = find_scope.find_by_id(id)
+        if child = find_scope(parent).find_by_id(id)
           add_child(parent, child)
           child
         else

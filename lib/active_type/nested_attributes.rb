@@ -6,6 +6,10 @@ module ActiveType
 
     extend ActiveSupport::Concern
 
+    included do
+      attr_accessor :_nested_attribute_scopes
+    end
+
     module ClassMethods
 
       def nests_one(association_name, options = {})
