@@ -284,6 +284,10 @@ describe ActiveType::Object do
     end
   end
 
+  describe 'defaults' do
+    it_should_behave_like "a class accepting attribute defaults", ActiveType::Object
+  end
+
   describe '#belongs_to' do
     subject { ObjectSpec::ObjectWithBelongsTo.new }
 

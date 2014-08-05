@@ -8,9 +8,10 @@ module ActiveType
 
     class VirtualColumn < ActiveRecord::ConnectionAdapters::Column
 
-      def initialize(name, type)
+      def initialize(name, type, options)
         @name = name
         @type = type
+        @options = options
       end
 
       def type_cast(value)
@@ -44,6 +45,11 @@ module ActiveType
         end
       end
 
+      def default_value(object)
+        default = @options[:default]
+        default.respond_to?(:call) ? object.instance_eval(&default) : default
+      end
+
     end
 
     class Builder
@@ -53,13 +59,19 @@ module ActiveType
         @module = mod
       end
 
-      def build(name, options)
+      def build(name, type, options)
         validate_attribute_name!(name)
+        options.assert_valid_keys(:default)
+        add_virtual_column(name, type, options)
         build_reader(name)
         build_writer(name)
       end
 
       private
+
+      def add_virtual_column(name, type, options)
+        @owner.virtual_columns_hash = @owner.virtual_columns_hash.merge(name.to_s => VirtualColumn.new(name, type, options.slice(:default)))
+      end
 
       def build_reader(name)
         @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
@@ -129,8 +141,10 @@ module ActiveType
 
     def read_virtual_attribute(name)
       name = name.to_s
-      virtual_attributes_cache[name] ||= begin
-        self.singleton_class._virtual_column(name).type_cast(virtual_attributes[name])
+      virtual_attributes_cache.delete(name) do
+        virtual_column = self.singleton_class._virtual_column(name)
+        raw_value = virtual_attributes.fetch(name) { virtual_column.default_value(self) }
+        virtual_column.type_cast(raw_value)
       end
     end
 
@@ -184,8 +198,7 @@ module ActiveType
         options = args.extract_options!
         type = args.first
 
-        self.virtual_columns_hash = virtual_columns_hash.merge(name.to_s => VirtualColumn.new(name, type))
-        Builder.new(self, generated_virtual_attribute_methods).build(name, options)
+        Builder.new(self, generated_virtual_attribute_methods).build(name, type, options)
       end
 
     end

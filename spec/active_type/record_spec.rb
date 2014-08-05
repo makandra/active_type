@@ -191,6 +191,10 @@ describe ActiveType::Record do
     end
   end
 
+  describe 'defaults' do
+    it_should_behave_like "a class accepting attribute defaults", RecordSpec::Record
+  end
+
   describe 'persistence' do
 
     it 'persists to the database' do
