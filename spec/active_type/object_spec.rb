@@ -288,6 +288,10 @@ describe ActiveType::Object do
     it_should_behave_like "a class accepting attribute defaults", ActiveType::Object
   end
 
+  describe 'duping' do
+    it_should_behave_like "a class supporting dup for attributes", ActiveType::Object
+  end
+
   describe '#belongs_to' do
     subject { ObjectSpec::ObjectWithBelongsTo.new }
 

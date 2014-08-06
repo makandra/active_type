@@ -101,12 +101,27 @@ module ActiveType
 
     end
 
+    def self.deep_dup(hash)
+      result = hash.dup
+      result.each do |key, value|
+        result[key] = value.dup if value.duplicable?
+      end
+      result
+    end
+
 
     extend ActiveSupport::Concern
 
     included do
       class_attribute :virtual_columns_hash
       self.virtual_columns_hash = {}
+    end
+
+    def initialize_dup(other)
+      @virtual_attributes_cache = {}
+      @virtual_attributes = VirtualAttributes.deep_dup(@virtual_attributes)
+
+      super
     end
 
     def virtual_attributes

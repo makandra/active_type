@@ -195,6 +195,10 @@ describe ActiveType::Record do
     it_should_behave_like "a class accepting attribute defaults", RecordSpec::Record
   end
 
+  describe 'duping' do
+    it_should_behave_like "a class supporting dup for attributes", RecordSpec::Record
+  end
+
   describe 'persistence' do
 
     it 'persists to the database' do
