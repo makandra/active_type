@@ -8,9 +8,10 @@ module ActiveType
 
     class VirtualColumn < ActiveRecord::ConnectionAdapters::Column
 
-      def initialize(name, type, options)
+      def initialize(name, type, connection, options)
         @name = name
         @type = type
+        @connection = connection
         @options = options
       end
 
@@ -29,19 +30,28 @@ module ActiveType
           end
         when :timestamp, :datetime
           if ActiveRecord::Base.time_zone_aware_attributes
-            time = super
+            time = super_type_cast(@type, value)
             if time
               ActiveSupport::TimeWithZone.new(nil, Time.zone, time)
             else
               time
             end
           else
-            super
+            super_type_cast(@type, value)
           end
         when nil
           value
         else
-          super
+          super_type_cast(@type, value)
+        end
+      end
+
+      def super_type_cast(type, value)
+        #p [ActiveRecord::VERSION::STRING, (ActiveRecord::VERSION::STRING < '4.2')]
+        if ActiveRecord::VERSION::STRING < '4.2'
+          self.class.superclass.instance_method(:type_cast).bind(self).call(value)
+        else
+          @connection.lookup_cast_type(@type).type_cast_from_user(value)
         end
       end
 
@@ -49,6 +59,10 @@ module ActiveType
         default = @options[:default]
         default.respond_to?(:call) ? object.instance_eval(&default) : default
       end
+
+      #def self.value_to_boolean(value)
+      #  super_type_cast(:boolean, value)
+      #end
 
     end
 
@@ -70,7 +84,7 @@ module ActiveType
       private
 
       def add_virtual_column(name, type, options)
-        @owner.virtual_columns_hash = @owner.virtual_columns_hash.merge(name.to_s => VirtualColumn.new(name, type, options.slice(:default)))
+        @owner.virtual_columns_hash = @owner.virtual_columns_hash.merge(name.to_s => VirtualColumn.new(name, type, @owner.connection, options.slice(:default)))
       end
 
       def build_reader(name)

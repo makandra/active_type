@@ -106,7 +106,8 @@ module ActiveType
       end
 
       def truthy?(value)
-        ActiveRecord::ConnectionAdapters::Column.value_to_boolean(value)
+        warn "anders machen!"
+        VirtualAttributes::VirtualColumn.value_to_boolean(value)
       end
 
       def reject?(parent, attributes)
