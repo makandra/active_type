@@ -8,17 +8,15 @@ module ActiveType
 
   module VirtualAttributes
 
-    class VirtualColumn < ActiveRecord::ConnectionAdapters::Column
+    class VirtualColumn
 
-      def initialize(name, type, connection, options)
+      def initialize(name, type_caster, options)
         @name = name
-        @type = type
-        @connection = connection
+        @type_caster = type_caster
         @options = options
       end
 
       def type_cast(value)
-        @type_caster ||= TypeCaster.get(@connection, @type)
         @type_caster.type_cast_from_user(value)
       end
 
@@ -47,7 +45,8 @@ module ActiveType
       private
 
       def add_virtual_column(name, type, options)
-        column = VirtualColumn.new(name, type, @owner.connection, options.slice(:default))
+        type_caster = TypeCaster.get(type, @owner.connection)
+        column = VirtualColumn.new(name, type_caster, options.slice(:default))
         @owner.virtual_columns_hash = @owner.virtual_columns_hash.merge(name.to_s => column)
       end
 

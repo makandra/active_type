@@ -1,7 +1,7 @@
 module ActiveType
   class TypeCaster
 
-    def self.get(connection, sql_type)
+    def self.get(sql_type, connection)
       native_caster = if ActiveRecord::VERSION::STRING < '4.2'
         NativeCasters::DelegateToColumn.new(sql_type)
       else
