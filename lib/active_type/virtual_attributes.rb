@@ -1,3 +1,5 @@
+require 'active_type/type_caster'
+
 module ActiveType
 
   class InvalidAttributeNameError < ::StandardError; end
@@ -6,43 +8,16 @@ module ActiveType
 
   module VirtualAttributes
 
-    class VirtualColumn < ActiveRecord::ConnectionAdapters::Column
+    class VirtualColumn
 
-      def initialize(name, type, options)
+      def initialize(name, type_caster, options)
         @name = name
-        @type = type
+        @type_caster = type_caster
         @options = options
       end
 
       def type_cast(value)
-        case @type
-        when :integer
-          case value
-          when FalseClass
-            0
-          when TrueClass
-            1
-          when "", nil
-            nil
-          else
-            value.to_i
-          end
-        when :timestamp, :datetime
-          if ActiveRecord::Base.time_zone_aware_attributes
-            time = super
-            if time
-              ActiveSupport::TimeWithZone.new(nil, Time.zone, time)
-            else
-              time
-            end
-          else
-            super
-          end
-        when nil
-          value
-        else
-          super
-        end
+        @type_caster.type_cast_from_user(value)
       end
 
       def default_value(object)
@@ -70,7 +45,9 @@ module ActiveType
       private
 
       def add_virtual_column(name, type, options)
-        @owner.virtual_columns_hash = @owner.virtual_columns_hash.merge(name.to_s => VirtualColumn.new(name, type, options.slice(:default)))
+        type_caster = TypeCaster.get(type, @owner.connection)
+        column = VirtualColumn.new(name, type_caster, options.slice(:default))
+        @owner.virtual_columns_hash = @owner.virtual_columns_hash.merge(name.to_s => column)
       end
 
       def build_reader(name)

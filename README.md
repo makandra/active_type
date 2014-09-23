@@ -274,7 +274,7 @@ Supported options for `nests_many` / `nests_one` are:
 Supported Rails versions
 ------------------------
 
-ActiveType is tested against ActiveRecord 3.2, 4.0 and 4.1.
+ActiveType is tested against ActiveRecord 3.2, 4.0, 4.1 and 4.2beta.
 
 Later versions might work, earlier will not.
 
