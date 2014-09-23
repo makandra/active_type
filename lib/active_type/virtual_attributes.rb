@@ -18,56 +18,14 @@ module ActiveType
       end
 
       def type_cast(value)
-        case @type
-        when :integer
-          case value
-          when FalseClass
-            0
-          when TrueClass
-            1
-          when "", nil
-            nil
-          else
-            value.to_i
-          end
-        when :timestamp, :datetime
-          if ActiveRecord::Base.time_zone_aware_attributes
-            time = super_type_cast(value)
-            if time
-              ActiveSupport::TimeWithZone.new(nil, Time.zone, time)
-            else
-              time
-            end
-          else
-            super_type_cast(value)
-          end
-        when nil
-          value
-        else
-          super_type_cast(value)
-        end
-      end
-
-      def super_type_cast(value)
         @type_caster ||= TypeCaster.get(@connection, @type)
         @type_caster.type_cast_from_user(value)
-
-        ##p [ActiveRecord::VERSION::STRING, (ActiveRecord::VERSION::STRING < '4.2')]
-        #if ActiveRecord::VERSION::STRING < '4.2'
-        #  self.class.superclass.instance_method(:type_cast).bind(self).call(value)
-        #else
-        #  @connection.lookup_cast_type(@type).type_cast_from_user(value)
-        #end
       end
 
       def default_value(object)
         default = @options[:default]
         default.respond_to?(:call) ? object.instance_eval(&default) : default
       end
-
-      #def self.value_to_boolean(value)
-      #  super_type_cast(:boolean, value)
-      #end
 
     end
 
