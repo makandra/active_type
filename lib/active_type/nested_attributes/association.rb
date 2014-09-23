@@ -106,8 +106,8 @@ module ActiveType
       end
 
       def truthy?(value)
-        warn "anders machen!"
-        VirtualAttributes::VirtualColumn.value_to_boolean(value)
+        @boolean_type_caster ||= TypeCaster.get(@owner.connection, :boolean)
+        @boolean_type_caster.type_cast_from_user(value)
       end
 
       def reject?(parent, attributes)
