@@ -1,24 +1,24 @@
 module ActiveType
   class TypeCaster
 
-    def self.get(sql_type, connection)
+    def self.get(type, connection)
       native_caster = if ActiveRecord::VERSION::STRING < '4.2'
-        NativeCasters::DelegateToColumn.new(sql_type)
+        NativeCasters::DelegateToColumn.new(type)
       else
-        NativeCasters::DelegateToType.new(sql_type, connection)
+        NativeCasters::DelegateToType.new(type, connection)
       end
-      new(sql_type, native_caster)
+      new(type, native_caster)
     end
 
-    def initialize(sql_type, native_caster)
-      @sql_type = sql_type
+    def initialize(type, native_caster)
+      @type = type
       @native_caster = native_caster
     end
 
     def type_cast_from_user(value)
       # For some reason, Rails defines additional type casting logic
       # outside the classes that have that responsibility.
-      case @sql_type
+      case @type
       when :integer
         if value == ''
           nil
@@ -46,7 +46,11 @@ module ActiveType
       # In these versions, casting logic lives in ActiveRecord::ConnectionAdapters::Colum
       class DelegateToColumn
 
-        def initialize(sql_type)
+        def initialize(type)
+          # the Column initializer expects type as returned from the database, and
+          # resolves them to our types
+          # fortunately, for all types wie support, type.to_s is a valid sql_type
+          sql_type = type.to_s
           @column = ActiveRecord::ConnectionAdapters::Column.new('foo', nil, sql_type)
         end
 
@@ -60,8 +64,8 @@ module ActiveType
       # In these versions, casting logic lives in subclasses of ActiveRecord::Type::Value
       class DelegateToType
 
-        def initialize(sql_type, connection)
-          @active_record_type = connection.lookup_cast_type(sql_type)
+        def initialize(type, connection)
+          @active_record_type = connection.lookup_cast_type(type)
         end
 
         def type_cast_from_user(value)
