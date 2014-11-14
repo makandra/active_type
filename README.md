@@ -213,7 +213,7 @@ end
     }
     ```
 
-To use it with single records, use `nests_one`. It works like `accept_nested_attributes` does for `has_one`.
+To use it with single records, use `nests_one`. It works like `accept_nested_attributes` does for `has_one`. Use `.record_attributes =` to build the child record.
 
 Supported options for `nests_many` / `nests_one` are:
 - `build_scope`
