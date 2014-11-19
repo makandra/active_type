@@ -13,6 +13,7 @@ module ActiveType
         Class.new(base) do
 
           include VirtualAttributes
+          include NestedAttributes
           include Inheritance
 
           self.extended_record_base_class = base

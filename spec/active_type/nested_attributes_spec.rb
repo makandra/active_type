@@ -680,3 +680,21 @@ describe "ActiveType::Object" do
   end
 
 end
+
+describe "ActiveType::Record" do
+
+  it 'supports nested attributes' do
+    ActiveType::Record.should respond_to(:nests_one)
+    ActiveType::Record.should respond_to(:nests_many)
+  end
+
+end
+
+describe "ActiveType::Record" do
+
+  it 'supports nested attributes' do
+    ActiveType::Record[NestedAttributesSpec::Record].should respond_to(:nests_one)
+    ActiveType::Record[NestedAttributesSpec::Record].should respond_to(:nests_many)
+  end
+
+end
