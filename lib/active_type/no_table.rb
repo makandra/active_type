@@ -7,6 +7,10 @@ module ActiveType
 
     module ClassMethods
 
+      def column_types
+        []
+      end
+
       def columns
         []
       end
