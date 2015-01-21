@@ -65,6 +65,14 @@ module ActiveType
       class DelegateToType
 
         def initialize(type, connection)
+          # The specified type (e.g. "string") may not necessary match the
+          # native type ("varchar") expected by the connection adapter.
+          # PostgreSQL is one of these. Perform a translation if the adapter
+          # supports it.
+          if !type.nil? && connection.respond_to?(:native_database_types)
+            native_type = connection.native_database_types[type.to_sym]
+            type = native_type.fetch(:name) unless native_type.nil?
+          end
           @active_record_type = connection.lookup_cast_type(type)
         end
 
