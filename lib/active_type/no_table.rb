@@ -7,6 +7,10 @@ module ActiveType
 
     module ClassMethods
 
+      def primary_key
+        nil
+      end
+
       def columns
         []
       end

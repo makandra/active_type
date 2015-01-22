@@ -329,9 +329,14 @@ describe ActiveType::Object do
 
   describe '.find' do
     it 'raises an error' do
+      error = if ActiveRecord::VERSION::MAJOR >= 4 && ActiveRecord::VERSION::MINOR >= 1
+        ActiveRecord::UnknownPrimaryKey
+      else
+        ActiveRecord::RecordNotFound
+      end
       expect do
         ObjectSpec::Object.find(1)
-      end.to raise_error(ActiveRecord::RecordNotFound)
+      end.to raise_error(error)
     end
   end
 

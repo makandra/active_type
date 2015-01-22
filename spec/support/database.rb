@@ -1,4 +1,19 @@
-ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => ':memory:')
+begin
+  # sqlite?
+  ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => ':memory:')
+rescue Gem::LoadError
+  # pg?
+  if ENV['TRAVIS']
+    ActiveRecord::Base.establish_connection(:adapter => 'postgresql', :database => 'active_type_test', :username => 'postgres')
+  else
+    ActiveRecord::Base.establish_connection(:adapter => 'postgresql', :database => 'active_type_test')
+  end
+
+  connection = ::ActiveRecord::Base.connection
+  connection.tables.each do |table|
+    connection.drop_table table
+  end
+end
 
 ActiveRecord::Migration.class_eval do
 
