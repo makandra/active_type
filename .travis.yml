@@ -4,6 +4,7 @@ rvm:
   - "1.9.3"
   - "2.0.0"
   - "2.1.2"
+  - "2.2.0"
 gemfile:
   - gemfiles/Gemfile.3.2
   - gemfiles/Gemfile.4.0
@@ -29,3 +30,15 @@ matrix:
       gemfile: gemfiles/Gemfile.4.2
     - rvm: "1.8.7"
       gemfile: gemfiles/Gemfile.4.2.pg
+    - rvm: "1.9.3"
+      gemfile: gemfiles/Gemfile.4.2.pg
+    - rvm: "2.0.0"
+      gemfile: gemfiles/Gemfile.4.2.pg
+    - rvm: "2.1.2"
+      gemfile: gemfiles/Gemfile.3.2
+    - rvm: "2.1.2"
+      gemfile: gemfiles/Gemfile.4.0
+    - rvm: "2.2.0"
+      gemfile: gemfiles/Gemfile.3.2
+    - rvm: "2.2.0"
+      gemfile: gemfiles/Gemfile.4.0
