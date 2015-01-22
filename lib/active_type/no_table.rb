@@ -11,6 +11,10 @@ module ActiveType
         nil
       end
 
+      def column_types
+        []
+      end
+
       def columns
         []
       end
