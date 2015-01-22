@@ -12,7 +12,7 @@ module ActiveType
       end
 
       def column_types
-        []
+        {}
       end
 
       def columns
