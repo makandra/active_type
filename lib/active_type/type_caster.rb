@@ -71,7 +71,12 @@ module ActiveType
           # supports it.
           if !type.nil? && connection.respond_to?(:native_database_types)
             native_type = connection.native_database_types[type.to_sym]
-            type = native_type.fetch(:name) unless native_type.nil?
+            if native_type && native_type[:name]
+              type = native_type[:name]
+            else
+              # unknown type, we just dont cast
+              type = nil
+            end
           end
           @active_record_type = connection.lookup_cast_type(type)
         end
