@@ -79,6 +79,10 @@ module ObjectSpec
 
   end
 
+  class ObjectWithUnsupportedTypes < Object
+    attribute :virtual_array, :array
+    attribute :virtual_hash, :hash
+  end
 
 end
 
@@ -100,6 +104,13 @@ describe ActiveType::Object do
 
   describe 'accessors' do
     it_should_behave_like 'ActiveRecord-like accessors', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => Time.now, :virtual_date => Date.today, :virtual_boolean => true }
+  end
+
+  describe 'unsupported types' do
+    subject { ObjectSpec::ObjectWithUnsupportedTypes.new }
+
+    it_should_behave_like 'ActiveRecord-like mass assignment', { :virtual_hash => {'foo' => 'bar'}, :virtual_array => ['foo', 'bar'] }
+    it_should_behave_like 'ActiveRecord-like accessors', { :virtual_hash => {'foo' => 'bar'}, :virtual_array => ['foo', 'bar'] }
   end
 
   describe 'overridable attributes' do
