@@ -17,6 +17,7 @@ module ObjectSpec
   class ObjectWithValidations < Object
 
     validates :virtual_string, :presence => true
+    validates :virtual_boolean, :presence => true
 
   end
 
@@ -282,10 +283,21 @@ describe ActiveType::Object do
     subject { ObjectSpec::ObjectWithValidations.new }
 
     it { should have(1).error_on(:virtual_string) }
+    
+    it 'validates the presence of boolean values' do
+      subject.virtual_boolean = false
+      subject.should have(1).error_on(:virtual_boolean)
+      subject.virtual_boolean = '0'
+      subject.should have(1).error_on(:virtual_boolean)
+      subject.virtual_boolean = 0
+      subject.should have(1).error_on(:virtual_boolean)
+      subject.virtual_boolean = true
+      subject.should have(0).errors_on(:virtual_boolean)
+    end
 
     it 'has no errors if validations pass' do
       subject.virtual_string = "foo"
-
+      subject.virtual_boolean = true
       subject.should be_valid
       subject.should have(:no).errors_on(:virtual_string)
     end
