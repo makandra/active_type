@@ -117,6 +117,15 @@ module ActiveType
       end
     end
 
+    # ActiveRecord 4.2.1
+    def _read_attribute(name)
+      if self.singleton_class._has_virtual_column?(name)
+        read_virtual_attribute(name)
+      else
+        super
+      end
+    end
+
     def []=(name, value)
       if self.singleton_class._has_virtual_column?(name)
         write_virtual_attribute(name, value)
