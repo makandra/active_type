@@ -26,6 +26,10 @@ shared_examples_for "a class supporting dup for attributes" do |klass|
       duped.attribute.should == { :foo => "baz" }
     end
 
+    it 'returns an object when attributes have not been referenced' do
+      subject.dup
+    end
+
   end
 
 end
