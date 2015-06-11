@@ -298,8 +298,8 @@ Development
 -----------
 
 - We run tests against several ActiveRecord versions.
-- You can bundle all versions with `rake all:bundle`.
-- You can run specs against all versions with `rake`.
+- You can bundle all versions with `rake all:install`.
+- You can run specs against all versions with `rake all:spec`.
 - You can run specs against a single version with `VERSION=4.0 rake`.
 
 If you would like to contribute:

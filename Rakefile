@@ -17,9 +17,16 @@ namespace :all do
   end
 
   desc "Bundle all versions"
-  task :bundle do
+  task :install do
     for_each_gemfile do
       system('bundle install')
+    end
+  end
+
+  desc "Update all versions"
+  task :update do
+    for_each_gemfile do
+      system('bundle update')
     end
   end
 
