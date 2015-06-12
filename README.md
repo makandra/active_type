@@ -271,8 +271,8 @@ Supported options for `nests_many` / `nests_one` are:
   ```
 
 
-Casting
--------
+Casting records or relations
+----------------------------
 
 When working with ActiveType you will often find it useful to cast an ActiveRecord instance to its extended `ActiveType::Record` variant.
 
