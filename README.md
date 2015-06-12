@@ -271,6 +271,39 @@ Supported options for `nests_many` / `nests_one` are:
   ```
 
 
+Casting
+-------
+
+When working with ActiveType you will often find it useful to cast an ActiveRecord instance to its extended `ActiveType::Record` variant.
+
+Use `ActiveType.cast` for this:
+
+```
+class User < ActiveRecord::Base
+  ...
+end
+
+class SignUp < ActiveType::Record[User]
+  ...
+end
+
+user = User.find(1)
+sign_up = ActiveType.cast(SignUp)
+sign_up.is_a?(SignUp) # => true
+```
+
+This is basically like [`ActiveRecord#becomes`](http://apidock.com/rails/v4.2.1/ActiveRecord/Persistence/becomes), but with less bugs and more consistent behavior.
+
+You can also cast an entire relation (scope) to a relation of an `ActiveType::Record`:
+
+```
+adult_users = User.where('age >= 18')
+adult_sign_ups = ActiveType.cast(adult_users, SignUp)
+sign_up = adult_sign_ups.find(1)
+sign_up.is_a?(SignUp) # => true
+```
+
+
 Supported Rails versions
 ------------------------
 

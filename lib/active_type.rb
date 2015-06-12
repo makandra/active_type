@@ -2,6 +2,7 @@
 
 require 'active_type/version'
 require 'active_record'
+require 'active_type/util'
 require 'active_type/record'
 require 'active_type/object'
 
