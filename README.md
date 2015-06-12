@@ -288,7 +288,7 @@ class SignUp < ActiveType::Record[User]
 end
 
 user = User.find(1)
-sign_up = ActiveType.cast(SignUp)
+sign_up = ActiveType.cast(user, SignUp)
 sign_up.is_a?(SignUp) # => true
 ```
 
