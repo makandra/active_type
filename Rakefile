@@ -4,7 +4,6 @@ require 'bundler/gem_tasks'
 desc 'Default: Run all specs.'
 task :default => 'all:spec'
 
-
 namespace :all do
 
   desc "Run specs on all versions"

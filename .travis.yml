@@ -9,8 +9,8 @@ gemfile:
   - gemfiles/Gemfile.3.2
   - gemfiles/Gemfile.4.0
   - gemfiles/Gemfile.4.1
-  - gemfiles/Gemfile.4.2
-  - gemfiles/Gemfile.4.2.pg
+  - gemfiles/Gemfile.4.2.1
+  - gemfiles/Gemfile.4.2.1.pg
 before_script:
   - psql -c 'create database active_type_test;' -U postgres
 script: bundle exec rspec spec
@@ -27,17 +27,19 @@ matrix:
     - rvm: "1.8.7"
       gemfile: gemfiles/Gemfile.4.1
     - rvm: "1.8.7"
-      gemfile: gemfiles/Gemfile.4.2
+      gemfile: gemfiles/Gemfile.4.2.1
     - rvm: "1.8.7"
-      gemfile: gemfiles/Gemfile.4.2.pg
+      gemfile: gemfiles/Gemfile.4.2.1.pg
     - rvm: "1.9.3"
-      gemfile: gemfiles/Gemfile.4.2.pg
+      gemfile: gemfiles/Gemfile.4.2.1.pg
     - rvm: "2.0.0"
-      gemfile: gemfiles/Gemfile.4.2.pg
+      gemfile: gemfiles/Gemfile.4.2.1.pg
+
     - rvm: "2.1.2"
       gemfile: gemfiles/Gemfile.3.2
     - rvm: "2.1.2"
       gemfile: gemfiles/Gemfile.4.0
+
     - rvm: "2.2.0"
       gemfile: gemfiles/Gemfile.3.2
     - rvm: "2.2.0"
