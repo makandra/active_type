@@ -28,4 +28,13 @@ shared_examples_for "a class supporting dirty tracking for virtual attributes" d
 
   end
 
+  describe '#virtual_attribute_will_change!' do
+
+    it 'is implemented for compatibility with ActiveModel::Dirty, but does nothing' do
+      subject.should respond_to(:virtual_attribute_will_change!)
+      expect { subject.virtual_attribute_will_change! }.to_not raise_error
+    end
+
+  end
+
 end

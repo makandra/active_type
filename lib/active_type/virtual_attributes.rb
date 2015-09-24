@@ -40,8 +40,7 @@ module ActiveType
         add_virtual_column(name, type, options)
         build_reader(name)
         build_writer(name)
-        build_value_was_method(name)
-        build_value_changed_method(name)
+        build_dirty_tracking_methods(name)
       end
 
       private
@@ -72,18 +71,23 @@ module ActiveType
         BODY
       end
 
-      def build_value_was_method(name)
+      # Methods for compatibility with gems expecting the ActiveModel::Dirty API.
+      def build_dirty_tracking_methods(name)
         @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
           def #{name}_was
             nil
           end
         BODY
-      end
 
-      def build_value_changed_method(name)
         @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
           def #{name}_changed?
             not #{name}.nil?
+          end
+        BODY
+
+        @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
+          def #{name}_will_change!
+            # no-op
           end
         BODY
       end
