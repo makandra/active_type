@@ -40,6 +40,8 @@ module ActiveType
         add_virtual_column(name, type, options)
         build_reader(name)
         build_writer(name)
+        build_value_was_method(name)
+        build_value_changed_method(name)
       end
 
       private
@@ -66,6 +68,22 @@ module ActiveType
         @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
           def #{name}=(value)
             write_virtual_attribute('#{name}', value)
+          end
+        BODY
+      end
+
+      def build_value_was_method(name)
+        @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
+          def #{name}_was
+            nil
+          end
+        BODY
+      end
+
+      def build_value_changed_method(name)
+        @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
+          def #{name}_changed?
+            not #{name}.nil?
           end
         BODY
       end
