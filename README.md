@@ -193,7 +193,7 @@ end
 
 - You have to say `nests_many :records`
 - `records` will be validated and saved automatically
-- The generated `.records_attributes =` expects parameters like `ActiveRecord`'s nested attributes, and words together with the `fields_for` helper:
+- The generated `.records_attributes =` expects parameters like `ActiveRecord`'s nested attributes, and works together with the `fields_for` helper:
 
   - either as a hash (where the keys are meaningless)
 
