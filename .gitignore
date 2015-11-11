@@ -4,3 +4,4 @@ tags
 *.gem
 .idea
 tmp
+spec/support/database.yml

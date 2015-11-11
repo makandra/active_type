@@ -1,24 +1,30 @@
-begin
-  # sqlite?
-  ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => ':memory:')
-rescue Gem::LoadError
-  # pg?
-  if ENV['BUNDLE_GEMFILE'] =~ /pg/
-    if ENV['TRAVIS']
-      ActiveRecord::Base.establish_connection(:adapter => 'postgresql', :database => 'active_type_test', :username => 'postgres')
-    else
-      ActiveRecord::Base.establish_connection(:adapter => 'postgresql', :database => 'active_type_test')
-    end
-  end
-  # mysql2?
-  if ENV['BUNDLE_GEMFILE'] =~ /mysql2/
-    ActiveRecord::Base.establish_connection(:adapter => 'mysql2', :encoding => 'utf8', :database => 'active_type_test')
-  end
+require 'yaml'
 
-  connection = ::ActiveRecord::Base.connection
-  connection.tables.each do |table|
-    connection.drop_table table
+# pg?
+case ENV['BUNDLE_GEMFILE']
+when /pg/
+  if ENV['TRAVIS']
+    ActiveRecord::Base.establish_connection(:adapter => 'postgresql', :database => 'active_type_test', :username => 'postgres')
+  else
+    ActiveRecord::Base.establish_connection(:adapter => 'postgresql', :database => 'active_type_test')
   end
+# mysql2?
+when /mysql2/
+  config = { :adapter => 'mysql2', :encoding => 'utf8', :database => 'active_type_test' }
+  custom_config_path = File.join(File.dirname(__FILE__), 'database.yml')
+  if File.exists?(custom_config_path)
+    custom_config = YAML.load_file(custom_config_path)
+    config.merge!(custom_config)
+  end
+  ActiveRecord::Base.establish_connection(config)
+else
+  ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => ':memory:')
+end
+
+
+connection = ::ActiveRecord::Base.connection
+connection.tables.each do |table|
+  connection.drop_table table
 end
 
 ActiveRecord::Migration.class_eval do
