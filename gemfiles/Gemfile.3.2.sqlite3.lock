@@ -7,15 +7,15 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (3.2.21)
-      activesupport (= 3.2.21)
+    activemodel (3.2.22)
+      activesupport (= 3.2.22)
       builder (~> 3.0.0)
-    activerecord (3.2.21)
-      activemodel (= 3.2.21)
-      activesupport (= 3.2.21)
+    activerecord (3.2.22)
+      activemodel (= 3.2.22)
+      activesupport (= 3.2.22)
       arel (~> 3.0.2)
       tzinfo (~> 0.3.29)
-    activesupport (3.2.21)
+    activesupport (3.2.22)
       i18n (~> 0.6, >= 0.6.4)
       multi_json (~> 1.0)
     arel (3.0.3)
@@ -39,7 +39,10 @@ PLATFORMS
 
 DEPENDENCIES
   active_type!
-  activerecord (~> 3.2.0)
+  activerecord (= 3.2.22)
   i18n (= 0.6.11)
   rspec (< 2.99)
   sqlite3
+
+BUNDLED WITH
+   1.10.6
