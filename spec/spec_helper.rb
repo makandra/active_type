@@ -6,8 +6,8 @@ require 'active_type'
 
 ActiveRecord::Base.default_timezone = :local
 
-Dir["#{File.dirname(__FILE__)}/support/*"].each {|f| require f}
-Dir["#{File.dirname(__FILE__)}/shared_examples/*"].each {|f| require f}
+Dir["#{File.dirname(__FILE__)}/support/*.rb"].each {|f| require f}
+Dir["#{File.dirname(__FILE__)}/shared_examples/*.rb"].each {|f| require f}
 
 
 RSpec.configure do |config|
