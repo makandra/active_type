@@ -51,4 +51,6 @@ matrix:
     - rvm: "2.2.0"
       gemfile: gemfiles/Gemfile.3.2
     - rvm: "2.2.0"
+      gemfile: gemfiles/Gemfile.3.2.mysql2
+    - rvm: "2.2.0"
       gemfile: gemfiles/Gemfile.4.0

@@ -1,0 +1,48 @@
+PATH
+  remote: ..
+  specs:
+    active_type (0.4.2)
+      activerecord (>= 3.2)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    activemodel (3.2.22)
+      activesupport (= 3.2.22)
+      builder (~> 3.0.0)
+    activerecord (3.2.22)
+      activemodel (= 3.2.22)
+      activesupport (= 3.2.22)
+      arel (~> 3.0.2)
+      tzinfo (~> 0.3.29)
+    activesupport (3.2.22)
+      i18n (~> 0.6, >= 0.6.4)
+      multi_json (~> 1.0)
+    arel (3.0.3)
+    builder (3.0.4)
+    diff-lcs (1.2.5)
+    i18n (0.6.11)
+    multi_json (1.11.2)
+    mysql2 (0.3.11)
+    rspec (2.14.1)
+      rspec-core (~> 2.14.0)
+      rspec-expectations (~> 2.14.0)
+      rspec-mocks (~> 2.14.0)
+    rspec-core (2.14.8)
+    rspec-expectations (2.14.5)
+      diff-lcs (>= 1.1.3, < 2.0)
+    rspec-mocks (2.14.6)
+    tzinfo (0.3.45)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  active_type!
+  activerecord (~> 3.2.0)
+  i18n (= 0.6.11)
+  mysql2 (= 0.3.11)
+  rspec (< 2.99)
+
+BUNDLED WITH
+   1.10.6
