@@ -335,6 +335,9 @@ Development
 - You can run specs against all versions with `rake all:spec`.
 - You can run specs against a single version with `VERSION=4.0 rake`.
 
+If you are getting testing failures due to Mysql trying to connect as `root` user, you can put your Mysql credentials into `spec/support/database.yml`.
+See `spec/support/database.sample.yml` for an example.
+
 If you would like to contribute:
 
 - Fork the repository.
