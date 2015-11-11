@@ -3,10 +3,16 @@ begin
   ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => ':memory:')
 rescue Gem::LoadError
   # pg?
-  if ENV['TRAVIS']
-    ActiveRecord::Base.establish_connection(:adapter => 'postgresql', :database => 'active_type_test', :username => 'postgres')
-  else
-    ActiveRecord::Base.establish_connection(:adapter => 'postgresql', :database => 'active_type_test')
+  if ENV['BUNDLE_GEMFILE'] =~ /pg/
+    if ENV['TRAVIS']
+      ActiveRecord::Base.establish_connection(:adapter => 'postgresql', :database => 'active_type_test', :username => 'postgres')
+    else
+      ActiveRecord::Base.establish_connection(:adapter => 'postgresql', :database => 'active_type_test')
+    end
+  end
+  # mysql2?
+  if ENV['BUNDLE_GEMFILE'] =~ /mysql2/
+    ActiveRecord::Base.establish_connection(:adapter => 'mysql2', :encoding => 'utf8', :database => 'active_type_test')
   end
 
   connection = ::ActiveRecord::Base.connection

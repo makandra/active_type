@@ -68,8 +68,8 @@ module ActiveType
           # The specified type (e.g. "string") may not necessary match the
           # native type ("varchar") expected by the connection adapter.
           # PostgreSQL is one of these. Perform a translation if the adapter
-          # supports it.
-          if !type.nil? && connection.respond_to?(:native_database_types)
+          # supports it (but don't turn a mysql boolean into a tinyint).
+          if !type.nil? && !(type == :boolean) && connection.respond_to?(:native_database_types)
             native_type = connection.native_database_types[type.to_sym]
             if native_type && native_type[:name]
               type = native_type[:name]
