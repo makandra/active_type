@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'activerecord', '=3.2.22'
 gem 'rspec', '<2.99'
-gem 'mysql2', '= 0.3.11'
+gem 'mysql2', '= 0.3.17'
 
 gem 'active_type', :path => '..'
 gem 'i18n', '=0.6.11' # 0.7 no longer builds for Ruby 1.8.7
