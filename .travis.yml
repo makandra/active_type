@@ -3,8 +3,8 @@ rvm:
   - "1.8.7"
   - "1.9.3"
   - "2.0.0"
-  - "2.1.2"
-  - "2.2.0"
+  - "2.1.7"
+  - "2.2.3"
 gemfile:
   - gemfiles/Gemfile.3.2.mysql2
   - gemfiles/Gemfile.3.2.sqlite3
@@ -17,6 +17,8 @@ before_script:
   - psql -c 'create database active_type_test;' -U postgres
   - mysql -e 'create database IF NOT EXISTS active_type_test;'
 script: bundle exec rspec spec
+sudo: false
+cache: bundler
 notifications:
   email:
     - fail@makandra.de
