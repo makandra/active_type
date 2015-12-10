@@ -75,13 +75,13 @@ module ActiveType
       def build_dirty_tracking_methods(name)
         @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
           def #{name}_was
-            nil
+            read_default_value('#{name}')
           end
         BODY
 
         @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
           def #{name}_changed?
-            not #{name}.nil?
+            read_default_value('#{name}') != #{name}
           end
         BODY
 
@@ -160,6 +160,11 @@ module ActiveType
       self.class._virtual_column_names.each_with_object(super) do |name, attrs|
         attrs[name] = read_virtual_attribute(name)
       end
+    end
+
+    def read_default_value(name)
+      virtual_column = self.singleton_class._virtual_column(name)
+      virtual_column.default_value(self)
     end
 
     def read_virtual_attribute(name)
