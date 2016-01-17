@@ -57,6 +57,7 @@ module ObjectSpec
     before_save :before_save_callback
     before_validation :before_validation_callback
     after_save :after_save_callback
+    after_commit :after_commit_callback
 
     def before_save_callback
     end
@@ -65,6 +66,9 @@ module ObjectSpec
     end
 
     def after_save_callback
+    end
+
+    def after_commit_callback
     end
 
   end
@@ -332,9 +336,9 @@ describe ActiveType::Object do
       subject.save
     end
 
-    %w[before_validation before_save after_save].each do |callback|
+    %w[before_validation before_save after_save after_commit].each do |callback|
 
-      it "calls #{callback}" do
+      it "calls #{callback}", :rollback => false do
         subject.should_receive("#{callback}_callback")
 
         subject.save.should be_true
