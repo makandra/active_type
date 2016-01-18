@@ -12,13 +12,16 @@ Dir["#{File.dirname(__FILE__)}/shared_examples/*.rb"].each {|f| require f}
 
 RSpec.configure do |config|
   config.around do |example|
-    next example.run unless example.metadata.fetch(:rollback, true)
-    ActiveRecord::Base.transaction do
-      begin
-        example.run
-      ensure
-        raise ActiveRecord::Rollback
+    if example.metadata.fetch(:rollback, true)
+      ActiveRecord::Base.transaction do
+        begin
+          example.run
+        ensure
+          raise ActiveRecord::Rollback
+        end
       end
+    else
+      example.run
     end
   end
 end
