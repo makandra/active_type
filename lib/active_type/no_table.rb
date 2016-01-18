@@ -77,6 +77,7 @@ module ActiveType
       end
     else
       def _create_record(*)
+        @new_record = false
         true
       end
 
