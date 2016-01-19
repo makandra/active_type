@@ -1,7 +1,7 @@
 source 'https://rubygems.org'
 
 gem 'activerecord', '~>4.2.1'
-gem 'rspec', '<2.99'
+gem 'rspec', '~>3.4'
 gem 'pg'
 
 gem 'active_type', :path => '..'
