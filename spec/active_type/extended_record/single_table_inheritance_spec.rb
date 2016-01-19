@@ -24,11 +24,11 @@ describe 'ActiveType::Record[STIModel]' do
 
     def should_save_and_load(save_as, load_as)
       record = save_as.new(:persisted_string => "string")
-      record.save.should be_true
+      expect(record.save).to be_truthy
 
       reloaded_child = load_as.find(record.id)
-      reloaded_child.persisted_string.should == "string"
-      reloaded_child.should be_a(load_as)
+      expect(reloaded_child.persisted_string).to eq("string")
+      expect(reloaded_child).to be_a(load_as)
     end
 
     it 'can save and load the active type record' do
@@ -46,11 +46,11 @@ describe 'ActiveType::Record[STIModel]' do
 
     it 'can load via the base class and convert to active type record' do
       record = STISpec::ExtendedChild.new(:persisted_string => "string")
-      record.save.should be_true
+      expect(record.save).to be_truthy
 
       reloaded_child = STISpec::Child.find(record.id).becomes(STISpec::ExtendedChild)
-      reloaded_child.persisted_string.should == "string"
-      reloaded_child.should be_a(STISpec::ExtendedChild)
+      expect(reloaded_child.persisted_string).to eq("string")
+      expect(reloaded_child).to be_a(STISpec::ExtendedChild)
     end
 
     it 'can save classes further down the inheritance tree' do

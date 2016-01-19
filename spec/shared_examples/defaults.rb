@@ -16,45 +16,45 @@ shared_examples_for "a class accepting attribute defaults" do |klass|
   end
 
   it 'can have static defaults' do
-    subject.static_string.should == "static string"
+    expect(subject.static_string).to eq("static string")
   end
 
   it 'can have dynamic defaults' do
-    subject.dynamic_string.should == "dynamic string"
+    expect(subject.dynamic_string).to eq("dynamic string")
   end
 
   it 'can have defaults refering to instance methods' do
-    subject.referential_string.should == "value"
+    expect(subject.referential_string).to eq("value")
   end
 
   it 'typecasts defaults' do
-    subject.number.should == 10
+    expect(subject.number).to eq(10)
   end
 
   it 'computes defaults lazily' do
-    subject.should_receive(:compute).and_return("computed")
-    subject.computed.should == "computed"
+    expect(subject).to receive(:compute).and_return("computed")
+    expect(subject.computed).to eq("computed")
   end
 
   it 'does not compute defaults more than once' do
-    subject.should_receive(:compute).exactly(:once).and_return(nil)
+    expect(subject).to receive(:compute).exactly(:once).and_return(nil)
     subject.computed
     subject.computed
   end
 
   it 'does not compute defaults when overriden' do
     subject.computed = 'not computed'
-    subject.computed.should == 'not computed'
+    expect(subject.computed).to eq('not computed')
   end
 
   it 'does not use defaults when overriden' do
     subject.static_string = "my string"
-    subject.static_string.should == "my string"
+    expect(subject.static_string).to eq("my string")
   end
 
   it 'does not use defaults when overriden with nil' do
     subject.static_string = nil
-    subject.static_string.should == nil
+    expect(subject.static_string).to eq(nil)
   end
 
 end

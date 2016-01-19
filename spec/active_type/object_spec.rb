@@ -124,7 +124,7 @@ describe ActiveType::Object do
     it 'is possible to override attributes with super' do
       subject.overridable_test = "test"
 
-      subject.overridable_test.should == "testtest"
+      expect(subject.overridable_test).to eq("testtest")
     end
   end
 
@@ -170,31 +170,31 @@ describe ActiveType::Object do
     it 'returns true for true' do
       subject.virtual_attribute = true
 
-      subject.virtual_attribute?.should == true
+      expect(subject.virtual_attribute?).to eq(true)
     end
 
     it 'returns false for false' do
       subject.virtual_attribute = false
 
-      subject.virtual_attribute?.should == false
+      expect(subject.virtual_attribute?).to eq(false)
     end
 
     it 'returns false for nil' do
       subject.virtual_attribute = nil
 
-      subject.virtual_attribute?.should == false
+      expect(subject.virtual_attribute?).to eq(false)
     end
 
     it 'returns true for 1' do
       subject.virtual_attribute = 1
 
-      subject.virtual_attribute?.should == true
+      expect(subject.virtual_attribute?).to eq(true)
     end
 
     it 'returns true for an object' do
       subject.virtual_attribute = Object.new
 
-      subject.virtual_attribute?.should == true
+      expect(subject.virtual_attribute?).to eq(true)
     end
 
   end
@@ -205,14 +205,14 @@ describe ActiveType::Object do
       subject.virtual_string = "string"
       subject.virtual_integer = "17"
 
-      subject.attributes.should == {
+      expect(subject.attributes).to eq({
         "virtual_string" => "string",
         "virtual_integer" => 17,
         "virtual_time" => nil,
         "virtual_date" => nil,
         "virtual_boolean" => nil,
         "virtual_attribute" => nil,
-      }
+      })
     end
 
     it 'also includes inherited attributes' do
@@ -220,7 +220,7 @@ describe ActiveType::Object do
       object.virtual_string = "string"
       object.virtual_integer = "17"
 
-      object.attributes.should == {
+      expect(object.attributes).to eq({
         "virtual_string" => "string",
         "virtual_integer" => 17,
         "virtual_time" => nil,
@@ -228,7 +228,7 @@ describe ActiveType::Object do
         "virtual_boolean" => nil,
         "virtual_attribute" => nil,
         "another_virtual_string" => nil,
-      }
+      })
     end
 
     it 'also includes included attributes' do
@@ -236,7 +236,7 @@ describe ActiveType::Object do
       object.virtual_string = "string"
       object.virtual_integer = "17"
 
-      object.attributes.should == {
+      expect(object.attributes).to eq({
         "virtual_string" => "string",
         "virtual_integer" => 17,
         "virtual_time" => nil,
@@ -244,7 +244,7 @@ describe ActiveType::Object do
         "virtual_boolean" => nil,
         "virtual_attribute" => nil,
         "another_virtual_string" => nil,
-      }
+      })
     end
 
   end
@@ -256,13 +256,13 @@ describe ActiveType::Object do
       object.virtual_string = "string"
       object.another_virtual_string = "another string"
 
-      object.virtual_string.should == "string"
-      object.another_virtual_string.should == "another string"
+      expect(object.virtual_string).to eq("string")
+      expect(object.another_virtual_string).to eq("another string")
     end
 
     it 'does not define the attribute on the parent class' do
       object = ObjectSpec::Object.new
-      object.should_not respond_to(:another_virtual_string)
+      expect(object).not_to respond_to(:another_virtual_string)
     end
 
   end
@@ -273,41 +273,43 @@ describe ActiveType::Object do
       object.virtual_string = "string"
       object.another_virtual_string = "another string"
 
-      object.virtual_string.should == "string"
-      object.another_virtual_string.should == "another string"
+      expect(object.virtual_string).to eq("string")
+      expect(object.another_virtual_string).to eq("another string")
     end
 
     it 'does not define the attribute on the parent class' do
       object = ObjectSpec::Object.new
-      object.should_not respond_to(:another_virtual_string)
+      expect(object).not_to respond_to(:another_virtual_string)
     end
   end
 
   describe 'validations' do
     subject { ObjectSpec::ObjectWithValidations.new }
 
-    it { should have(1).error_on(:virtual_string) }
+    it 'has 1 error_on' do
+      expect(subject.error_on(:virtual_string).size).to eq(1)
+    end
     
     it 'validates the presence of boolean values' do
       subject.virtual_boolean = false
-      subject.should have(1).error_on(:virtual_boolean)
+      expect(subject.error_on(:virtual_boolean).size).to eq(1)
       subject.virtual_boolean = '0'
-      subject.should have(1).error_on(:virtual_boolean)
+      expect(subject.error_on(:virtual_boolean).size).to eq(1)
       subject.virtual_boolean = 0
-      subject.should have(1).error_on(:virtual_boolean)
+      expect(subject.error_on(:virtual_boolean).size).to eq(1)
       subject.virtual_boolean = true
-      subject.should have(0).errors_on(:virtual_boolean)
+      expect(subject.errors_on(:virtual_boolean).size).to eq(0)
     end
 
     it 'has no errors if validations pass' do
       subject.virtual_string = "foo"
       subject.virtual_boolean = true
-      subject.should be_valid
-      subject.should have(:no).errors_on(:virtual_string)
+      expect(subject).to be_valid
+      expect(subject.errors_on(:virtual_string).size).to eq(0)
     end
 
     it 'causes #save to return false' do
-      subject.save.should be_false
+      expect(subject.save).to be_falsey
     end
   end
 
@@ -339,9 +341,9 @@ describe ActiveType::Object do
     %w[before_validation before_save after_save after_commit].each do |callback|
 
       it "calls #{callback}", :rollback => false do
-        subject.should_receive("#{callback}_callback")
+        expect(subject).to receive("#{callback}_callback")
 
-        subject.save.should be_true
+        expect(subject.save).to be_truthy
       end
 
     end
@@ -349,9 +351,9 @@ describe ActiveType::Object do
     %w[before_validation before_save].each do |callback|
 
       it "aborts the chain when #{callback} returns false" do
-        subject.stub("#{callback}_callback" => false)
+        allow(subject).to receive_messages("#{callback}_callback" => false)
 
-        subject.save.should be_false
+        expect(subject.save).to be_falsey
       end
 
     end
@@ -373,7 +375,7 @@ describe ActiveType::Object do
 
   describe '.all' do
     it 'returns []' do
-      ObjectSpec::Object.all.should == []
+      expect(ObjectSpec::Object.all).to eq([])
     end
   end
 
@@ -381,8 +383,8 @@ describe ActiveType::Object do
     it 'returns an object' do
       object = ObjectSpec::Object.create(:virtual_string => "string")
 
-      object.should be_a(ObjectSpec::Object)
-      object.virtual_string.should == "string"
+      expect(object).to be_a(ObjectSpec::Object)
+      expect(object.virtual_string).to eq("string")
     end
   end
 

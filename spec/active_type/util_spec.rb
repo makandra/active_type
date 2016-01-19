@@ -42,10 +42,10 @@ describe ActiveType::Util do
         record = UtilSpec::BaseRecord.create!(:persisted_string => 'foo')
         base_scope = UtilSpec::BaseRecord.where(:persisted_string => 'foo')
         casted_scope = ActiveType::Util.cast(base_scope, UtilSpec::ExtendedRecord)
-        casted_scope.build.should be_a(UtilSpec::ExtendedRecord)
+        expect(casted_scope.build).to be_a(UtilSpec::ExtendedRecord)
         found_record = casted_scope.find(record.id)
-        found_record.persisted_string.should == 'foo'
-        found_record.should be_a(UtilSpec::ExtendedRecord)
+        expect(found_record.persisted_string).to eq('foo')
+        expect(found_record).to be_a(UtilSpec::ExtendedRecord)
       end
 
       it 'preserves existing scope conditions' do
@@ -54,7 +54,7 @@ describe ActiveType::Util do
         base_scope = UtilSpec::BaseRecord.where(:persisted_string => 'foo')
         casted_scope = ActiveType::Util.cast(base_scope, UtilSpec::ExtendedRecord)
         casted_match = UtilSpec::ExtendedRecord.find(match.id)
-        casted_scope.to_a.should == [casted_match]
+        expect(casted_scope.to_a).to eq([casted_match])
       end
 
     end
@@ -64,57 +64,57 @@ describe ActiveType::Util do
       it 'casts a base record to an extended record' do
         base_record = UtilSpec::BaseRecord.create!(:persisted_string => 'foo')
         extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
-        extended_record.should be_a(UtilSpec::ExtendedRecord)
-        extended_record.should be_persisted
-        extended_record.id.should be_present
-        extended_record.id.should == base_record.id
-        extended_record.persisted_string.should == 'foo'
+        expect(extended_record).to be_a(UtilSpec::ExtendedRecord)
+        expect(extended_record).to be_persisted
+        expect(extended_record.id).to be_present
+        expect(extended_record.id).to eq(base_record.id)
+        expect(extended_record.persisted_string).to eq('foo')
       end
 
       it 'casts an extended record to a base record' do
         extended_record = UtilSpec::ExtendedRecord.create!(:persisted_string => 'foo')
         base_record = ActiveType::Util.cast(extended_record, UtilSpec::BaseRecord)
-        base_record.should be_a(UtilSpec::BaseRecord)
-        base_record.should be_persisted
-        base_record.id.should be_present
-        base_record.id.should == extended_record.id
-        base_record.persisted_string.should == 'foo'
+        expect(base_record).to be_a(UtilSpec::BaseRecord)
+        expect(base_record).to be_persisted
+        expect(base_record.id).to be_present
+        expect(base_record.id).to eq(extended_record.id)
+        expect(base_record.persisted_string).to eq('foo')
       end
 
       it 'calls after_initialize callbacks of the cast target' do
         base_record = UtilSpec::BaseRecord.create!(:persisted_string => 'foo')
         extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
-        extended_record.virtual_string.should be_present
+        expect(extended_record.virtual_string).to be_present
       end
 
       it 'lets after_initialize callbacks access attributes (bug in ActiveRecord#becomes)' do
         base_record = UtilSpec::BaseRecord.create!(:persisted_string => 'foo')
         extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
-        extended_record.virtual_string.should == 'persisted_string is foo'
+        expect(extended_record.virtual_string).to eq('persisted_string is foo')
       end
 
       it 'preserves the #type of an STI record that is casted to an ExtendedRecord' do
         child_record = UtilSpec::Child.create!(:persisted_string => 'foo')
         extended_child_record = ActiveType::Util.cast(child_record, UtilSpec::ExtendedChild)
-        extended_child_record.should be_a(UtilSpec::ExtendedChild)
-        extended_child_record.type.should == 'UtilSpec::Child'
+        expect(extended_child_record).to be_a(UtilSpec::ExtendedChild)
+        expect(extended_child_record.type).to eq('UtilSpec::Child')
       end
 
       it 'changes the #type of an STI record when casted to another type in the hierarchy' do
         child_record = UtilSpec::Child.create!(:persisted_string => 'foo')
         child_sibling_record = ActiveType::Util.cast(child_record, UtilSpec::ChildSibling)
-        child_sibling_record.should be_a(UtilSpec::ChildSibling)
-        child_sibling_record.type.should == 'UtilSpec::Child'
+        expect(child_sibling_record).to be_a(UtilSpec::ChildSibling)
+        expect(child_sibling_record.type).to eq('UtilSpec::Child')
       end
 
       it 'preserves dirty tracking flags' do
         base_record = UtilSpec::BaseRecord.create!(:persisted_string => 'foo')
-        base_record.changes.should == {}
+        expect(base_record.changes).to eq({})
         base_record.persisted_string = 'bar'
-        base_record.changes.should == { 'persisted_string' => ['foo', 'bar'] }
+        expect(base_record.changes).to eq({ 'persisted_string' => ['foo', 'bar'] })
         extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
-        extended_record.should be_a(UtilSpec::ExtendedRecord)
-        extended_record.changes.should == { 'persisted_string' => ['foo', 'bar'] }
+        expect(extended_record).to be_a(UtilSpec::ExtendedRecord)
+        expect(extended_record.changes).to eq({ 'persisted_string' => ['foo', 'bar'] })
       end
 
     end
@@ -122,7 +122,7 @@ describe ActiveType::Util do
   end
 
   it "exposes all methods through ActiveType's root namespace" do
-    ActiveType.should respond_to(:cast)
+    expect(ActiveType).to respond_to(:cast)
   end
 
 end

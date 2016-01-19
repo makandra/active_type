@@ -51,15 +51,15 @@ describe HolidaySpec::HolidayForm do
   it 'will return holidays including updated ones' do
     HolidaySpec::Holiday.create!(:name => 'New Year', :date => '2014-01-01')
     form = HolidaySpec::HolidayForm.new(:holidays_attributes => params.slice('2'))
-    form.holidays.collect(&:name).should == ["New Year", "Epiphany"]
+    expect(form.holidays.collect(&:name)).to eq(["New Year", "Epiphany"])
   end
 
   it 'can create a list of holidays' do
-    update(params).should be_true
+    expect(update(params)).to be_truthy
 
     holidays = HolidaySpec::Holiday.order(:date)
-    holidays.collect(&:name).should == ["New Year", "Epiphany"]
-    holidays.collect(&:date).should == [Date.civil(2014, 1, 1), Date.civil(2014, 1, 6)]
+    expect(holidays.collect(&:name)).to eq(["New Year", "Epiphany"])
+    expect(holidays.collect(&:date)).to eq([Date.civil(2014, 1, 1), Date.civil(2014, 1, 6)])
   end
 
   it 'can update holidays' do
@@ -67,22 +67,22 @@ describe HolidaySpec::HolidayForm do
 
     params['1']['name'] += ' 2014'
     params['2']['name'] += ' 2014'
-    update(params).should be_true
+    expect(update(params)).to be_truthy
 
     holidays = HolidaySpec::Holiday.order(:date)
-    holidays.collect(&:name).should == ["New Year 2014", "Epiphany 2014"]
-    holidays.collect(&:date).should == [Date.civil(2014, 1, 1), Date.civil(2014, 1, 6)]
+    expect(holidays.collect(&:name)).to eq(["New Year 2014", "Epiphany 2014"])
+    expect(holidays.collect(&:date)).to eq([Date.civil(2014, 1, 1), Date.civil(2014, 1, 6)])
   end
 
   it 'can destroy holidays' do
     update(params)
 
     params['1']['_destroy'] = '1'
-    update(params).should be_true
+    expect(update(params)).to be_truthy
 
     holidays = HolidaySpec::Holiday.order(:date)
-    holidays.collect(&:name).should == ["Epiphany"]
-    holidays.collect(&:date).should == [Date.civil(2014, 1, 6)]
+    expect(holidays.collect(&:name)).to eq(["Epiphany"])
+    expect(holidays.collect(&:date)).to eq([Date.civil(2014, 1, 6)])
   end
 
   it 'will not save if some fields are invalid' do
@@ -91,11 +91,11 @@ describe HolidaySpec::HolidayForm do
     params['1']['name'] = '-'
     params['1']['_destroy'] = '1'
     params['2']['name'] = ''  # invalid
-    update(params).should be_false
+    expect(update(params)).to be_falsey
 
     holidays = HolidaySpec::Holiday.order(:date)
-    holidays.collect(&:name).should == ["New Year", "Epiphany"]
-    holidays.collect(&:date).should == [Date.civil(2014, 1, 1), Date.civil(2014, 1, 6)]
+    expect(holidays.collect(&:name)).to eq(["New Year", "Epiphany"])
+    expect(holidays.collect(&:date)).to eq([Date.civil(2014, 1, 1), Date.civil(2014, 1, 6)])
   end
 
 

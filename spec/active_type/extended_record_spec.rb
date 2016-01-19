@@ -38,11 +38,11 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
   subject { ExtendedRecordSpec::ExtendedRecord.new }
 
   it 'is inherits from the base type' do
-    subject.should be_a(ExtendedRecordSpec::BaseRecord)
+    expect(subject).to be_a(ExtendedRecordSpec::BaseRecord)
   end
 
   it 'has the same model name as the base class' do
-    subject.class.model_name.singular.should == ExtendedRecordSpec::BaseRecord.model_name.singular
+    expect(subject.class.model_name.singular).to eq(ExtendedRecordSpec::BaseRecord.model_name.singular)
   end
 
   describe 'constructors' do
@@ -57,7 +57,7 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
       subject.persisted_string = "string"
       subject.another_virtual_string = "string"
 
-      subject.attributes.should == {
+      expect(subject.attributes).to eq({
         "another_virtual_string" => "string",
         "id" => nil,
         "persisted_string" => "string",
@@ -65,7 +65,7 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
         "persisted_time" => nil,
         "persisted_date" => nil,
         "persisted_boolean" => nil
-      }
+      })
     end
 
   end
@@ -77,9 +77,9 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
   describe 'persistence' do
     it 'persists to the database' do
       subject.persisted_string = "persisted string"
-      subject.save.should be_true
+      expect(subject.save).to be_truthy
 
-      subject.class.find(subject.id).persisted_string.should == "persisted string"
+      expect(subject.class.find(subject.id).persisted_string).to eq("persisted string")
     end
   end
 
@@ -87,13 +87,13 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
     it 'returns an instance of the extended model' do
       subject.save
 
-      subject.class.find(subject.id).should be_a(subject.class)
+      expect(subject.class.find(subject.id)).to be_a(subject.class)
     end
   end
 
   describe '.base_class' do
     it 'is the base class inherited from' do
-      subject.class.base_class.should == ExtendedRecordSpec::BaseRecord
+      expect(subject.class.base_class).to eq(ExtendedRecordSpec::BaseRecord)
     end
   end
 
@@ -104,11 +104,11 @@ describe "class ... < ActiveType::Record[ActiveRecord::Base]" do
   subject { ExtendedRecordSpec::InheritingFromExtendedRecord.new }
 
   it 'is inherits from the base type' do
-    subject.should be_a(ExtendedRecordSpec::ExtendedRecord)
+    expect(subject).to be_a(ExtendedRecordSpec::ExtendedRecord)
   end
 
   it 'has the same model name as the base class' do
-    subject.class.model_name.singular.should == ExtendedRecordSpec::BaseRecord.model_name.singular
+    expect(subject.class.model_name.singular).to eq(ExtendedRecordSpec::BaseRecord.model_name.singular)
   end
 
   describe '#attributes' do
@@ -118,7 +118,7 @@ describe "class ... < ActiveType::Record[ActiveRecord::Base]" do
       subject.another_virtual_string = "string"
       subject.yet_another_virtual_string = "string"
 
-      subject.attributes.should == {
+      expect(subject.attributes).to eq({
         "another_virtual_string" => "string",
         "yet_another_virtual_string" => "string",
         "id" => nil,
@@ -127,7 +127,7 @@ describe "class ... < ActiveType::Record[ActiveRecord::Base]" do
         "persisted_time" => nil,
         "persisted_date" => nil,
         "persisted_boolean" => nil
-      }
+      })
     end
 
   end
@@ -135,9 +135,9 @@ describe "class ... < ActiveType::Record[ActiveRecord::Base]" do
   describe 'persistence' do
     it 'persists to the database' do
       subject.persisted_string = "persisted string"
-      subject.save.should be_true
+      expect(subject.save).to be_truthy
 
-      subject.class.find(subject.id).persisted_string.should == "persisted string"
+      expect(subject.class.find(subject.id).persisted_string).to eq("persisted string")
     end
   end
 
@@ -145,7 +145,7 @@ describe "class ... < ActiveType::Record[ActiveRecord::Base]" do
     it 'returns an instance of the inheriting model' do
       subject.save
 
-      subject.class.find(subject.id).should be_a(subject.class)
+      expect(subject.class.find(subject.id)).to be_a(subject.class)
     end
   end
 
@@ -156,11 +156,11 @@ describe "ActiveType::Record[ActiveType::Record]" do
   subject { ExtendedRecordSpec::ExtendedActiveTypeRecord.new }
 
   it 'is inherits from the base type' do
-    subject.should be_a(ExtendedRecordSpec::BaseActiveTypeRecord)
+    expect(subject).to be_a(ExtendedRecordSpec::BaseActiveTypeRecord)
   end
 
   it 'has the same model name as the base class' do
-    subject.class.model_name.singular.should == ExtendedRecordSpec::BaseActiveTypeRecord.model_name.singular
+    expect(subject.class.model_name.singular).to eq(ExtendedRecordSpec::BaseActiveTypeRecord.model_name.singular)
   end
 
   describe 'constructors' do
@@ -175,7 +175,7 @@ describe "ActiveType::Record[ActiveType::Record]" do
       subject.persisted_string = "string"
       subject.virtual_string = "string"
 
-      subject.attributes.should == {
+      expect(subject.attributes).to eq({
         "virtual_string" => "string",
         "another_virtual_string" => nil,
         "id" => nil,
@@ -184,7 +184,7 @@ describe "ActiveType::Record[ActiveType::Record]" do
         "persisted_time" => nil,
         "persisted_date" => nil,
         "persisted_boolean" => nil
-      }
+      })
     end
 
   end
@@ -196,17 +196,23 @@ describe "ActiveType::Record[ActiveType::Record]" do
   describe 'validations' do
     subject { ExtendedRecordSpec::ExtendedRecordWithValidations.new }
 
-    it { should have(1).error_on(:persisted_string) }
-    it { should have(1).error_on(:virtual_string) }
-    it { should have(1).error_on(:another_virtual_string) }
+    it 'has 1 error_on' do
+      expect(subject.error_on(:persisted_string).size).to eq(1)
+    end
+    it 'has 1 error_on' do
+      expect(subject.error_on(:virtual_string).size).to eq(1)
+    end
+    it 'has 1 error_on' do
+      expect(subject.error_on(:another_virtual_string).size).to eq(1)
+    end
   end
 
   describe 'persistence' do
     it 'persists to the database' do
       subject.persisted_string = "persisted string"
-      subject.save.should be_true
+      expect(subject.save).to be_truthy
 
-      subject.class.find(subject.id).persisted_string.should == "persisted string"
+      expect(subject.class.find(subject.id).persisted_string).to eq("persisted string")
     end
   end
 
@@ -214,13 +220,13 @@ describe "ActiveType::Record[ActiveType::Record]" do
     it 'returns an instance of the extended model' do
       subject.save
 
-      subject.class.find(subject.id).should be_a(subject.class)
+      expect(subject.class.find(subject.id)).to be_a(subject.class)
     end
   end
 
   describe '.base_class' do
     it 'is the base class inherited from' do
-      subject.class.base_class.should == ExtendedRecordSpec::BaseActiveTypeRecord
+      expect(subject.class.base_class).to eq(ExtendedRecordSpec::BaseActiveTypeRecord)
     end
   end
 

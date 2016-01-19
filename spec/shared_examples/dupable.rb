@@ -13,8 +13,8 @@ shared_examples_for "a class supporting dup for attributes" do |klass|
       duped = subject.dup
       duped.attribute = "bar"
 
-      subject.attribute.should == "foo"
-      duped.attribute.should == "bar"
+      expect(subject.attribute).to eq("foo")
+      expect(duped.attribute).to eq("bar")
     end
 
     it 'does a deep copy' do
@@ -22,8 +22,8 @@ shared_examples_for "a class supporting dup for attributes" do |klass|
       duped = subject.dup
       duped.attribute.merge!(:foo => "baz")
 
-      subject.attribute.should == { :foo => "bar" }
-      duped.attribute.should == { :foo => "baz" }
+      expect(subject.attribute).to eq({ :foo => "bar" })
+      expect(duped.attribute).to eq({ :foo => "baz" })
     end
 
   end

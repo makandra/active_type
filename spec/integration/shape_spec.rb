@@ -66,10 +66,10 @@ describe ShapeSpec::ShapeForm do
       'radius' => '20'
     }.with_indifferent_access
 
-    update(params).should be_true
+    expect(update(params)).to be_truthy
 
-    ShapeSpec::Circle.all.collect(&:radius).should == [20]
-    ShapeSpec::Rectangle.count.should == 0
+    expect(ShapeSpec::Circle.all.collect(&:radius)).to eq([20])
+    expect(ShapeSpec::Rectangle.count).to eq(0)
   end
 
   it 'can create a rectangle' do
@@ -79,11 +79,11 @@ describe ShapeSpec::ShapeForm do
       'width' => '30'
     }.with_indifferent_access
 
-    update(params).should be_true
+    expect(update(params)).to be_truthy
 
-    ShapeSpec::Circle.count.should == 0
-    ShapeSpec::Rectangle.all.collect(&:length).should == [100]
-    ShapeSpec::Rectangle.all.collect(&:width).should == [30]
+    expect(ShapeSpec::Circle.count).to eq(0)
+    expect(ShapeSpec::Rectangle.all.collect(&:length)).to eq([100])
+    expect(ShapeSpec::Rectangle.all.collect(&:width)).to eq([30])
   end
 
   it 'can update' do
@@ -94,9 +94,9 @@ describe ShapeSpec::ShapeForm do
     update(params)
 
     params['radius'] = '30'
-    update(params).should be_true
+    expect(update(params)).to be_truthy
 
-    ShapeSpec::Circle.all.collect(&:radius).should == [30]
+    expect(ShapeSpec::Circle.all.collect(&:radius)).to eq([30])
   end
 
   it 'has validations' do
@@ -104,9 +104,9 @@ describe ShapeSpec::ShapeForm do
       'type' => 'circle'
     }.with_indifferent_access
 
-    update(params).should be_false
+    expect(update(params)).to be_falsey
 
-    form.child.errors['radius'].should == ["can't be blank"]
+    expect(form.child.errors['radius']).to eq(["can't be blank"])
   end
 
 end

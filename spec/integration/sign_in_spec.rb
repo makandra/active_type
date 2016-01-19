@@ -29,21 +29,21 @@ describe SignInSpec::SignIn do
   describe 'with missing credentials' do
 
     it 'is invalid' do
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
     end
 
     it 'has errors' do
       subject.valid?
-      subject.errors[:email].should == ["can't be blank"]
-      subject.errors[:password].should == ["can't be blank"]
+      expect(subject.errors[:email]).to eq(["can't be blank"])
+      expect(subject.errors[:password]).to eq(["can't be blank"])
     end
 
     it 'does not save' do
-      subject.save.should be_false
+      expect(subject.save).to be_falsey
     end
 
     it 'does not set the session' do
-      subject.should_not_receive :set_session
+      expect(subject).not_to receive :set_session
       subject.save
     end
 
@@ -57,20 +57,20 @@ describe SignInSpec::SignIn do
     end
 
     it 'is invalid' do
-      subject.should_not be_valid
+      expect(subject).not_to be_valid
     end
 
     it 'has errors' do
       subject.valid?
-      subject.errors[:password].should == ["is not correct"]
+      expect(subject.errors[:password]).to eq(["is not correct"])
     end
 
     it 'does not save' do
-      subject.save.should be_false
+      expect(subject.save).to be_falsey
     end
 
     it 'does not set the session' do
-      subject.should_not_receive :set_session
+      expect(subject).not_to receive :set_session
       subject.save
     end
 
@@ -84,15 +84,15 @@ describe SignInSpec::SignIn do
     end
 
     it 'is invalid' do
-      subject.should be_valid
+      expect(subject).to be_valid
     end
 
     it 'does save' do
-      subject.save.should be_true
+      expect(subject.save).to be_truthy
     end
 
     it 'sets the session' do
-      subject.should_receive :set_session
+      expect(subject).to receive :set_session
       subject.save
     end
 

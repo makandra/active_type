@@ -4,7 +4,7 @@ shared_examples_for 'ActiveRecord-like mass assignment' do |attributes|
     subject.attributes = attributes
 
     attributes.each do |key, value|
-      subject.send(key).should == value
+      expect(subject.send(key)).to eq(value)
     end
   end
 

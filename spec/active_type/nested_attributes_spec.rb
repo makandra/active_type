@@ -54,16 +54,16 @@ describe "ActiveType::Object" do
     end
 
     def should_assign_and_persist(assign, persist = assign)
-      subject.records.map(&:persisted_string).should == assign
-      subject.save.should be_true
-      NestedAttributesSpec::Record.all.map(&:persisted_string).should =~ persist
+      expect(subject.records.map(&:persisted_string)).to eq(assign)
+      expect(subject.save).to be_truthy
+      expect(NestedAttributesSpec::Record.all.map(&:persisted_string)).to match_array(persist)
     end
 
 
     context 'with no records assigned' do
 
       it 'can save' do
-        subject.save.should be_true
+        expect(subject.save).to be_truthy
       end
 
     end
@@ -72,7 +72,7 @@ describe "ActiveType::Object" do
 
       it 'will do nothing' do
         subject.records_attributes = nil
-        subject.records.should be_nil
+        expect(subject.records).to be_nil
       end
 
     end
@@ -176,7 +176,7 @@ describe "ActiveType::Object" do
           { :id => existing.id, :_destroy => "true" },
         ]
         should_assign_and_persist(["do not delete this"], ["do not delete this"])
-        subject.records.size.should == 1
+        expect(subject.records.size).to eq(1)
       end
 
       it 'destroys records on _destroy => trueish if allowed' do
@@ -197,7 +197,7 @@ describe "ActiveType::Object" do
           { :id => existing[3].id, :_destroy => "0" },
         ]
         should_assign_and_persist(["delete this", "delete this", "delete this", "keep this"], ["keep this"])
-        subject.records.size.should == 1
+        expect(subject.records.size).to eq(1)
       end
 
     end
@@ -264,8 +264,8 @@ describe "ActiveType::Object" do
           NestedAttributesSpec::Record.new(:fail_on_save => true),
         ]
 
-        subject.save.should be_false
-        NestedAttributesSpec::Record.count.should == 0
+        expect(subject.save).to be_falsey
+        expect(NestedAttributesSpec::Record.count).to eq(0)
 
         # note that other children would be saved and not be rolled back
         # this is also true for regular nested attributes
@@ -278,7 +278,7 @@ describe "ActiveType::Object" do
       describe '#valid?' do
 
         it 'is true if there are no records assigned' do
-          subject.valid?.should be_true
+          expect(subject.valid?).to be_truthy
         end
 
         it 'is true if all records are valid' do
@@ -287,7 +287,7 @@ describe "ActiveType::Object" do
             NestedAttributesSpec::Record.new,
           ]
 
-          subject.valid?.should be_true
+          expect(subject.valid?).to be_truthy
         end
 
         it 'is false if one child has an error' do
@@ -296,7 +296,7 @@ describe "ActiveType::Object" do
             NestedAttributesSpec::Record.new(:error => 'some error'),
           ]
 
-          subject.valid?.should be_false
+          expect(subject.valid?).to be_falsey
         end
 
         it 'is copies the error to the record' do
@@ -306,7 +306,7 @@ describe "ActiveType::Object" do
           ]
 
           subject.valid?
-          subject.errors["records.base"].should == ['some error']
+          expect(subject.errors["records.base"]).to eq(['some error'])
         end
 
       end
@@ -333,20 +333,20 @@ describe "ActiveType::Object" do
 
     def should_assign_and_persist(assign, persist = assign)
       if assign
-        subject.record.should be_present
-        subject.record.persisted_string.should == assign
+        expect(subject.record).to be_present
+        expect(subject.record.persisted_string).to eq(assign)
       else
-        subject.record.should be_nil
+        expect(subject.record).to be_nil
       end
-      subject.save.should be_true
-      NestedAttributesSpec::Record.all.map(&:persisted_string).should == (persist ? [persist] : [])
+      expect(subject.save).to be_truthy
+      expect(NestedAttributesSpec::Record.all.map(&:persisted_string)).to eq(persist ? [persist] : [])
     end
 
 
     context 'with no record assigned' do
 
       it 'can save' do
-        subject.save.should be_true
+        expect(subject.save).to be_truthy
       end
 
     end
@@ -355,7 +355,7 @@ describe "ActiveType::Object" do
 
       it 'will do nothing' do
         subject.record_attributes = nil
-        subject.record.should be_nil
+        expect(subject.record).to be_nil
       end
 
     end
@@ -423,7 +423,7 @@ describe "ActiveType::Object" do
         subject.record_attributes = { :id => record.id, :_destroy => true }
 
         should_assign_and_persist("existing string", nil)
-        subject.record.should == nil
+        expect(subject.record).to eq(nil)
       end
 
       it 'raises an error if the assigned record does not match the id' do
@@ -446,26 +446,26 @@ describe "ActiveType::Object" do
       describe '#valid?' do
 
         it 'is true if there is no record assigned' do
-          subject.valid?.should be_true
+          expect(subject.valid?).to be_truthy
         end
 
         it 'is true if the assigned record is valid' do
           subject.record = NestedAttributesSpec::Record.new
 
-          subject.valid?.should be_true
+          expect(subject.valid?).to be_truthy
         end
 
         it 'is false the assigned record has an error' do
           subject.record = NestedAttributesSpec::Record.new(:error => 'some error')
 
-          subject.valid?.should be_false
+          expect(subject.valid?).to be_falsey
         end
 
         it 'is copies the error to the record' do
           subject.record = NestedAttributesSpec::Record.new(:error => 'some error')
 
           subject.valid?
-          subject.errors["record.base"].should == ['some error']
+          expect(subject.errors["record.base"]).to eq(['some error'])
         end
 
       end
@@ -492,10 +492,10 @@ describe "ActiveType::Object" do
         subject.record_attributes = { :persisted_string => "string" }
         subject.another_record_attributes = {:persisted_string => "another string"}
 
-        subject.record.persisted_string.should == "string"
-        subject.another_record.persisted_string.should == "another string"
-        subject.save.should be_true
-        NestedAttributesSpec::Record.all.map(&:persisted_string).should =~ ["string", "another string"]
+        expect(subject.record.persisted_string).to eq("string")
+        expect(subject.another_record.persisted_string).to eq("another string")
+        expect(subject.save).to be_truthy
+        expect(NestedAttributesSpec::Record.all.map(&:persisted_string)).to match_array(["string", "another string"])
       end
 
       it 'allows overriding of the accessor' do
@@ -509,12 +509,12 @@ describe "ActiveType::Object" do
           end
         end.new
 
-        subject.should_receive(:reached)
+        expect(subject).to receive(:reached)
         subject.record_attributes = { :persisted_string => "string" }
 
-        subject.record.persisted_string.should == "string"
-        subject.save.should be_true
-        NestedAttributesSpec::Record.all.map(&:persisted_string).should =~ ["string"]
+        expect(subject.record.persisted_string).to eq("string")
+        expect(subject.save).to be_truthy
+        expect(NestedAttributesSpec::Record.all.map(&:persisted_string)).to match_array(["string"])
       end
 
     end
@@ -532,8 +532,8 @@ describe "ActiveType::Object" do
         subject.global_records_attributes = { 1 => { :persisted_string => "string" } }
         subject.global_record_attributes = { :persisted_string => "string" }
 
-        subject.global_records.first.should be_a(GlobalRecord)
-        subject.global_record.should be_a(GlobalRecord)
+        expect(subject.global_records.first).to be_a(GlobalRecord)
+        expect(subject.global_record).to be_a(GlobalRecord)
       end
 
     end
@@ -554,15 +554,15 @@ describe "ActiveType::Object" do
         subject.records_attributes = { 1 => { :persisted_string => "string" } }
         subject.record_attributes = { :persisted_string => "string" }
 
-        subject.records.first.should be_a(NestedAttributesSpec::Record)
-        subject.record.should be_a(NestedAttributesSpec::Record)
+        expect(subject.records.first).to be_a(NestedAttributesSpec::Record)
+        expect(subject.record).to be_a(NestedAttributesSpec::Record)
       end
 
       it 'evals the scope lazily in the instance' do
         subject.default_value = "default value"
         subject.default_records_attributes = [{}]
 
-        subject.default_records.map(&:persisted_string).should == ["default value"]
+        expect(subject.default_records.map(&:persisted_string)).to eq(["default value"])
       end
 
       it 'caches the scope' do
@@ -571,7 +571,7 @@ describe "ActiveType::Object" do
         subject.default_value = "another default value"
         subject.default_records_attributes = [{}]
 
-        subject.default_records.map(&:persisted_string).should == ["default value", "default value"]
+        expect(subject.default_records.map(&:persisted_string)).to eq(["default value", "default value"])
       end
 
       it 'caches the scope per instance' do
@@ -582,7 +582,7 @@ describe "ActiveType::Object" do
         another_subject.default_value = "another default value"
         another_subject.default_records_attributes = [{}]
 
-        another_subject.default_records.map(&:persisted_string).should == ["another default value"]
+        expect(another_subject.default_records.map(&:persisted_string)).to eq(["another default value"])
       end
 
       it 'raises an error if the child record is not found via the scope' do
@@ -620,7 +620,7 @@ describe "ActiveType::Object" do
 
       it 'nests_many uses the build_scope to find records' do
         subject.records_attributes = [{}]
-        subject.records.first.persisted_string.should == 'buildable'
+        expect(subject.records.first.persisted_string).to eq('buildable')
       end
 
       it 'nests_one uses the find_scope to find records' do
@@ -639,7 +639,7 @@ describe "ActiveType::Object" do
 
       it 'nests_one uses the build_scope to find records' do
         subject.record_attributes = {}
-        subject.record.persisted_string.should == 'buildable'
+        expect(subject.record.persisted_string).to eq('buildable')
       end
 
     end
@@ -665,14 +665,14 @@ describe "ActiveType::Object" do
       end
 
       it 'accepts a :default value' do
-        subject.records.map(&:persisted_string).should == ["default"]
-        subject.record.persisted_string.should == "default"
+        expect(subject.records.map(&:persisted_string)).to eq(["default"])
+        expect(subject.record.persisted_string).to eq("default")
       end
 
       it 'computes the value lazily' do
-        subject.stub :default_record => NestedAttributesSpec::Record.new(:persisted_string => "other default")
-        subject.records.map(&:persisted_string).should == ["other default"]
-        subject.record.persisted_string.should == "other default"
+        allow(subject).to receive_messages :default_record => NestedAttributesSpec::Record.new(:persisted_string => "other default")
+        expect(subject.records.map(&:persisted_string)).to eq(["other default"])
+        expect(subject.record.persisted_string).to eq("other default")
       end
 
     end
@@ -684,8 +684,8 @@ end
 describe "ActiveType::Record" do
 
   it 'supports nested attributes' do
-    ActiveType::Record.should respond_to(:nests_one)
-    ActiveType::Record.should respond_to(:nests_many)
+    expect(ActiveType::Record).to respond_to(:nests_one)
+    expect(ActiveType::Record).to respond_to(:nests_many)
   end
 
 end
@@ -693,8 +693,8 @@ end
 describe "ActiveType::Record" do
 
   it 'supports nested attributes' do
-    ActiveType::Record[NestedAttributesSpec::Record].should respond_to(:nests_one)
-    ActiveType::Record[NestedAttributesSpec::Record].should respond_to(:nests_many)
+    expect(ActiveType::Record[NestedAttributesSpec::Record]).to respond_to(:nests_one)
+    expect(ActiveType::Record[NestedAttributesSpec::Record]).to respond_to(:nests_many)
   end
 
 end

@@ -40,7 +40,7 @@ describe SignUpSpec::User do
     subject.email = "email"
     subject.password = "password"
 
-    subject.should be_valid
+    expect(subject).to be_valid
   end
 
 end
@@ -52,26 +52,26 @@ describe SignUpSpec::SignUp do
     subject.password = "password"
     subject.terms = true
 
-    subject.should_not be_valid
-    subject.errors['email'].should == ["can't be blank"]
+    expect(subject).not_to be_valid
+    expect(subject.errors['email']).to eq(["can't be blank"])
   end
 
   it 'is invalid without accepted terms' do
     subject.email = "email"
     subject.password = "password"
 
-    subject.should_not be_valid
-    subject.errors['terms'].should == ["must be accepted"]
+    expect(subject).not_to be_valid
+    expect(subject.errors['terms']).to eq(["must be accepted"])
   end
 
   context 'with invalid data' do
 
     it 'does not save' do
-      subject.save.should be_false
+      expect(subject.save).to be_falsey
     end
 
     it 'does not send an email' do
-      subject.should_not_receive :send_welcome_email
+      expect(subject).not_to receive :send_welcome_email
       subject.save
     end
 
@@ -87,11 +87,11 @@ describe SignUpSpec::SignUp do
 
     it 'does save' do
       subject.valid?
-      subject.save.should be_true
+      expect(subject.save).to be_truthy
     end
 
     it 'sends the email' do
-      subject.should_receive :send_welcome_email
+      expect(subject).to receive :send_welcome_email
 
       subject.save
     end
