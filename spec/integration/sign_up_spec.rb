@@ -87,7 +87,7 @@ describe SignUpSpec::SignUp do
 
     it 'does save' do
       subject.valid?
-      expect(subject.save).to be_truthy
+      expect(subject.save).to eq(true)
     end
 
     it 'sends the email' do

@@ -55,7 +55,7 @@ describe HolidaySpec::HolidayForm do
   end
 
   it 'can create a list of holidays' do
-    expect(update(params)).to be_truthy
+    expect(update(params)).to eq(true)
 
     holidays = HolidaySpec::Holiday.order(:date)
     expect(holidays.collect(&:name)).to eq(["New Year", "Epiphany"])
@@ -67,7 +67,7 @@ describe HolidaySpec::HolidayForm do
 
     params['1']['name'] += ' 2014'
     params['2']['name'] += ' 2014'
-    expect(update(params)).to be_truthy
+    expect(update(params)).to eq(true)
 
     holidays = HolidaySpec::Holiday.order(:date)
     expect(holidays.collect(&:name)).to eq(["New Year 2014", "Epiphany 2014"])
@@ -78,7 +78,7 @@ describe HolidaySpec::HolidayForm do
     update(params)
 
     params['1']['_destroy'] = '1'
-    expect(update(params)).to be_truthy
+    expect(update(params)).to eq(true)
 
     holidays = HolidaySpec::Holiday.order(:date)
     expect(holidays.collect(&:name)).to eq(["Epiphany"])

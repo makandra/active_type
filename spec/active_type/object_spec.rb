@@ -343,7 +343,7 @@ describe ActiveType::Object do
       it "calls #{callback}", :rollback => false do
         expect(subject).to receive("#{callback}_callback")
 
-        expect(subject.save).to be_truthy
+        expect(subject.save).to eq(true)
       end
 
     end

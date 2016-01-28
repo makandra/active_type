@@ -77,7 +77,7 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
   describe 'persistence' do
     it 'persists to the database' do
       subject.persisted_string = "persisted string"
-      expect(subject.save).to be_truthy
+      expect(subject.save).to eq(true)
 
       expect(subject.class.find(subject.id).persisted_string).to eq("persisted string")
     end
@@ -135,7 +135,7 @@ describe "class ... < ActiveType::Record[ActiveRecord::Base]" do
   describe 'persistence' do
     it 'persists to the database' do
       subject.persisted_string = "persisted string"
-      expect(subject.save).to be_truthy
+      expect(subject.save).to eq(true)
 
       expect(subject.class.find(subject.id).persisted_string).to eq("persisted string")
     end
@@ -210,7 +210,7 @@ describe "ActiveType::Record[ActiveType::Record]" do
   describe 'persistence' do
     it 'persists to the database' do
       subject.persisted_string = "persisted string"
-      expect(subject.save).to be_truthy
+      expect(subject.save).to eq(true)
 
       expect(subject.class.find(subject.id).persisted_string).to eq("persisted string")
     end

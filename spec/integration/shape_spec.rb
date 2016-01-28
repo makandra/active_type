@@ -66,7 +66,7 @@ describe ShapeSpec::ShapeForm do
       'radius' => '20'
     }.with_indifferent_access
 
-    expect(update(params)).to be_truthy
+    expect(update(params)).to eq(true)
 
     expect(ShapeSpec::Circle.all.collect(&:radius)).to eq([20])
     expect(ShapeSpec::Rectangle.count).to eq(0)
@@ -79,7 +79,7 @@ describe ShapeSpec::ShapeForm do
       'width' => '30'
     }.with_indifferent_access
 
-    expect(update(params)).to be_truthy
+    expect(update(params)).to eq(true)
 
     expect(ShapeSpec::Circle.count).to eq(0)
     expect(ShapeSpec::Rectangle.all.collect(&:length)).to eq([100])
@@ -94,7 +94,7 @@ describe ShapeSpec::ShapeForm do
     update(params)
 
     params['radius'] = '30'
-    expect(update(params)).to be_truthy
+    expect(update(params)).to eq(true)
 
     expect(ShapeSpec::Circle.all.collect(&:radius)).to eq([30])
   end

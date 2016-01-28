@@ -211,7 +211,7 @@ describe ActiveType::Record do
 
     it 'persists to the database' do
       subject.persisted_string = "persisted string"
-      expect(subject.save).to be_truthy
+      expect(subject.save).to eq(true)
 
       expect(subject.class.find(subject.id).persisted_string).to eq("persisted string")
     end

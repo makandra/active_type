@@ -88,7 +88,7 @@ describe SignInSpec::SignIn do
     end
 
     it 'does save' do
-      expect(subject.save).to be_truthy
+      expect(subject.save).to eq(true)
     end
 
     it 'sets the session' do

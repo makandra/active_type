@@ -18,7 +18,7 @@ shared_examples_for "a class supporting dirty tracking for virtual attributes" d
 
     it 'returns true if the attribute is not nil' do
       subject.virtual_attribute = 'foo'
-      expect(subject.virtual_attribute_changed?).to be_truthy
+      expect(subject.virtual_attribute_changed?).to eq(true)
     end
 
     it 'returns false if the attribute is nil' do

@@ -55,7 +55,7 @@ describe "ActiveType::Object" do
 
     def should_assign_and_persist(assign, persist = assign)
       expect(subject.records.map(&:persisted_string)).to eq(assign)
-      expect(subject.save).to be_truthy
+      expect(subject.save).to eq(true)
       expect(NestedAttributesSpec::Record.all.map(&:persisted_string)).to match_array(persist)
     end
 
@@ -63,7 +63,7 @@ describe "ActiveType::Object" do
     context 'with no records assigned' do
 
       it 'can save' do
-        expect(subject.save).to be_truthy
+        expect(subject.save).to eq(true)
       end
 
     end
@@ -278,7 +278,7 @@ describe "ActiveType::Object" do
       describe '#valid?' do
 
         it 'is true if there are no records assigned' do
-          expect(subject.valid?).to be_truthy
+          expect(subject.valid?).to eq(true)
         end
 
         it 'is true if all records are valid' do
@@ -287,7 +287,7 @@ describe "ActiveType::Object" do
             NestedAttributesSpec::Record.new,
           ]
 
-          expect(subject.valid?).to be_truthy
+          expect(subject.valid?).to eq(true)
         end
 
         it 'is false if one child has an error' do
@@ -338,7 +338,7 @@ describe "ActiveType::Object" do
       else
         expect(subject.record).to be_nil
       end
-      expect(subject.save).to be_truthy
+      expect(subject.save).to eq(true)
       expect(NestedAttributesSpec::Record.all.map(&:persisted_string)).to eq(persist ? [persist] : [])
     end
 
@@ -346,7 +346,7 @@ describe "ActiveType::Object" do
     context 'with no record assigned' do
 
       it 'can save' do
-        expect(subject.save).to be_truthy
+        expect(subject.save).to eq(true)
       end
 
     end
@@ -446,13 +446,13 @@ describe "ActiveType::Object" do
       describe '#valid?' do
 
         it 'is true if there is no record assigned' do
-          expect(subject.valid?).to be_truthy
+          expect(subject.valid?).to eq(true)
         end
 
         it 'is true if the assigned record is valid' do
           subject.record = NestedAttributesSpec::Record.new
 
-          expect(subject.valid?).to be_truthy
+          expect(subject.valid?).to eq(true)
         end
 
         it 'is false the assigned record has an error' do
@@ -494,7 +494,7 @@ describe "ActiveType::Object" do
 
         expect(subject.record.persisted_string).to eq("string")
         expect(subject.another_record.persisted_string).to eq("another string")
-        expect(subject.save).to be_truthy
+        expect(subject.save).to eq(true)
         expect(NestedAttributesSpec::Record.all.map(&:persisted_string)).to match_array(["string", "another string"])
       end
 
@@ -513,7 +513,7 @@ describe "ActiveType::Object" do
         subject.record_attributes = { :persisted_string => "string" }
 
         expect(subject.record.persisted_string).to eq("string")
-        expect(subject.save).to be_truthy
+        expect(subject.save).to eq(true)
         expect(NestedAttributesSpec::Record.all.map(&:persisted_string)).to match_array(["string"])
       end
 
