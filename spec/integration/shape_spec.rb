@@ -55,9 +55,7 @@ describe ShapeSpec::ShapeForm do
   def update(params)
     form.child_type = params[:type]
     form.child_attributes = params.except(:type)
-    if form.save
-      params['id'] = form.child.id
-    end
+    form.save
   end
 
   it 'can create a circle' do
