@@ -13,6 +13,9 @@ module ObjectSpec
 
   end
 
+  class PlainObject < ActiveType::Object
+  end
+
 
   class ObjectWithValidations < Object
 
@@ -319,6 +322,12 @@ describe ActiveType::Object do
 
   describe 'duping' do
     it_should_behave_like "a class supporting dup for attributes", ActiveType::Object
+
+    it 'can dup without attributes' do
+      expect {
+        ObjectSpec::PlainObject.new.dup
+      }.not_to raise_error
+    end
   end
 
   describe 'dirty tracking' do
