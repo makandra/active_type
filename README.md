@@ -207,10 +207,10 @@ end
   - or as an array
 
     ```ruby
-    {
-      [ date: "new record's date" ],
-      [ id: '3', date: "existing record's date" ]
-    }
+    [
+      { date: "new record's date" },
+      { id: '3', date: "existing record's date" }
+    ]
     ```
 
 To use it with single records, use `nests_one`. It works like `accept_nested_attributes` does for `has_one`. Use `.record_attributes =` to build the child record.
