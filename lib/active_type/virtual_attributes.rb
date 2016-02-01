@@ -118,7 +118,7 @@ module ActiveType
 
     def initialize_dup(other)
       @virtual_attributes_cache = {}
-      @virtual_attributes = VirtualAttributes.deep_dup(@virtual_attributes)
+      @virtual_attributes = VirtualAttributes.deep_dup(virtual_attributes)
 
       super
     end
