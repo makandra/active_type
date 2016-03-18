@@ -43,7 +43,7 @@ module ActiveType
     module NativeCasters
 
       # Adapter for Rails 3.0 - 4.1.
-      # In these versions, casting logic lives in ActiveRecord::ConnectionAdapters::Colum
+      # In these versions, casting logic lives in ActiveRecord::ConnectionAdapters::Column
       class DelegateToColumn
 
         def initialize(type)

@@ -61,6 +61,7 @@ module ObjectSpec
     before_validation :before_validation_callback
     after_save :after_save_callback
     after_commit :after_commit_callback
+    after_rollback :after_rollback_callback
 
     def before_save_callback
     end
@@ -72,6 +73,9 @@ module ObjectSpec
     end
 
     def after_commit_callback
+    end
+
+    def after_rollback_callback
     end
 
   end
@@ -364,6 +368,20 @@ describe ActiveType::Object do
 
         expect(subject.save).to be_falsey
       end
+
+    end
+
+    it 'runs after_rollback callbacks if an after_save callback raises an error', :rollback => false do
+      expect(subject).to receive(:after_save_callback).ordered.and_raise(ActiveRecord::Rollback)
+      expect(subject).to receive(:after_rollback_callback).ordered
+
+      expect(subject.save).to be_falsey
+    end
+
+    it 'does not run after_rollback callbacks if after_save does not raise an error', :rollback => false do
+      expect(subject).to_not receive(:after_rollback_callback)
+
+      expect(subject.save).to be_truthy
 
     end
 
