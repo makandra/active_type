@@ -17,10 +17,8 @@ when /mysql2/
     config.merge!(custom_config)
   end
   ActiveRecord::Base.establish_connection(config)
-when /sqlite3/
-  ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => ':memory:')
 else
-  raise "Unknown database type in Gemfile suffix: #{ENV['BUNDLE_GEMFILE']}"
+  ActiveRecord::Base.establish_connection(:adapter => 'sqlite3', :database => ':memory:')
 end
 
 
