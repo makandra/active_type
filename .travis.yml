@@ -38,18 +38,26 @@ matrix:
     - rvm: "1.8.7"
       gemfile: gemfiles/Gemfile.4.2.1.pg
     - rvm: "1.9.3"
+      gemfile: gemfiles/Gemfile.4.0.sqlite3
+    - rvm: "1.9.3"
       gemfile: gemfiles/Gemfile.4.2.1.mysql2
     - rvm: "1.9.3"
       gemfile: gemfiles/Gemfile.4.2.1.pg
+    - rvm: "1.9.3"
+      gemfile: gemfiles/Gemfile.3.2.mysql2
+    - rvm: "2.0.0"
+      gemfile: gemfiles/Gemfile.4.0.sqlite3
     - rvm: "2.0.0"
       gemfile: gemfiles/Gemfile.4.2.1.mysql2
     - rvm: "2.0.0"
       gemfile: gemfiles/Gemfile.4.2.1.pg
-    - rvm: "2.1.2"
-      gemfile: gemfiles/Gemfile.4.0.sqlite3
-    - rvm: "2.2.0"
-      gemfile: gemfiles/Gemfile.3.2.sqlite3
-    - rvm: "2.2.0"
+    - rvm: "2.0.0"
       gemfile: gemfiles/Gemfile.3.2.mysql2
-    - rvm: "2.2.0"
+    - rvm: "2.1.7"
       gemfile: gemfiles/Gemfile.4.0.sqlite3
+    - rvm: "2.1.7"
+      gemfile: gemfiles/Gemfile.4.2.1.mysql2
+    - rvm: "2.1.7"
+      gemfile: gemfiles/Gemfile.4.2.1.pg
+    - rvm: "2.1.7"
+      gemfile: gemfiles/Gemfile.3.2.mysql2
