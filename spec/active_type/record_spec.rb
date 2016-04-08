@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'ostruct'
 
 module RecordSpec
 
@@ -149,6 +150,21 @@ describe ActiveType::Record do
     describe 'untyped columns' do
       it_should_behave_like 'an untyped column', :virtual_attribute
     end
+  end
+
+  describe '#inspect' do
+
+    it 'returns the contents of the object as a nicely formatted string' do
+      subject.virtual_string = "string"
+      subject.virtual_integer = 17
+      subject.virtual_time = Time.now
+      subject.virtual_date = Date.today
+      subject.virtual_boolean = true
+      subject.virtual_attribute = OpenStruct.new({:test => "openstruct"})
+
+      expect(subject.inspect).to eq("#<RecordSpec::Record virtual_attribute: #<OpenStruct test=\"openstruct\">, virtual_boolean: true, virtual_date: \"#{Date.today}\", virtual_integer: 17, virtual_string: \"string\", virtual_time: \"#{Time.now.to_s(:db)}\">")
+    end
+
   end
 
   describe '#attributes' do
