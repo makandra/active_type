@@ -42,29 +42,6 @@ module ActiveType
       []
     end
 
-    def attribute_for_inspect(attr_name)
-      value = read_virtual_attribute(attr_name)
-
-      if value.is_a?(String) && value.length > 50
-        "#{value[0, 50]}...".inspect
-      elsif value.is_a?(Date) || value.is_a?(Time)
-        %("#{value.to_s(:db)}")
-      elsif value.is_a?(Array) && value.size > 10
-        inspected = value.first(10).inspect
-        %(#{inspected[0...-1]}, ...])
-      else
-        value.inspect
-      end
-    end
-
-    # Returns the contents of the record as a nicely formatted string.
-    def inspect
-      inspection = self.class._virtual_column_names.collect { |name|
-                         "#{name}: #{attribute_for_inspect(name)}"
-                     }.compact.join(", ")
-      "#<#{self.class} #{inspection}>"
-    end
-
     def transaction(&block)
       @_current_transaction_records ||= []
       yield

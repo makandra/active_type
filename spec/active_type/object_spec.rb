@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'ostruct'
 
 module ObjectSpec
 
@@ -210,8 +211,8 @@ describe ActiveType::Object do
       subject.virtual_time = Time.now
       subject.virtual_date = Date.today
       subject.virtual_boolean = true
-      subject.virtual_attribute = OpenStruct.new({test: "openstruct"})
-    
+      subject.virtual_attribute = OpenStruct.new({:test => "openstruct"})
+
         expect(subject.inspect).to eq("#<ObjectSpec::Object virtual_string: \"string\", virtual_integer: 17, virtual_time: \"#{Time.now.to_s(:db)}\", virtual_date: \"#{Date.today}\", virtual_boolean: true, virtual_attribute: #<OpenStruct test=\"openstruct\">>")
     end
 
