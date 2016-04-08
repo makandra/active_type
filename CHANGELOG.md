@@ -4,9 +4,30 @@ All notable changes to this project will be documented in this file.
 
 ActiveType is in a pre-1.0 state. This means that its APIs and behavior are subject to breaking changes without deprecation notices. Until 1.0, version numbers will follow a [Semver][]-ish `0.y.z` format, where `y` is incremented when new features or breaking changes are introduced, and `z` is incremented for lesser changes or bug fixes.
 
-## [Unreleased]
+## [0.5.0][] (2016-04-08)
 
-* Your contribution here!
+* Nicer `#inspect` method.
+
+
+## [0.4.5][] (2016-02-01)
+
+* Fixed issue `#dup`ing `ActiveType::Object`
+
+## [0.4.4][] (2016-01-18)
+
+* Call `#after_commit` for `ActiveType::Object`
+
+## [0.4.3][] (2015-11-11)
+
+* Fix issue with Booleans on mysql.
+
+## [0.4.2][] (2015-09-24)
+
+* Add `attribute_will_change!` for virtual attributes.
+
+## [0.4.1][] (2015-09-24)
+
+* Add `attribute_was` for virtual attributes.
 
 ## [0.4.0][] (2015-06-12)
 
