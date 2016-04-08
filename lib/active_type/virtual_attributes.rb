@@ -186,7 +186,7 @@ module ActiveType
     def inspect
       inspection = self.class._virtual_column_names.collect { |name|
                          "#{name}: #{self.class.attribute_for_inspect(read_virtual_attribute(name))}"
-                     }.compact.join(", ")
+                     }.sort.compact.join(", ")
       "#<#{self.class} #{inspection}>"
     end
 

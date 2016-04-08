@@ -162,7 +162,7 @@ describe ActiveType::Record do
       subject.virtual_boolean = true
       subject.virtual_attribute = OpenStruct.new({:test => "openstruct"})
 
-        expect(subject.inspect).to eq("#<RecordSpec::Record virtual_string: \"string\", virtual_integer: 17, virtual_time: \"#{Time.now.to_s(:db)}\", virtual_date: \"#{Date.today}\", virtual_boolean: true, virtual_attribute: #<OpenStruct test=\"openstruct\">>")
+      expect(subject.inspect).to eq("#<RecordSpec::Record virtual_attribute: #<OpenStruct test=\"openstruct\">, virtual_boolean: true, virtual_date: \"#{Date.today}\", virtual_integer: 17, virtual_string: \"string\", virtual_time: \"#{Time.now.to_s(:db)}\">")
     end
 
   end
