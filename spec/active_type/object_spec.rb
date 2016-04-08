@@ -210,14 +210,15 @@ describe ActiveType::Object do
   describe '#inspect' do
 
     it 'returns the contents of the object as a nicely formatted string' do
+      t = Time.now
       subject.virtual_string = "string"
       subject.virtual_integer = 17
-      subject.virtual_time = Time.now
+      subject.virtual_time = t
       subject.virtual_date = Date.today
       subject.virtual_boolean = true
       subject.virtual_attribute = OpenStruct.new({:test => "openstruct"})
 
-      expect(subject.inspect).to eq("#<ObjectSpec::Object virtual_attribute: #<OpenStruct test=\"openstruct\">, virtual_boolean: true, virtual_date: \"#{Date.today}\", virtual_integer: 17, virtual_string: \"string\", virtual_time: \"#{Time.now.to_s(:db)}\">")
+      expect(subject.inspect).to eq("#<ObjectSpec::Object virtual_attribute: #<OpenStruct test=\"openstruct\">, virtual_boolean: true, virtual_date: \"#{Date.today}\", virtual_integer: 17, virtual_string: \"string\", virtual_time: \"#{t.to_s(:db)}\">")
     end
 
   end
