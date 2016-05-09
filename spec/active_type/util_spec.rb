@@ -9,6 +9,7 @@ module UtilSpec
   class ExtendedRecord < ActiveType::Record[BaseRecord]
 
     attribute :virtual_string
+    attribute :virtual_string_for_validation
     after_initialize :set_virtual_string
 
     def set_virtual_string
@@ -115,6 +116,16 @@ describe ActiveType::Util do
         extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
         expect(extended_record).to be_a(UtilSpec::ExtendedRecord)
         expect(extended_record.changes).to eq({ 'persisted_string' => ['foo', 'bar'] })
+      end
+
+      it 'associates the error object correctly with the new type (BUGFIX)' do
+        base_record = UtilSpec::BaseRecord.create!(:persisted_string => 'foo')
+        extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
+        expect {
+          extended_record.errors.add_on_empty(:virtual_string_for_validation)
+        }.not_to raise_error
+        expect(extended_record.errors.size).to eq 1
+        expect(base_record.errors.size).to eq 0
       end
 
     end

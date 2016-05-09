@@ -33,6 +33,7 @@ module ActiveType
         # Rails 3.2, 4.2
         errors = record.errors
         if errors.kind_of? ActiveModel::Errors
+          errors = errors.dup
           # otherwise attributes defined in ActiveType::Record
           # won't be visible to `errors.add`
           errors.instance_variable_set(:@base, casted)
