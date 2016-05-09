@@ -31,7 +31,13 @@ module ActiveType
         # Rails 3.2, 4.2
         casted.instance_variable_set(:@destroyed, record.destroyed?)
         # Rails 3.2, 4.2
-        casted.instance_variable_set(:@errors, record.errors)
+        errors = record.errors
+        if errors.kind_of? ActiveModel::Errors
+          # otherwise attributes defined in ActiveType::Record
+          # won't be visible to `errors.add`
+          errors.instance_variable_set(:@base, casted)
+        end
+        casted.instance_variable_set(:@errors, errors)
       end
     end
 
