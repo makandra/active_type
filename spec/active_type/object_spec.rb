@@ -4,7 +4,9 @@ require 'ostruct'
 module ObjectSpec
 
   def self.type
-    @type ||= ActiveModel::Type::Value.new
+    if ActiveRecord::VERSION::MAJOR >= 5
+      @type ||= ActiveModel::Type::Value.new
+    end
   end
 
   class Object < ActiveType::Object
