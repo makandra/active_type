@@ -253,4 +253,10 @@ describe ActiveType::Record do
     it_should_behave_like 'a belongs_to association', :child, RecordSpec::Child
   end
 
+  it 'can access virtual attributes after .find' do
+    subject.save!
+    expect(subject.class.find(subject.id).virtual_string).to eq(nil)
+    expect(subject.class.find(subject.id).virtual_string).to eq(nil)
+  end
+
 end
