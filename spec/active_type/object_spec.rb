@@ -3,6 +3,12 @@ require 'ostruct'
 
 module ObjectSpec
 
+  def self.type
+    if ActiveRecord::VERSION::MAJOR >= 5
+      @type ||= ActiveModel::Type::Value.new
+    end
+  end
+
   class Object < ActiveType::Object
 
     attribute :virtual_string, :string
@@ -11,6 +17,7 @@ module ObjectSpec
     attribute :virtual_date, :date
     attribute :virtual_boolean, :boolean
     attribute :virtual_attribute
+    attribute :virtual_type_attribute, ObjectSpec.type
 
   end
 
@@ -171,6 +178,10 @@ describe ActiveType::Object do
     describe 'untyped columns' do
       it_should_behave_like 'an untyped column', :virtual_attribute
     end
+
+    describe 'type columns' do
+      it_should_behave_like 'a coercible type column', :virtual_type_attribute, ObjectSpec.type
+    end
   end
 
   describe 'query methods' do
@@ -218,7 +229,7 @@ describe ActiveType::Object do
       subject.virtual_boolean = true
       subject.virtual_attribute = OpenStruct.new({:test => "openstruct"})
 
-      expect(subject.inspect).to eq("#<ObjectSpec::Object virtual_attribute: #<OpenStruct test=\"openstruct\">, virtual_boolean: true, virtual_date: \"#{Date.today}\", virtual_integer: 17, virtual_string: \"string\", virtual_time: \"#{t.to_s(:db)}\">")
+      expect(subject.inspect).to eq("#<ObjectSpec::Object virtual_attribute: #<OpenStruct test=\"openstruct\">, virtual_boolean: true, virtual_date: \"#{Date.today}\", virtual_integer: 17, virtual_string: \"string\", virtual_time: \"#{t.to_s(:db)}\", virtual_type_attribute: nil>")
     end
 
   end
@@ -236,6 +247,7 @@ describe ActiveType::Object do
         "virtual_date" => nil,
         "virtual_boolean" => nil,
         "virtual_attribute" => nil,
+        "virtual_type_attribute" => nil,
       })
     end
 
@@ -252,6 +264,7 @@ describe ActiveType::Object do
         "virtual_boolean" => nil,
         "virtual_attribute" => nil,
         "another_virtual_string" => nil,
+        "virtual_type_attribute" => nil,
       })
     end
 
@@ -268,6 +281,7 @@ describe ActiveType::Object do
         "virtual_boolean" => nil,
         "virtual_attribute" => nil,
         "another_virtual_string" => nil,
+        "virtual_type_attribute" => nil,
       })
     end
 
@@ -381,7 +395,13 @@ describe ActiveType::Object do
     %w[before_validation before_save].each do |callback|
 
       it "aborts the chain when #{callback} returns false" do
-        allow(subject).to receive_messages("#{callback}_callback" => false)
+        if ActiveRecord::VERSION::MAJOR >= 5
+          allow(subject).to receive("#{callback}_callback") do
+            throw(:abort)
+          end
+        else
+          allow(subject).to receive_messages("#{callback}_callback" => false)
+        end
 
         expect(subject.save).to be_falsey
       end
@@ -404,9 +424,17 @@ describe ActiveType::Object do
 
   end
 
+  describe '#id' do
+
+    it 'is nil' do
+      expect(subject.id).to eq nil
+    end
+
+  end
+
   describe '.find' do
     it 'raises an error' do
-      error = if ActiveRecord::VERSION::MAJOR >= 4 && ActiveRecord::VERSION::MINOR >= 1
+      error = if ActiveRecord::VERSION::MAJOR == 4 && ActiveRecord::VERSION::MINOR >= 1
         ActiveRecord::UnknownPrimaryKey
       else
         ActiveRecord::RecordNotFound

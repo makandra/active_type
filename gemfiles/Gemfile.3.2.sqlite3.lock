@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    active_type (0.5.1)
+    active_type (0.5.2)
       activerecord (>= 3.2)
 
 GEM
@@ -50,4 +50,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   1.11.2
+   1.12.1

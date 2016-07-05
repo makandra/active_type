@@ -50,6 +50,23 @@ class SignUp < ActiveType::Record[User]
 end
 ```
 
+
+### A note on Rails 5
+
+Rails 5 comes with its own implementation of `.attribute`. This implementation is functionally very
+similar, but not identical to ActiveType's.
+
+We have decided to continue to use our own implementation. This means that if you use ActiveType, `ActiveRecord::Base.attribute` will be overriden.
+
+The following behaviours are different than in vanilla Rails 5:
+
+- Defaults `proc`s are evaluated in instance context, not class context.
+- Defaults are evaluated lazily.
+- You can override attributes with custom methods and use `super`.
+- Attributes will work on records retrieved via `.find`.
+- Attributes will be duped if you dup the record.
+
+
 ### ActiveType::Object
 
 
@@ -307,14 +324,14 @@ sign_up.is_a?(SignUp) # => true
 Supported Rails versions
 ------------------------
 
-ActiveType is tested against ActiveRecord 3.2, 4.0, 4.1 and 4.2.
+ActiveType is tested against ActiveRecord 3.2, 4.0, 4.1, 4.2 and 5.0.
 
 Later versions might work, earlier will not.
 
 Supported Ruby versions
 ------------------------
 
-ActiveType is tested against MRI 1.8.7 (for 3.2 only), 1.9.3, 2.0.0, 2.1.2.
+ActiveType is tested against 1.9.3, 2.0.0, 2.1.2 (for 4.x only), 2.2.4 and 2.3.1.
 
 
 Installation
