@@ -28,7 +28,7 @@ module ActiveType
       end
 
       def add_attribute(name, options)
-        @owner.attribute(name, options)
+        @owner.attribute(name, :object, options)
       end
 
       def add_writer_method(name, association)

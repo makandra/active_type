@@ -4,8 +4,10 @@ module ActiveType
     def self.get(type, connection)
       native_caster = if ActiveRecord::VERSION::STRING < '4.2'
         NativeCasters::DelegateToColumn.new(type)
+      elsif ActiveRecord::VERSION::STRING < '5'
+        NativeCasters::DelegateToRails4Type.new(type, connection)
       else
-        NativeCasters::DelegateToType.new(type, connection)
+        NativeCasters::DelegateToRails5Type.new(type)
       end
       new(type, native_caster)
     end
@@ -62,7 +64,7 @@ module ActiveType
 
       # Adapter for Rails 4.2+.
       # In these versions, casting logic lives in subclasses of ActiveRecord::Type::Value
-      class DelegateToType
+      class DelegateToRails4Type
 
         def initialize(type, connection)
           # The specified type (e.g. "string") may not necessary match the
@@ -83,6 +85,28 @@ module ActiveType
 
         def type_cast_from_user(value)
           @active_record_type.type_cast_from_user(value)
+        end
+
+      end
+
+      # Adapter for Rails 5+.
+      # In these versions, casting logic lives in subclasses of ActiveRecord::Type::Value
+      class DelegateToRails5Type
+
+        def initialize(type)
+          @active_record_type = lookup(type)
+        end
+
+        def type_cast_from_user(value)
+          @active_record_type.cast(value)
+        end
+
+        private
+
+        def lookup(type)
+          ActiveRecord::Type.lookup(type)
+        rescue ::ArgumentError => e
+          ActiveRecord::Type::Value.new
         end
 
       end
