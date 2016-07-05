@@ -331,7 +331,7 @@ Later versions might work, earlier will not.
 Supported Ruby versions
 ------------------------
 
-ActiveType is tested against MRI 1.8.7 (for 3.2 only), 1.9.3, 2.0.0, 2.1.2 (for 4.x only), 2.2.4 and 2.3.1.
+ActiveType is tested against 1.9.3, 2.0.0, 2.1.2 (for 4.x only), 2.2.4 and 2.3.1.
 
 
 Installation

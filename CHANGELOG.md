@@ -6,6 +6,7 @@ ActiveType is in a pre-1.0 state. This means that its APIs and behavior are subj
 
 ## [0.6.0][] (2016-07-05)
 
+* Drop support for 1.8.7.
 * Rails 5 compatibility.
 
 ## [0.5.1][] (2016-05-09)
