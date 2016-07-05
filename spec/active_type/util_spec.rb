@@ -124,7 +124,8 @@ describe ActiveType::Util do
         base_record = UtilSpec::BaseRecord.create!(:persisted_string => 'foo')
         extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
         expect {
-          extended_record.errors.add_on_empty(:virtual_string_for_validation)
+          value = extended_record.virtual_string_for_validation
+          extended_record.errors.add(:virtual_string_for_validation, :empty) if value.nil? || value.empty?
         }.not_to raise_error
         expect(extended_record.errors.size).to eq 1
         expect(base_record.errors.size).to eq 0
