@@ -381,7 +381,13 @@ describe ActiveType::Object do
     %w[before_validation before_save].each do |callback|
 
       it "aborts the chain when #{callback} returns false" do
-        allow(subject).to receive_messages("#{callback}_callback" => false)
+        if ActiveRecord::VERSION::MAJOR >= 5
+          allow(subject).to receive("#{callback}_callback") do
+            throw(:abort)
+          end
+        else
+          allow(subject).to receive_messages("#{callback}_callback" => false)
+        end
 
         expect(subject.save).to be_falsey
       end
