@@ -3,6 +3,10 @@ require 'ostruct'
 
 module ObjectSpec
 
+  def self.type
+    @type ||= ActiveModel::Type::Value.new
+  end
+
   class Object < ActiveType::Object
 
     attribute :virtual_string, :string
@@ -11,6 +15,7 @@ module ObjectSpec
     attribute :virtual_date, :date
     attribute :virtual_boolean, :boolean
     attribute :virtual_attribute
+    attribute :virtual_type_attribute, ObjectSpec.type
 
   end
 
@@ -171,6 +176,10 @@ describe ActiveType::Object do
     describe 'untyped columns' do
       it_should_behave_like 'an untyped column', :virtual_attribute
     end
+
+    describe 'type columns' do
+      it_should_behave_like 'a coercible type column', :virtual_type_attribute, ObjectSpec.type
+    end
   end
 
   describe 'query methods' do
@@ -218,7 +227,7 @@ describe ActiveType::Object do
       subject.virtual_boolean = true
       subject.virtual_attribute = OpenStruct.new({:test => "openstruct"})
 
-      expect(subject.inspect).to eq("#<ObjectSpec::Object virtual_attribute: #<OpenStruct test=\"openstruct\">, virtual_boolean: true, virtual_date: \"#{Date.today}\", virtual_integer: 17, virtual_string: \"string\", virtual_time: \"#{t.to_s(:db)}\">")
+      expect(subject.inspect).to eq("#<ObjectSpec::Object virtual_attribute: #<OpenStruct test=\"openstruct\">, virtual_boolean: true, virtual_date: \"#{Date.today}\", virtual_integer: 17, virtual_string: \"string\", virtual_time: \"#{t.to_s(:db)}\", virtual_type_attribute: nil>")
     end
 
   end
@@ -236,6 +245,7 @@ describe ActiveType::Object do
         "virtual_date" => nil,
         "virtual_boolean" => nil,
         "virtual_attribute" => nil,
+        "virtual_type_attribute" => nil,
       })
     end
 
@@ -252,6 +262,7 @@ describe ActiveType::Object do
         "virtual_boolean" => nil,
         "virtual_attribute" => nil,
         "another_virtual_string" => nil,
+        "virtual_type_attribute" => nil,
       })
     end
 
@@ -268,6 +279,7 @@ describe ActiveType::Object do
         "virtual_boolean" => nil,
         "virtual_attribute" => nil,
         "another_virtual_string" => nil,
+        "virtual_type_attribute" => nil,
       })
     end
 

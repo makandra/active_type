@@ -226,3 +226,19 @@ shared_examples_for 'an untyped column' do |column|
     expect(subject.send(column)).to eq(object)
   end
 end
+
+
+shared_examples_for 'a coercible type column' do |column, type|
+
+  it 'is nil by default' do
+    expect(subject.send(column)).to be_nil
+  end
+
+  it 'leaves strings alone' do
+    expect(type).to receive(:cast).with('input').and_return('output')
+    subject.send(:"#{column}=", 'input')
+
+    expect(subject.send(column)).to eq('output')
+  end
+
+end

@@ -3,6 +3,10 @@ require 'ostruct'
 
 module RecordSpec
 
+  def self.type
+    @type ||= ActiveModel::Type::Value.new
+  end
+
   class Record < ActiveType::Record
 
     attribute :virtual_string, :string
@@ -11,6 +15,7 @@ module RecordSpec
     attribute :virtual_date, :date
     attribute :virtual_boolean, :boolean
     attribute :virtual_attribute
+    attribute :virtual_type_attribute, RecordSpec.type
 
   end
 
@@ -151,6 +156,10 @@ describe ActiveType::Record do
     describe 'untyped columns' do
       it_should_behave_like 'an untyped column', :virtual_attribute
     end
+
+    describe 'type columns' do
+      it_should_behave_like 'a coercible type column', :virtual_type_attribute, RecordSpec.type
+    end
   end
 
   describe '#inspect' do
@@ -166,7 +175,7 @@ describe ActiveType::Record do
       subject.virtual_boolean = true
       subject.virtual_attribute = OpenStruct.new({:test => "openstruct"})
 
-      expect(subject.inspect).to eq("#<RecordSpec::Record id: nil, persisted_boolean: nil, persisted_date: nil, persisted_integer: 20, persisted_string: \"persisted string\", persisted_time: nil, virtual_attribute: #<OpenStruct test=\"openstruct\">, virtual_boolean: true, virtual_date: \"#{Date.today}\", virtual_integer: 17, virtual_string: \"string\", virtual_time: \"#{t.to_s(:db)}\">")
+      expect(subject.inspect).to eq("#<RecordSpec::Record id: nil, persisted_boolean: nil, persisted_date: nil, persisted_integer: 20, persisted_string: \"persisted string\", persisted_time: nil, virtual_attribute: #<OpenStruct test=\"openstruct\">, virtual_boolean: true, virtual_date: \"#{Date.today}\", virtual_integer: 17, virtual_string: \"string\", virtual_time: \"#{t.to_s(:db)}\", virtual_type_attribute: nil>")
     end
 
   end
@@ -185,12 +194,13 @@ describe ActiveType::Record do
         "virtual_date" => nil,
         "virtual_boolean" => nil,
         "virtual_attribute" => nil,
+        "virtual_type_attribute" => nil,
         "id" => nil,
         "persisted_string" => "string",
         "persisted_integer" => nil,
         "persisted_time" => nil,
         "persisted_date" => nil,
-        "persisted_boolean" => nil
+        "persisted_boolean" => nil,
       })
     end
 

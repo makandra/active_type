@@ -104,7 +104,11 @@ module ActiveType
         private
 
         def lookup(type)
-          ActiveRecord::Type.lookup(type)
+          if type.respond_to?(:cast)
+            type
+          else
+            ActiveRecord::Type.lookup(type)
+          end
         rescue ::ArgumentError => e
           ActiveRecord::Type::Value.new
         end
