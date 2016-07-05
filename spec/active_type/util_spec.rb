@@ -11,8 +11,10 @@ module UtilSpec
     attribute :virtual_string
     attribute :virtual_string_for_validation
     after_initialize :set_virtual_string
+    attr_reader :after_initialize_called
 
     def set_virtual_string
+      @after_initialize_called = true
       self.virtual_string = "persisted_string is #{persisted_string}"
     end
 
@@ -85,7 +87,7 @@ describe ActiveType::Util do
       it 'calls after_initialize callbacks of the cast target' do
         base_record = UtilSpec::BaseRecord.create!(:persisted_string => 'foo')
         extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
-        expect(extended_record.virtual_string).to be_present
+        expect(extended_record.after_initialize_called).to eq true
       end
 
       it 'lets after_initialize callbacks access attributes (bug in ActiveRecord#becomes)' do
