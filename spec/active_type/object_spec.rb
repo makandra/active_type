@@ -404,9 +404,17 @@ describe ActiveType::Object do
 
   end
 
+  describe '#id' do
+
+    it 'is nil' do
+      expect(subject.id).to eq nil
+    end
+
+  end
+
   describe '.find' do
     it 'raises an error' do
-      error = if ActiveRecord::VERSION::MAJOR >= 4 && ActiveRecord::VERSION::MINOR >= 1
+      error = if ActiveRecord::VERSION::MAJOR == 4 && ActiveRecord::VERSION::MINOR >= 1
         ActiveRecord::UnknownPrimaryKey
       else
         ActiveRecord::RecordNotFound
