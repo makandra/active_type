@@ -115,7 +115,7 @@ shared_examples_for 'a coercible time column' do |column|
   end
 
   it 'leaves times alone' do
-    time = Time.now
+    time = Time.at(Time.now.to_i)
     subject.send(:"#{column}=", time)
 
     expect(subject.send(column)).to eq(time)

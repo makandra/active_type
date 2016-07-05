@@ -58,6 +58,7 @@ end
 describe ActiveType::Record do
 
   subject { RecordSpec::Record.new }
+  t = Time.new(2016, 2, 1, 12)
 
   it 'is a ActiveRecord::Base' do
     expect(subject).to be_a(ActiveRecord::Base)
@@ -70,22 +71,22 @@ describe ActiveType::Record do
   describe 'constructors' do
     subject { RecordSpec::Record }
 
-    it_should_behave_like 'ActiveRecord-like constructors', { :persisted_string => "string", :persisted_integer => 100, :persisted_time => Time.now, :persisted_date => Date.today, :persisted_boolean => true }
+    it_should_behave_like 'ActiveRecord-like constructors', { :persisted_string => "string", :persisted_integer => 100, :persisted_time => t, :persisted_date => Date.today, :persisted_boolean => true }
 
-    it_should_behave_like 'ActiveRecord-like constructors', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => Time.now, :virtual_date => Date.today, :virtual_boolean => true }
+    it_should_behave_like 'ActiveRecord-like constructors', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => t, :virtual_date => Date.today, :virtual_boolean => true }
 
   end
 
   describe 'mass assignment' do
-    it_should_behave_like 'ActiveRecord-like mass assignment', { :persisted_string => "string", :persisted_integer => 100, :persisted_time => Time.now, :persisted_date => Date.today, :persisted_boolean => true }
+    it_should_behave_like 'ActiveRecord-like mass assignment', { :persisted_string => "string", :persisted_integer => 100, :persisted_time => t, :persisted_date => Date.today, :persisted_boolean => true }
 
-    it_should_behave_like 'ActiveRecord-like mass assignment', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => Time.now, :virtual_date => Date.today, :virtual_boolean => true }
+    it_should_behave_like 'ActiveRecord-like mass assignment', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => t, :virtual_date => Date.today, :virtual_boolean => true }
   end
 
   describe 'accessors' do
-    it_should_behave_like 'ActiveRecord-like accessors', { :persisted_string => "string", :persisted_integer => 100, :persisted_time => Time.now, :persisted_date => Date.today, :persisted_boolean => true }
+    it_should_behave_like 'ActiveRecord-like accessors', { :persisted_string => "string", :persisted_integer => 100, :persisted_time => t, :persisted_date => Date.today, :persisted_boolean => true }
 
-    it_should_behave_like 'ActiveRecord-like accessors', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => Time.now, :virtual_date => Date.today, :virtual_boolean => true }
+    it_should_behave_like 'ActiveRecord-like accessors', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => t, :virtual_date => Date.today, :virtual_boolean => true }
   end
 
   describe 'overridable attributes' do
