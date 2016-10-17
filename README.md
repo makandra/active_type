@@ -164,6 +164,27 @@ SignIn.new(email: "tobias@example.org").nickname # "tobias"
 SignIn.new(email: "tobias@example.org", :nickname => "kratob").nickname # "kratob"
 ```
 
+### Overriding accessors
+
+You can override attribute getters and setters using `super`:
+
+```
+class SignIn < ActiveType::Object
+
+  attribute :email, :string
+  attribute :nickname, :string
+  
+  def email
+    super.downcase
+  end
+  
+  def nickname=(value)
+    super(value.titeleize)
+  end
+  
+end
+```
+
 ### Nested attributes
 
 ActiveType supports its own variant of nested attributes via the `nests_one` /
