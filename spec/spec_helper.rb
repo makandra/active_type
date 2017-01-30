@@ -5,7 +5,7 @@ $: << File.join(File.dirname(__FILE__), "/../../lib" )
 require 'active_type'
 
 ActiveRecord::Base.default_timezone = :local
-ActiveRecord::Base.raise_in_transactional_callbacks = true if ActiveRecord::Base.respond_to?(:raise_in_transactional_callbacks)
+ActiveRecord::Base.raise_in_transactional_callbacks = true if ActiveRecord::Base.respond_to?(:raise_in_transactional_callbacks) && ActiveRecord::VERSION::MAJOR < 5
 
 Dir["#{File.dirname(__FILE__)}/support/*.rb"].each {|f| require f}
 Dir["#{File.dirname(__FILE__)}/shared_examples/*.rb"].each {|f| require f}

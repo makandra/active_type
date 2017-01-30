@@ -23,7 +23,8 @@ end
 
 
 connection = ::ActiveRecord::Base.connection
-connection.tables.each do |table|
+tables = connection.respond_to?(:data_sources) ? connection.data_sources : connection.tables
+tables.each do |table|
   connection.drop_table table
 end
 
