@@ -9,7 +9,7 @@ module ActiveType
     class Association
 
       def initialize(owner, target_name, options = {})
-        options.assert_valid_keys(:build_scope, :find_scope, :scope, :allow_destroy, :reject_if)
+        options.assert_valid_keys(:build_scope, :find_scope, :scope, :allow_destroy, :reject_if, :index_errors)
 
         @owner = owner
         @target_name = target_name.to_sym
@@ -36,10 +36,14 @@ module ActiveType
       end
 
       def validate(parent)
-        changed_children(parent).each do |child|
+        changed_children(parent).each_with_index do |child, index|
           unless child.valid?
             child.errors.each do |attribute, message|
-              attribute = "#{@target_name}.#{attribute}"
+              if !@options[:index_errors] && !ActiveRecord::Base.index_nested_attribute_errors
+                attribute = "#{@target_name}.#{attribute}"
+              else
+                attribute = "#{@target_name}[#{index}].#{attribute}"
+              end
               parent.errors[attribute] << message
               parent.errors[attribute].uniq!
             end
