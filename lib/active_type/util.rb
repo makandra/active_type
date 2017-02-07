@@ -23,9 +23,11 @@ module ActiveType
         # Rails 3.2, 4.2
         casted.instance_variable_set(:@attributes, record.instance_variable_get(:@attributes))
         # Rails 3.2
-        record.instance_variable_set(:@attributes_cache, record.instance_variable_get(:@attributes_cache))
+        casted.instance_variable_set(:@attributes_cache, record.instance_variable_get(:@attributes_cache))
         # Rails 4.2
         casted.instance_variable_set(:@changed_attributes, record.instance_variable_get(:@changed_attributes))
+        # Rails 5.0
+        casted.instance_variable_set(:@mutation_tracker, record.instance_variable_get(:@mutation_tracker))
         # Rails 3.2, 4.2
         casted.instance_variable_set(:@new_record, record.new_record?)
         # Rails 3.2, 4.2

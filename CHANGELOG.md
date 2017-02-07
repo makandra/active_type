@@ -4,10 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ActiveType is in a pre-1.0 state. This means that its APIs and behavior are subject to breaking changes without deprecation notices. Until 1.0, version numbers will follow a [Semver][]-ish `0.y.z` format, where `y` is incremented when new features or breaking changes are introduced, and `z` is incremented for lesser changes or bug fixes.
 
+## [0.6.2][] (2017-01-30)
+
+* When used with Rails, defer loading to not interfere with `ActiveRecord` configuration in initializers.
+
+## [0.6.1][] (2016-12-05)
+
+* Remove spec folder from packaged gem.
+
+## [0.6.0][] (2016-07-05)
+
+* Drop support for 1.8.7.
+* Rails 5 compatibility.
+
+## [0.5.1][] (2016-05-09)
+
+* Fix an issue with incorrectly copied errors on Util.cast.
+
 ## [0.5.0][] (2016-04-08)
 
 * Nicer `#inspect` method.
-
 
 ## [0.4.5][] (2016-02-01)
 

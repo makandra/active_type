@@ -28,7 +28,7 @@ module ActiveType
       end
 
       def add_attribute(name, options)
-        @owner.attribute(name, options)
+        @owner.attribute(name, :object, options)
       end
 
       def add_writer_method(name, association)
@@ -41,7 +41,7 @@ module ActiveType
       end
 
       def add_autosave(name, association)
-        save_method = "save_associated_records_for_#{name}"
+        save_method = :"save_associated_records_for_#{name}"
         @module.module_eval do
           define_method save_method do
             association.save(self)
@@ -51,7 +51,7 @@ module ActiveType
       end
 
       def add_validation(name, association)
-        validate_method = "validate_associated_records_for_#{name}"
+        validate_method = :"validate_associated_records_for_#{name}"
         @module.module_eval do
           define_method validate_method do
             association.validate(self)

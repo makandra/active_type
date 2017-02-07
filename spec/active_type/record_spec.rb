@@ -3,6 +3,12 @@ require 'ostruct'
 
 module RecordSpec
 
+  def self.type
+    if ActiveRecord::VERSION::MAJOR >= 5
+      @type ||= ActiveModel::Type::Value.new
+    end
+  end
+
   class Record < ActiveType::Record
 
     attribute :virtual_string, :string
@@ -11,6 +17,7 @@ module RecordSpec
     attribute :virtual_date, :date
     attribute :virtual_boolean, :boolean
     attribute :virtual_attribute
+    attribute :virtual_type_attribute, RecordSpec.type
 
   end
 
@@ -58,6 +65,7 @@ end
 describe ActiveType::Record do
 
   subject { RecordSpec::Record.new }
+  t = Time.new(2016, 2, 1, 12)
 
   it 'is a ActiveRecord::Base' do
     expect(subject).to be_a(ActiveRecord::Base)
@@ -70,22 +78,22 @@ describe ActiveType::Record do
   describe 'constructors' do
     subject { RecordSpec::Record }
 
-    it_should_behave_like 'ActiveRecord-like constructors', { :persisted_string => "string", :persisted_integer => 100, :persisted_time => Time.now, :persisted_date => Date.today, :persisted_boolean => true }
+    it_should_behave_like 'ActiveRecord-like constructors', { :persisted_string => "string", :persisted_integer => 100, :persisted_time => t, :persisted_date => Date.today, :persisted_boolean => true }
 
-    it_should_behave_like 'ActiveRecord-like constructors', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => Time.now, :virtual_date => Date.today, :virtual_boolean => true }
+    it_should_behave_like 'ActiveRecord-like constructors', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => t, :virtual_date => Date.today, :virtual_boolean => true }
 
   end
 
   describe 'mass assignment' do
-    it_should_behave_like 'ActiveRecord-like mass assignment', { :persisted_string => "string", :persisted_integer => 100, :persisted_time => Time.now, :persisted_date => Date.today, :persisted_boolean => true }
+    it_should_behave_like 'ActiveRecord-like mass assignment', { :persisted_string => "string", :persisted_integer => 100, :persisted_time => t, :persisted_date => Date.today, :persisted_boolean => true }
 
-    it_should_behave_like 'ActiveRecord-like mass assignment', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => Time.now, :virtual_date => Date.today, :virtual_boolean => true }
+    it_should_behave_like 'ActiveRecord-like mass assignment', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => t, :virtual_date => Date.today, :virtual_boolean => true }
   end
 
   describe 'accessors' do
-    it_should_behave_like 'ActiveRecord-like accessors', { :persisted_string => "string", :persisted_integer => 100, :persisted_time => Time.now, :persisted_date => Date.today, :persisted_boolean => true }
+    it_should_behave_like 'ActiveRecord-like accessors', { :persisted_string => "string", :persisted_integer => 100, :persisted_time => t, :persisted_date => Date.today, :persisted_boolean => true }
 
-    it_should_behave_like 'ActiveRecord-like accessors', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => Time.now, :virtual_date => Date.today, :virtual_boolean => true }
+    it_should_behave_like 'ActiveRecord-like accessors', { :virtual_string => "string", :virtual_integer => 100, :virtual_time => t, :virtual_date => Date.today, :virtual_boolean => true }
   end
 
   describe 'overridable attributes' do
@@ -150,6 +158,10 @@ describe ActiveType::Record do
     describe 'untyped columns' do
       it_should_behave_like 'an untyped column', :virtual_attribute
     end
+
+    describe 'type columns' do
+      it_should_behave_like 'a coercible type column', :virtual_type_attribute, RecordSpec.type
+    end
   end
 
   describe '#inspect' do
@@ -165,7 +177,7 @@ describe ActiveType::Record do
       subject.virtual_boolean = true
       subject.virtual_attribute = OpenStruct.new({:test => "openstruct"})
 
-      expect(subject.inspect).to eq("#<RecordSpec::Record id: nil, persisted_boolean: nil, persisted_date: nil, persisted_integer: 20, persisted_string: \"persisted string\", persisted_time: nil, virtual_attribute: #<OpenStruct test=\"openstruct\">, virtual_boolean: true, virtual_date: \"#{Date.today}\", virtual_integer: 17, virtual_string: \"string\", virtual_time: \"#{t.to_s(:db)}\">")
+      expect(subject.inspect).to eq("#<RecordSpec::Record id: nil, persisted_boolean: nil, persisted_date: nil, persisted_integer: 20, persisted_string: \"persisted string\", persisted_time: nil, virtual_attribute: #<OpenStruct test=\"openstruct\">, virtual_boolean: true, virtual_date: \"#{Date.today}\", virtual_integer: 17, virtual_string: \"string\", virtual_time: \"#{t.to_s(:db)}\", virtual_type_attribute: nil>")
     end
 
   end
@@ -184,12 +196,13 @@ describe ActiveType::Record do
         "virtual_date" => nil,
         "virtual_boolean" => nil,
         "virtual_attribute" => nil,
+        "virtual_type_attribute" => nil,
         "id" => nil,
         "persisted_string" => "string",
         "persisted_integer" => nil,
         "persisted_time" => nil,
         "persisted_date" => nil,
-        "persisted_boolean" => nil
+        "persisted_boolean" => nil,
       })
     end
 
@@ -250,6 +263,12 @@ describe ActiveType::Record do
     subject { RecordSpec::RecordWithBelongsTo.new }
 
     it_should_behave_like 'a belongs_to association', :child, RecordSpec::Child
+  end
+
+  it 'can access virtual attributes after .find' do
+    subject.save!
+    expect(subject.class.find(subject.id).virtual_string).to eq(nil)
+    expect(subject.class.find(subject.id).virtual_string).to eq(nil)
   end
 
 end

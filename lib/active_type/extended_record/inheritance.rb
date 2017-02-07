@@ -23,13 +23,48 @@ module ActiveType
 
         private
 
-        def find_sti_class(type_name)
-          sti_class = super
-          if self <= sti_class
-            self
-          else
-            sti_class
+        if ActiveRecord::VERSION::MAJOR < 5
+
+          def find_sti_class(type_name)
+            sti_class = super
+            if self <= sti_class
+              self
+            else
+              sti_class
+            end
           end
+
+        else
+
+          # Rails 5 find_sti_class does a sanity check for proper inheritance that fails for
+          # our usecase
+          # copied from activerecord/lib/active_record/inheritance.rb
+          def find_sti_class(type_name)
+            type_name = base_class.type_for_attribute(inheritance_column).cast(type_name)
+            subclass = begin
+              if store_full_sti_class
+                ActiveSupport::Dependencies.constantize(type_name)
+              else
+                compute_type(type_name)
+              end
+            rescue NameError
+              raise ActiveRecord::SubclassNotFound,
+                "The single-table inheritance mechanism failed to locate the subclass: '#{type_name}'. " \
+                "This error is raised because the column '#{inheritance_column}' is reserved for storing the class in case of inheritance. " \
+                "Please rename this column if you didn't intend it to be used for storing the inheritance class " \
+                "or overwrite #{name}.inheritance_column to use another column for that information."
+            end
+            #### our code starts here
+            if self <= subclass
+              subclass = self
+            end
+            #### our code ends here
+            unless subclass == self || descendants.include?(subclass)
+              raise ActiveRecord::SubclassNotFound, "Invalid single-table inheritance type: #{subclass.name} is not a subclass of #{name}"
+            end
+            subclass
+          end
+
         end
 
       end
