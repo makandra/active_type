@@ -16,6 +16,11 @@ module ActiveType
         @allow_destroy = options.fetch(:allow_destroy, false)
         @reject_if = options.delete(:reject_if)
         @options = options.dup
+        @index_errors = if ActiveRecord::VERSION::MAJOR < 5
+          @options[:index_errors]
+        else
+          @options[:index_errors] || ActiveRecord::Base.index_nested_attribute_errors
+        end
       end
 
       def assign_attributes(parent, attributes)
@@ -39,11 +44,7 @@ module ActiveType
         changed_children(parent).each_with_index do |child, index|
           unless child.valid?
             child.errors.each do |attribute, message|
-              if !@options[:index_errors] && !ActiveRecord::Base.index_nested_attribute_errors
-                attribute = "#{@target_name}.#{attribute}"
-              else
-                attribute = "#{@target_name}[#{index}].#{attribute}"
-              end
+              attribute = @index_errors ? "#{@target_name}[#{index}].#{attribute}" : "#{@target_name}.#{attribute}"
               parent.errors[attribute] << message
               parent.errors[attribute].uniq!
             end
