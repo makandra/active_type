@@ -313,6 +313,34 @@ describe "ActiveType::Object" do
           expect(subject.errors["records.base"]).to eq(['some error'])
         end
 
+        it 'index errors when index_errors option is used' do
+          extra_options.merge!(:index_errors => true)
+          subject.records = [
+            NestedAttributesSpec::Record.new,
+            NestedAttributesSpec::Record.new(:error => 'some error')
+          ]
+
+          subject.valid?
+          expect(subject.errors["records.base"]).not_to eq(['some error'])
+          expect(subject.errors["records[1].base"]).to eq(['some error'])
+        end
+
+        it 'index errors when global flag is set' do
+          old_attribute_config = ActiveRecord::Base.index_nested_attribute_errors
+          
+          ActiveRecord::Base.index_nested_attribute_errors = true
+          subject.records = [
+            NestedAttributesSpec::Record.new,
+            NestedAttributesSpec::Record.new(:error => 'some error')
+          ]
+
+          subject.valid?
+          expect(subject.errors["records.base"]).not_to eq(['some error'])
+          expect(subject.errors["records[1].base"]).to eq(['some error'])
+
+          ActiveRecord::Base.index_nested_attribute_errors = old_attribute_config
+        end if ActiveRecord::Base.respond_to?(:index_nested_attribute_errors)
+
       end
 
     end
