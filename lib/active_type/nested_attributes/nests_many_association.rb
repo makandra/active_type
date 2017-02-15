@@ -64,6 +64,10 @@ module ActiveType
         @target_name.to_s.classify
       end
 
+      def valid_options
+        super + [:index_errors]
+      end
+
     end
 
   end

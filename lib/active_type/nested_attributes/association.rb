@@ -9,7 +9,7 @@ module ActiveType
     class Association
 
       def initialize(owner, target_name, options = {})
-        options.assert_valid_keys(:build_scope, :find_scope, :scope, :allow_destroy, :reject_if, :index_errors)
+        options.assert_valid_keys(valid_options)
 
         @owner = owner
         @target_name = target_name.to_sym
@@ -125,6 +125,10 @@ module ActiveType
           parent.method(@reject_if).arity == 0 ? parent.send(@reject_if) : parent.send(@reject_if, attributes)
         end
         result
+      end
+
+      def valid_options
+        [:build_scope, :find_scope, :scope, :allow_destroy, :reject_if]
       end
 
     end
