@@ -308,6 +308,13 @@ Supported options for `nests_many` / `nests_one` are:
   nests_many :documents, default: proc { Documents.all }
   ```
 
+Options supported exclusively by `nests_many` are:
+
+- `index_errors`
+
+  Use a boolean to get indexed errors on related records. In Rails 5 you can make it global with
+  `config.active_record.index_nested_attribute_errors = true`.
+
 
 Casting records or relations
 ----------------------------
