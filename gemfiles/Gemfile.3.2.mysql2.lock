@@ -24,6 +24,7 @@ GEM
     i18n (0.6.11)
     multi_json (1.11.2)
     mysql2 (0.3.17)
+    rake (10.4.2)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
@@ -47,6 +48,7 @@ DEPENDENCIES
   activerecord (= 3.2.22)
   i18n (= 0.6.11)
   mysql2 (= 0.3.17)
+  rake
   rspec (~> 3.4)
 
 BUNDLED WITH

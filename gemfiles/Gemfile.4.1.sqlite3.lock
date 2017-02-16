@@ -26,6 +26,7 @@ GEM
     i18n (0.7.0)
     json (1.8.3)
     minitest (5.8.3)
+    rake (10.4.2)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
       rspec-expectations (~> 3.4.0)
@@ -50,6 +51,7 @@ PLATFORMS
 DEPENDENCIES
   active_type!
   activerecord (~> 4.1.0)
+  rake
   rspec (~> 3.4)
   sqlite3
 

@@ -24,6 +24,7 @@ GEM
     i18n (0.7.0)
     minitest (5.9.0)
     pg (0.18.4)
+    rake (10.4.2)
     rspec (3.5.0)
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
@@ -48,6 +49,7 @@ DEPENDENCIES
   active_type!
   activerecord (~> 5.0.0)
   pg
+  rake
   rspec (~> 3.4)
 
 BUNDLED WITH
