@@ -5,3 +5,4 @@ tags
 .idea
 tmp
 spec/support/database.yml
+.bundle
