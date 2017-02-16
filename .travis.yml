@@ -19,7 +19,7 @@ gemfile:
 before_script:
   - psql -c 'create database active_type_test;' -U postgres
   - mysql -e 'create database IF NOT EXISTS active_type_test;'
-script: bundle exec rspec spec
+script: bundle exec rake spec
 sudo: false
 cache: bundler
 notifications:
