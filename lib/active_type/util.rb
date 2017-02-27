@@ -51,8 +51,4 @@ module ActiveType
     extend self
 
   end
-
-  # Make Util methods available under the `ActiveType` namespace
-  # like `ActiveType.cast(...)`
-  extend Util
 end

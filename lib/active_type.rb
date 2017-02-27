@@ -17,4 +17,8 @@ module ActiveType
   autoload :Object
   autoload :Record
   autoload :Util
+
+  # Make Util methods available under the `ActiveType` namespace
+  # like `ActiveType.cast(...)`
+  extend Util
 end
