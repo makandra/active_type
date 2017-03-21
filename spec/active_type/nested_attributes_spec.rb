@@ -28,6 +28,16 @@ module NestedAttributesSpec
     end
   end
 
+  class UUIDRecord < ActiveRecord::Base
+    self.primary_key = :id
+
+    before_create :generate_uuid
+
+    def generate_uuid
+      self.id ||= SecureRandom.uuid
+    end
+  end
+
 end
 
 class GlobalRecord < ActiveRecord::Base
@@ -327,7 +337,7 @@ describe "ActiveType::Object" do
 
         it 'index errors when global flag is set' do
           old_attribute_config = ActiveRecord::Base.index_nested_attribute_errors
-          
+
           ActiveRecord::Base.index_nested_attribute_errors = true
           subject.records = [
             NestedAttributesSpec::Record.new,
@@ -345,6 +355,134 @@ describe "ActiveType::Object" do
 
     end
 
+    context 'using UUID' do
+      subject do
+        extra = extra_options
+        Class.new(ActiveType::Object) do
+          nests_many :records, extra.merge(:scope => NestedAttributesSpec::UUIDRecord)
+        end.new
+      end
+
+      def should_assign_and_persist(assign, persist = assign)
+        expect(subject.records.map(&:persisted_string)).to eq(assign)
+        expect(subject.save).to eq(true)
+        expect(NestedAttributesSpec::UUIDRecord.all.map(&:persisted_string)).to match_array(persist)
+      end
+
+      context 'when assigning records without ids' do
+
+        it 'builds single nested records' do
+          subject.records_attributes = { 1 => { :persisted_string => "string" } }
+
+          should_assign_and_persist(["string"])
+        end
+
+        it 'builds multiple nested records when given a hash of attributes, ordered by key' do
+          subject.records_attributes = {
+            3 => {:persisted_string => "string 3"},
+            1 => {:persisted_string => "string 1"},
+            2 => {:persisted_string => "string 2"},
+          }
+
+          should_assign_and_persist(["string 1", "string 2", "string 3"])
+        end
+
+        it 'builds multiple nested records when given an array of attributes' do
+          subject.records_attributes = [
+            {:persisted_string => "string 1"},
+            {:persisted_string => "string 2"},
+            {:persisted_string => "string 3"},
+          ]
+
+          should_assign_and_persist(["string 1", "string 2", "string 3"])
+        end
+
+        it 'appends to existing records' do
+          subject.records = [NestedAttributesSpec::UUIDRecord.create!(:persisted_string => "existing string")]
+          subject.records_attributes = { 1 => {:persisted_string => "new string"} }
+
+          should_assign_and_persist(["existing string", "new string"])
+        end
+
+        it 'leaves unassigned records alone' do
+          NestedAttributesSpec::UUIDRecord.create!(:persisted_string => "unassigned")
+          subject.records_attributes = { 1 => {:persisted_string => "string"} }
+
+          should_assign_and_persist(["string"], ["unassigned", "string"])
+        end
+
+        it 'does not destroy records on _destroy => trueish by default' do
+          existing = NestedAttributesSpec::UUIDRecord.create!(:persisted_string => 'do not delete this')
+
+          subject.records_attributes = [
+            { :id => existing.id, :_destroy => "true" },
+          ]
+          should_assign_and_persist(["do not delete this"], ["do not delete this"])
+          expect(subject.records.size).to eq(1)
+        end
+
+        it 'destroys records on _destroy => trueish if allowed' do
+          extra_options.merge!(:allow_destroy => true)
+          existing = [
+            NestedAttributesSpec::UUIDRecord.create!(:persisted_string => 'delete this'),
+            NestedAttributesSpec::UUIDRecord.create!(:persisted_string => 'delete this'),
+            NestedAttributesSpec::UUIDRecord.create!(:persisted_string => 'delete this'),
+            NestedAttributesSpec::UUIDRecord.create!(:persisted_string => 'keep this'),
+          ]
+
+          subject.records = existing.first(2) # assign some
+
+          subject.records_attributes = [
+            { :id => existing[0].id, :_destroy => "true" },
+            { :id => existing[1].id, :_destroy => 1 },
+            { :id => existing[2].id, :_destroy => "1" },
+            { :id => existing[3].id, :_destroy => "0" },
+          ]
+          should_assign_and_persist(["delete this", "delete this", "delete this", "keep this"], ["keep this"])
+          expect(subject.records.size).to eq(1)
+        end
+
+      end
+
+      context 'when assigning records with ids' do
+
+        it 'updates the record with the id if already assigned' do
+          subject.records = [
+            NestedAttributesSpec::UUIDRecord.new(:persisted_string => "existing 1"),
+            NestedAttributesSpec::UUIDRecord.new(:persisted_string => "existing 2"),
+            NestedAttributesSpec::UUIDRecord.new(:persisted_string => "existing 3"),
+          ]
+          subject.records[0].id = "ddcf8aed-6e99-4acb-b1d6-d1300f711773"
+          subject.records[1].id = "32ddfce3-c46b-4a55-9246-ee2a13a6fb3c"
+          subject.records[2].id = "067fbacb-4f39-4c6b-ab26-51bd5cc2e30e"
+
+          subject.records_attributes = { 1 => {:id => "32ddfce3-c46b-4a55-9246-ee2a13a6fb3c", :persisted_string => "updated"} }
+
+          should_assign_and_persist(["existing 1", "updated", "existing 3"])
+        end
+
+        it 'fetches the record with the id if not already assigned' do
+          record = NestedAttributesSpec::UUIDRecord.create!(:id => "5df009ae-55cf-4d65-a589-abe4102525f6", :persisted_string => "existing string 1")
+          subject.records = [
+            NestedAttributesSpec::UUIDRecord.new(:persisted_string => "existing string 2"),
+          ]
+          subject.records[0].id = "b373a32d-512a-4236-a37e-678e43359b75"
+
+          subject.records_attributes = { 1 => {:id => record.id, :persisted_string => "updated string"} }
+
+          subject.save
+
+          # should_assign_and_persist(["existing string 2", "updated string"])
+        end
+
+        it 'raises an error if the child record does not exist' do
+          expect do
+            subject.records_attributes = { 1 => {:id => "4bed6028-f900-4298-aa82-cb387e61b97d", :persisted_string => "updated string"} }
+          end.to raise_error(ActiveType::NestedAttributes::RecordNotFound, "could not find a child record with id '4bed6028-f900-4298-aa82-cb387e61b97d' for 'records'")
+        end
+
+      end
+    end
   end
 
 
@@ -502,6 +640,100 @@ describe "ActiveType::Object" do
 
       end
 
+    end
+
+    context 'using UUID' do
+      subject do
+        extra = extra_options
+        Class.new(ActiveType::Object) do
+          nests_one :record, extra.merge(:scope => NestedAttributesSpec::UUIDRecord)
+        end.new
+      end
+
+      def should_assign_and_persist(assign, persist = assign)
+        if assign
+          expect(subject.record).to be_present
+          expect(subject.record.persisted_string).to eq(assign)
+        else
+          expect(subject.record).to be_nil
+        end
+        expect(subject.save).to eq(true)
+        expect(NestedAttributesSpec::UUIDRecord.all.map(&:persisted_string)).to eq(persist ? [persist] : [])
+      end
+
+
+      context 'when assigning a records without an id' do
+
+        it 'builds a nested records' do
+          subject.record_attributes = { :persisted_string => "string" }
+
+          should_assign_and_persist("string")
+        end
+
+        it 'does not build a record that matchs a :reject_if proc' do
+          extra_options.merge!(:reject_if => proc { |attributes| attributes['persisted_string'] =~ /bad/ })
+          subject.record_attributes = { :persisted_string => "bad" }
+
+          should_assign_and_persist(nil)
+        end
+
+
+        it 'updates an assigned record' do
+          subject.record = NestedAttributesSpec::UUIDRecord.create!(:persisted_string => "existing string")
+          subject.record_attributes = { :persisted_string => "new string" }
+
+          should_assign_and_persist("new string")
+        end
+
+      end
+
+
+      context 'when assigning a records with an id' do
+
+        let(:record) { record = NestedAttributesSpec::UUIDRecord.create!(:persisted_string => "existing string") }
+
+        it 'updates the record if already assigned' do
+          subject.record = record
+
+          subject.record_attributes = { :id => record.id, :persisted_string => "updated string" }
+
+          should_assign_and_persist("updated string")
+        end
+
+        it 'fetches the record with the id if not already assigned' do
+          subject.record_attributes = { :id => record.id, :persisted_string => "updated string" }
+
+          should_assign_and_persist("updated string")
+        end
+
+        it 'does not destroy records on _destroy => true by default' do
+          subject.record_attributes = { :id => record.id, :_destroy => true }
+
+          should_assign_and_persist("existing string", "existing string")
+        end
+
+        it 'destroys records on _destroy => true if allowed' do
+          extra_options.merge!(:allow_destroy => true)
+          subject.record_attributes = { :id => record.id, :_destroy => true }
+
+          should_assign_and_persist("existing string", nil)
+          expect(subject.record).to eq(nil)
+        end
+
+        it 'raises an error if the assigned record does not match the id' do
+          expect do
+            subject.record = NestedAttributesSpec::UUIDRecord.create!
+            subject.record_attributes = { :id => record.id, :persisted_string => "updated string" }
+          end.to raise_error(ActiveType::NestedAttributes::AssignmentError, "child record 'record' did not match id '#{record.id}'")
+        end
+
+        it 'raises an error if a record with the id cannot be found' do
+          expect do
+            subject.record_attributes = { :id => '0c9b997c-61fa-4d8d-9386-574c6558c2ad', :persisted_string => "updated string" }
+          end.to raise_error(ActiveType::NestedAttributes::RecordNotFound, "could not find a child record with id '0c9b997c-61fa-4d8d-9386-574c6558c2ad' for 'record'")
+        end
+
+      end
     end
 
   end
