@@ -107,7 +107,9 @@ module ActiveType
           if type.respond_to?(:cast)
             type
           else
-            ActiveRecord::Type.lookup(type)
+            ActiveRecord::Base.connection_pool.with_connection{
+              ActiveRecord::Type.lookup(type)
+            }
           end
         rescue ::ArgumentError => e
           ActiveRecord::Type::Value.new
