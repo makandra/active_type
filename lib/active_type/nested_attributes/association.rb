@@ -9,13 +9,18 @@ module ActiveType
     class Association
 
       def initialize(owner, target_name, options = {})
-        options.assert_valid_keys(:build_scope, :find_scope, :scope, :allow_destroy, :reject_if)
+        options.assert_valid_keys(valid_options)
 
         @owner = owner
         @target_name = target_name.to_sym
         @allow_destroy = options.fetch(:allow_destroy, false)
         @reject_if = options.delete(:reject_if)
         @options = options.dup
+        @index_errors = if ActiveRecord::VERSION::MAJOR < 5
+          @options[:index_errors]
+        else
+          @options[:index_errors] || ActiveRecord::Base.index_nested_attribute_errors
+        end
       end
 
       def assign_attributes(parent, attributes)
@@ -36,10 +41,10 @@ module ActiveType
       end
 
       def validate(parent)
-        changed_children(parent).each do |child|
+        changed_children(parent).each_with_index do |child, index|
           unless child.valid?
             child.errors.each do |attribute, message|
-              attribute = "#{@target_name}.#{attribute}"
+              attribute = @index_errors ? "#{@target_name}[#{index}].#{attribute}" : "#{@target_name}.#{attribute}"
               parent.errors[attribute] << message
               parent.errors[attribute].uniq!
             end
@@ -120,6 +125,10 @@ module ActiveType
           parent.method(@reject_if).arity == 0 ? parent.send(@reject_if) : parent.send(@reject_if, attributes)
         end
         result
+      end
+
+      def valid_options
+        [:build_scope, :find_scope, :scope, :allow_destroy, :reject_if]
       end
 
     end
