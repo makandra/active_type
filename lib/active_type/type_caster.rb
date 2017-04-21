@@ -27,6 +27,12 @@ module ActiveType
         else
           native_type_cast_from_user(value)
         end
+      when :boolean
+        if value
+          true
+        else
+          false
+        end
       when :timestamp, :datetime
         time = native_type_cast_from_user(value)
         if time && ActiveRecord::Base.time_zone_aware_attributes
