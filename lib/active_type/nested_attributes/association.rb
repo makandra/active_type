@@ -9,7 +9,7 @@ module ActiveType
     class Association
 
       def initialize(owner, target_name, options = {})
-        options.assert_valid_keys(valid_options)
+        options.assert_valid_keys(*valid_options)
 
         @owner = owner
         @target_name = target_name.to_sym
