@@ -33,6 +33,12 @@ module ActiveType
           time = ActiveSupport::TimeWithZone.new(nil, Time.zone, time)
         end
         time
+      when Fixnum.class
+        if value == ''
+          nil
+        else
+          value.to_i
+        end
       else
         native_type_cast_from_user(value)
       end
@@ -71,8 +77,8 @@ module ActiveType
           # native type ("varchar") expected by the connection adapter.
           # PostgreSQL is one of these. Perform a translation if the adapter
           # supports it (but don't turn a mysql boolean into a tinyint).
-          if !type.nil? && !(type == :boolean) && connection.respond_to?(:native_database_types)
-            native_type = connection.native_database_types[type.to_sym]
+          if !type.nil? && !(type == :boolean) && type.respond_to?(:to_sym) && connection.respond_to?(:native_database_types)
+            native_type = connection.native_database_types[type.try(:to_sym)]
             if native_type && native_type[:name]
               type = native_type[:name]
             else
