@@ -1,11 +1,11 @@
 module ActiveType
   class TypeCaster
 
-    def self.get(type, connection)
+    def self.get(type)
       native_caster = if ActiveRecord::VERSION::STRING < '4.2'
         NativeCasters::DelegateToColumn.new(type)
       elsif ActiveRecord::VERSION::STRING < '5'
-        NativeCasters::DelegateToRails4Type.new(type, connection)
+        NativeCasters::DelegateToRails4Type.new(type)
       else
         NativeCasters::DelegateToRails5Type.new(type)
       end
@@ -66,21 +66,12 @@ module ActiveType
       # In these versions, casting logic lives in subclasses of ActiveRecord::Type::Value
       class DelegateToRails4Type
 
-        def initialize(type, connection)
+        def initialize(type)
           # The specified type (e.g. "string") may not necessary match the
           # native type ("varchar") expected by the connection adapter.
           # PostgreSQL is one of these. Perform a translation if the adapter
           # supports it (but don't turn a mysql boolean into a tinyint).
-          if !type.nil? && !(type == :boolean) && connection.respond_to?(:native_database_types)
-            native_type = connection.native_database_types[type.to_sym]
-            if native_type && native_type[:name]
-              type = native_type[:name]
-            else
-              # unknown type, we just dont cast
-              type = nil
-            end
-          end
-          @active_record_type = connection.lookup_cast_type(type)
+          @active_record_type = ActiveRecord::ConnectionAdapters::AbstractAdapter.new(nil).lookup_cast_type(type)
         end
 
         def type_cast_from_user(value)
@@ -107,11 +98,9 @@ module ActiveType
           if type.respond_to?(:cast)
             type
           else
-            ActiveRecord::Base.connection_pool.with_connection{
-              ActiveRecord::Type.lookup(type)
-            }
+            ActiveRecord::Type.lookup(type, adapter: nil)
           end
-        rescue ::ArgumentError => e
+        rescue ::ArgumentError
           ActiveRecord::Type::Value.new
         end
 

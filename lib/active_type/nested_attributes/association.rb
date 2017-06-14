@@ -111,7 +111,7 @@ module ActiveType
       end
 
       def truthy?(value)
-        @boolean_type_caster ||= TypeCaster.get(:boolean, @owner.connection)
+        @boolean_type_caster ||= TypeCaster.get(:boolean)
         @boolean_type_caster.type_cast_from_user(value)
       end
 

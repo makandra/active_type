@@ -46,7 +46,7 @@ module ActiveType
       private
 
       def add_virtual_column(name, type, options)
-        type_caster = TypeCaster.get(type, @owner.connection)
+        type_caster = TypeCaster.get(type)
         column = VirtualColumn.new(name, type_caster, options.slice(:default))
         @owner.virtual_columns_hash = @owner.virtual_columns_hash.merge(name.to_s => column)
       end
