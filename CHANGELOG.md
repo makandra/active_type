@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ActiveType is in a pre-1.0 state. This means that its APIs and behavior are subject to breaking changes without deprecation notices. Until 1.0, version numbers will follow a [Semver][]-ish `0.y.z` format, where `y` is incremented when new features or breaking changes are introduced, and `z` is incremented for lesser changes or bug fixes.
 
+## [0.7.1][] (2017-06-19)
+
+* ActiveType::Object no longer requires a database connection on Rails 5+ (it never did on Rails 3 or 4).
+
+## [0.7.0][] (2017-04-21)
+
+* Support `index_errors: true` for `nest_many`.
+
 ## [0.6.4][] (2017-02-27)
 
 * Fix an issue when using `ActiveType.cast` "too early".
