@@ -11,9 +11,10 @@ gemfile:
   - gemfiles/Gemfile.4.2.1.mysql2
   - gemfiles/Gemfile.4.2.1.pg
   - gemfiles/Gemfile.4.2.1.sqlite3
-  - gemfiles/Gemfile.5.0.0.mysql2
-  - gemfiles/Gemfile.5.0.0.pg
   - gemfiles/Gemfile.5.0.0.sqlite3
+  - gemfiles/Gemfile.5.1.0.mysql2
+  - gemfiles/Gemfile.5.1.0.pg
+  - gemfiles/Gemfile.5.1.0.sqlite3
 before_script:
   - psql -c 'create database active_type_test;' -U postgres
   - mysql -e 'create database IF NOT EXISTS active_type_test;'
@@ -41,9 +42,11 @@ matrix:
     - rvm: "2.1.7"
       gemfile: gemfiles/Gemfile.5.0.0.sqlite3
     - rvm: "2.1.7"
-      gemfile: gemfiles/Gemfile.5.0.0.mysql2
+      gemfile: gemfiles/Gemfile.5.1.0.sqlite3
     - rvm: "2.1.7"
-      gemfile: gemfiles/Gemfile.5.0.0.pg
+      gemfile: gemfiles/Gemfile.5.1.0.mysql2
+    - rvm: "2.1.7"
+      gemfile: gemfiles/Gemfile.5.1.0.pg
     - rvm: "2.2.4"
       gemfile: gemfiles/Gemfile.4.0.sqlite3
     - rvm: "2.2.4"
