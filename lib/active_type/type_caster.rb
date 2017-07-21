@@ -30,7 +30,11 @@ module ActiveType
       when :timestamp, :datetime
         time = native_type_cast_from_user(value)
         if time && ActiveRecord::Base.time_zone_aware_attributes
-          time = ActiveSupport::TimeWithZone.new(nil, Time.zone, time)
+          if time.zone == 'UTC'
+            time = ActiveSupport::TimeWithZone.new(time, Time.zone)
+          else
+            time = ActiveSupport::TimeWithZone.new(nil, Time.zone, time)
+          end
         end
         time
       else
