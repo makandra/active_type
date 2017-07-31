@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ActiveType is in a pre-1.0 state. This means that its APIs and behavior are subject to breaking changes without deprecation notices. Until 1.0, version numbers will follow a [Semver][]-ish `0.y.z` format, where `y` is incremented when new features or breaking changes are introduced, and `z` is incremented for lesser changes or bug fixes.
 
+
+## [0.7.2][] (2017-07-31)
+
+* Fixed a bug when converting datetimes from certain strings. This occured if the string included an explicit time zone (i.e. `record.date_time = '2017-07-31 12:30+03:00'`), which was not the local time.
+
 ## [0.7.1][] (2017-06-19)
 
 * ActiveType::Object no longer requires a database connection on Rails 5+ (it never did on Rails 3 or 4).
