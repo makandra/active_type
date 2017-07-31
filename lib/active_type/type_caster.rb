@@ -22,17 +22,9 @@ module ActiveType
       # outside the classes that have that responsibility.
       case @type
       when :integer
-        if value == ''
-          nil
-        else
-          native_type_cast_from_user(value)
-        end
+        cast_integer(value)
       when :timestamp, :datetime
-        time = native_type_cast_from_user(value)
-        if time && ActiveRecord::Base.time_zone_aware_attributes
-          time = ActiveSupport::TimeWithZone.new(nil, Time.zone, time)
-        end
-        time
+        cast_time(value)
       else
         native_type_cast_from_user(value)
       end
@@ -40,6 +32,36 @@ module ActiveType
 
     def native_type_cast_from_user(value)
       @native_caster.type_cast_from_user(value)
+    end
+
+    private
+
+    def cast_integer(value)
+      if value == ''
+        nil
+      else
+        native_type_cast_from_user(value)
+      end
+    end
+
+    def cast_time(value)
+      time = nil
+      if ActiveRecord::Base.time_zone_aware_attributes
+        if value.is_a?(String)
+          time = Time.zone.parse(value) rescue nil
+        end
+        time ||= native_type_cast_from_user(value)
+        if time
+          if value.is_a?(String) && value !~ /[+\-Z][\d:]*$/
+            # time was given without an explicit zone, so assume it was given in Time.zone
+            ActiveSupport::TimeWithZone.new(nil, Time.zone, time)
+          else
+            time.in_time_zone rescue time
+          end
+        end
+      else
+        native_type_cast_from_user(value)
+      end
     end
 
     module NativeCasters
