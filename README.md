@@ -129,13 +129,13 @@ end
 If you want to inherit from an ActiveType class, simply do
 
 ```ruby
-  class SignUp < ActiveType::Record[User]
-    # ...
-  end
+class SignUp < ActiveType::Record[User]
+  # ...
+end
 
-  class SpecialSignUp < SignUp
-    # ...
-  end
+class SpecialSignUp < SignUp
+  # ...
+end
 ```
 
 ### Defaults ####
@@ -168,7 +168,7 @@ SignIn.new(email: "tobias@example.org", :nickname => "kratob").nickname # "krato
 
 You can override attribute getters and setters using `super`:
 
-```
+```ruby
 class SignIn < ActiveType::Object
 
   attribute :email, :string
@@ -323,7 +323,7 @@ When working with ActiveType you will often find it useful to cast an ActiveReco
 
 Use `ActiveType.cast` for this:
 
-```
+```ruby
 class User < ActiveRecord::Base
   ...
 end
@@ -341,7 +341,7 @@ This is basically like [`ActiveRecord#becomes`](http://apidock.com/rails/v4.2.1/
 
 You can also cast an entire relation (scope) to a relation of an `ActiveType::Record`:
 
-```
+```ruby
 adult_users = User.where('age >= 18')
 adult_sign_ups = ActiveType.cast(adult_users, SignUp)
 sign_up = adult_sign_ups.find(1)
