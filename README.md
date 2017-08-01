@@ -179,7 +179,7 @@ class SignIn < ActiveType::Object
   end
   
   def nickname=(value)
-    super(value.titeleize)
+    super(value.titleize)
   end
   
 end
