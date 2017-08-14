@@ -17,9 +17,9 @@ module ActiveType
         destroy = truthy?(attributes.delete(:_destroy)) && @allow_destroy
 
         if id = attributes.delete(:id)
-          assigned_child ||= fetch_child(parent, id.to_i)
+          assigned_child ||= fetch_child(parent, id)
           if assigned_child
-            if assigned_child.id == id.to_i
+            if assigned_child.id == id
               assigned_child.attributes = attributes
             else
               raise AssignmentError, "child record '#{@target_name}' did not match id '#{id}'"
