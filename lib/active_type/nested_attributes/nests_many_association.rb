@@ -31,7 +31,7 @@ module ActiveType
           destroy = truthy?(attributes.delete(:_destroy)) && @allow_destroy
 
           if id = attributes.delete(:id)
-            child = fetch_child(parent, id.to_i)
+            child = fetch_child(parent, id)
             if destroy
               child.mark_for_destruction
             else

@@ -42,6 +42,11 @@ ActiveRecord::Migration.class_eval do
     t.integer :record_id
   end
 
+  create_table :uuid_records, id: false do |t|
+    t.string :id, primary_key: true
+    t.string :persisted_string
+  end
+
   create_table :sti_records do |t|
     t.string :persisted_string
     t.string :type
