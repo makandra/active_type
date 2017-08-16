@@ -1,7 +1,7 @@
 PATH
   remote: ..
   specs:
-    active_type (0.7.2)
+    active_type (0.7.3)
       activerecord (>= 3.2)
 
 GEM
