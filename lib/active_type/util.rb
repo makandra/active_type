@@ -20,6 +20,8 @@ module ActiveType
     def cast_record(record, klass)
       # record.becomes(klass).dup
       klass.new do |casted|
+        using_single_table_inheritance = using_single_table_inheritance?(klass, casted)
+
         # Rails 3.2, 4.2
         casted.instance_variable_set(:@attributes, record.instance_variable_get(:@attributes))
         # Rails 3.2
@@ -41,7 +43,15 @@ module ActiveType
           errors.instance_variable_set(:@base, casted)
         end
         casted.instance_variable_set(:@errors, errors)
+
+        casted[klass.inheritance_column] = klass.sti_name if using_single_table_inheritance
       end
+    end
+
+    # Backport for Rails 3.2
+    def using_single_table_inheritance?(klass, record)
+      inheritance_column = klass.inheritance_column
+      record[inheritance_column].present? && record.has_attribute?(inheritance_column)
     end
 
     def cast_relation(relation, klass)

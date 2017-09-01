@@ -107,7 +107,7 @@ describe ActiveType::Util do
         child_record = UtilSpec::Child.create!(:persisted_string => 'foo')
         child_sibling_record = ActiveType::Util.cast(child_record, UtilSpec::ChildSibling)
         expect(child_sibling_record).to be_a(UtilSpec::ChildSibling)
-        expect(child_sibling_record.type).to eq('UtilSpec::Child')
+        expect(child_sibling_record.type).to eq('UtilSpec::ChildSibling')
       end
 
       it 'preserves dirty tracking flags' do
