@@ -378,7 +378,7 @@ Development
 - We run tests against several ActiveRecord versions.
 - You can bundle all versions with `rake all:install`.
 - You can run specs against all versions with `rake all:spec`.
-- You can run specs against a single version with `VERSION=4.0 rake`.
+- You can run specs against a single version with `VERSION=4.2.1.pg rake` or `VERSION="4.2.1.*" rake`.
 
 If you are getting testing failures due to Mysql trying to connect as `root` user, you can put your Mysql credentials into `spec/support/database.yml`.
 See `spec/support/database.sample.yml` for an example.
