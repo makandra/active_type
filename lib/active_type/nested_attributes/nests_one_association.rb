@@ -19,6 +19,7 @@ module ActiveType
         if id = attributes.delete(:id)
           assigned_child ||= fetch_child(parent, id)
           if assigned_child
+            id = id.to_i if assigned_child.id.is_a?(Fixnum)
             if assigned_child.id == id
               assigned_child.attributes = attributes
             else
