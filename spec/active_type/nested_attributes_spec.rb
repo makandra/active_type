@@ -557,6 +557,14 @@ describe "ActiveType::Object" do
         expect(subject.record).to eq(nil)
       end
 
+      it 'do not raises an error when the id is a string of an existent record' do
+        expect do
+          subject.record = record
+          subject.record_attributes = { :id => "#{record.id}", :persisted_string => "updated string" }
+          should_assign_and_persist("updated string")
+        end.not_to raise_error
+      end
+
       it 'raises an error if the assigned record does not match the id' do
         expect do
           subject.record = NestedAttributesSpec::Record.create!

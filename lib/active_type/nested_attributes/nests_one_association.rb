@@ -19,7 +19,8 @@ module ActiveType
         if id = attributes.delete(:id)
           assigned_child ||= fetch_child(parent, id)
           if assigned_child
-            if assigned_child.id == id
+            assigned_child.id = id
+            if assigned_child.id == assigned_child.id_was
               assigned_child.attributes = attributes
             else
               raise AssignmentError, "child record '#{@target_name}' did not match id '#{id}'"
