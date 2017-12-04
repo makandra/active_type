@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ActiveType is in a pre-1.0 state. This means that its APIs and behavior are subject to breaking changes without deprecation notices. Until 1.0, version numbers will follow a [Semver][]-ish `0.y.z` format, where `y` is incremented when new features or breaking changes are introduced, and `z` is incremented for lesser changes or bug fixes.
 
+## [0.7.5][] (2017-12-04)
+
+* Fixed an `chird record did not match id` exception introduced in the 0.7.3 update when using `nests_one`. Credit to @cerdiogenes.
+
+
 ## [0.7.4][] (2017-09-01)
 
 * Bugfix: ActiveType.cast sets #type correctly when casting to an STI class
