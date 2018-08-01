@@ -25,7 +25,7 @@ GEM
     arel (4.0.2)
     builder (3.1.4)
     diff-lcs (1.2.5)
-    gemika (0.3.2)
+    gemika (0.3.3)
     i18n (0.7.0)
     minitest (4.7.5)
     multi_json (1.11.2)

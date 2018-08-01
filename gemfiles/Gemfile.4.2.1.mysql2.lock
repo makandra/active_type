@@ -23,7 +23,7 @@ GEM
     arel (6.0.3)
     builder (3.2.2)
     diff-lcs (1.2.5)
-    gemika (0.3.2)
+    gemika (0.3.3)
     i18n (0.7.0)
     json (1.8.3)
     minitest (5.8.3)
