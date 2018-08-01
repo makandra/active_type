@@ -2,6 +2,7 @@
 
 $: << File.join(File.dirname(__FILE__), "/../../lib" )
 
+require 'gemika'
 require 'active_type'
 
 ActiveRecord::Base.default_timezone = :local

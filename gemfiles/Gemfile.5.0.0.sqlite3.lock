@@ -21,6 +21,7 @@ GEM
     arel (7.0.0)
     concurrent-ruby (1.0.2)
     diff-lcs (1.2.5)
+    gemika (0.3.2)
     i18n (0.7.0)
     minitest (5.9.0)
     rake (10.4.2)
@@ -48,9 +49,10 @@ PLATFORMS
 DEPENDENCIES
   active_type!
   activerecord (~> 5.0.0)
+  gemika
   rake
   rspec (~> 3.4)
   sqlite3
 
 BUNDLED WITH
-   1.15.4
+   1.16.1

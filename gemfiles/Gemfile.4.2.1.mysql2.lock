@@ -23,6 +23,7 @@ GEM
     arel (6.0.3)
     builder (3.2.2)
     diff-lcs (1.2.5)
+    gemika (0.3.2)
     i18n (0.7.0)
     json (1.8.3)
     minitest (5.8.3)
@@ -51,9 +52,10 @@ PLATFORMS
 DEPENDENCIES
   active_type!
   activerecord (~> 4.2.1)
+  gemika
   mysql2 (~> 0.3.17)
   rake
   rspec (~> 3.4)
 
 BUNDLED WITH
-   1.15.4
+   1.16.1
