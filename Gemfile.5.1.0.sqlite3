@@ -6,4 +6,4 @@ gem 'sqlite3'
 gem 'rake'
 gem 'gemika'
 
-gem 'active_type', :path => '..'
+gem 'active_type', :path => '.'

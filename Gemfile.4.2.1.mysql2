@@ -6,4 +6,4 @@ gem 'mysql2', '~> 0.3.17'
 gem 'rake'
 gem 'gemika'
 
-gem 'active_type', :path => '..'
+gem 'active_type', :path => '.'

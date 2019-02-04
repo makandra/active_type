@@ -4,17 +4,17 @@ rvm:
   - "2.2.4"
   - "2.3.1"
 gemfile:
-  - gemfiles/Gemfile.3.2.mysql2
-  - gemfiles/Gemfile.3.2.sqlite3
-  - gemfiles/Gemfile.4.0.sqlite3
-  - gemfiles/Gemfile.4.1.sqlite3
-  - gemfiles/Gemfile.4.2.1.mysql2
-  - gemfiles/Gemfile.4.2.1.pg
-  - gemfiles/Gemfile.4.2.1.sqlite3
-  - gemfiles/Gemfile.5.0.0.sqlite3
-  - gemfiles/Gemfile.5.1.0.mysql2
-  - gemfiles/Gemfile.5.1.0.pg
-  - gemfiles/Gemfile.5.1.0.sqlite3
+  - Gemfile.3.2.mysql2
+  - Gemfile.3.2.sqlite3
+  - Gemfile.4.0.sqlite3
+  - Gemfile.4.1.sqlite3
+  - Gemfile.4.2.1.mysql2
+  - Gemfile.4.2.1.pg
+  - Gemfile.4.2.1.sqlite3
+  - Gemfile.5.0.0.sqlite3
+  - Gemfile.5.1.0.mysql2
+  - Gemfile.5.1.0.pg
+  - Gemfile.5.1.0.sqlite3
 before_script:
   - psql -c 'create database active_type_test;' -U postgres
   - mysql -e 'create database IF NOT EXISTS active_type_test;'
@@ -30,32 +30,32 @@ branches:
 matrix:
   exclude:
     - rvm: "2.1.7"
-      gemfile: gemfiles/Gemfile.4.0.sqlite3
+      gemfile: Gemfile.4.0.sqlite3
     - rvm: "2.1.7"
-      gemfile: gemfiles/Gemfile.4.2.1.mysql2
+      gemfile: Gemfile.4.2.1.mysql2
     - rvm: "2.1.7"
-      gemfile: gemfiles/Gemfile.4.2.1.pg
+      gemfile: Gemfile.4.2.1.pg
     - rvm: "2.1.7"
-      gemfile: gemfiles/Gemfile.3.2.mysql2
+      gemfile: Gemfile.3.2.mysql2
     - rvm: "2.1.7"
-      gemfile: gemfiles/Gemfile.4.1.sqlite3
+      gemfile: Gemfile.4.1.sqlite3
     - rvm: "2.1.7"
-      gemfile: gemfiles/Gemfile.5.0.0.sqlite3
+      gemfile: Gemfile.5.0.0.sqlite3
     - rvm: "2.1.7"
-      gemfile: gemfiles/Gemfile.5.1.0.sqlite3
+      gemfile: Gemfile.5.1.0.sqlite3
     - rvm: "2.1.7"
-      gemfile: gemfiles/Gemfile.5.1.0.mysql2
+      gemfile: Gemfile.5.1.0.mysql2
     - rvm: "2.1.7"
-      gemfile: gemfiles/Gemfile.5.1.0.pg
+      gemfile: Gemfile.5.1.0.pg
     - rvm: "2.2.4"
-      gemfile: gemfiles/Gemfile.4.0.sqlite3
+      gemfile: Gemfile.4.0.sqlite3
     - rvm: "2.2.4"
-      gemfile: gemfiles/Gemfile.4.2.1.mysql2
+      gemfile: Gemfile.4.2.1.mysql2
     - rvm: "2.2.4"
-      gemfile: gemfiles/Gemfile.4.2.1.pg
+      gemfile: Gemfile.4.2.1.pg
     - rvm: "2.2.4"
-      gemfile: gemfiles/Gemfile.3.2.mysql2
+      gemfile: Gemfile.3.2.mysql2
     - rvm: "2.2.4"
-      gemfile: gemfiles/Gemfile.4.1.sqlite3
+      gemfile: Gemfile.4.1.sqlite3
 install:
   - bundle install --no-deployment --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}

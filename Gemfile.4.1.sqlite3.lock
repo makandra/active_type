@@ -1,5 +1,5 @@
 PATH
-  remote: ..
+  remote: .
   specs:
     active_type (0.7.5)
       activerecord (>= 3.2)
@@ -7,24 +7,26 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (3.2.22)
-      activesupport (= 3.2.22)
-      builder (~> 3.0.0)
-    activerecord (3.2.22)
-      activemodel (= 3.2.22)
-      activesupport (= 3.2.22)
-      arel (~> 3.0.2)
-      tzinfo (~> 0.3.29)
-    activesupport (3.2.22)
-      i18n (~> 0.6, >= 0.6.4)
-      multi_json (~> 1.0)
-    arel (3.0.3)
-    builder (3.0.4)
+    activemodel (4.1.14)
+      activesupport (= 4.1.14)
+      builder (~> 3.1)
+    activerecord (4.1.14)
+      activemodel (= 4.1.14)
+      activesupport (= 4.1.14)
+      arel (~> 5.0.0)
+    activesupport (4.1.14)
+      i18n (~> 0.6, >= 0.6.9)
+      json (~> 1.7, >= 1.7.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.1)
+      tzinfo (~> 1.1)
+    arel (5.0.1.20140414130214)
+    builder (3.2.2)
     diff-lcs (1.2.5)
     gemika (0.3.3)
-    i18n (0.6.11)
-    multi_json (1.11.2)
-    mysql2 (0.3.17)
+    i18n (0.7.0)
+    json (1.8.3)
+    minitest (5.8.3)
     rake (10.4.2)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
@@ -39,19 +41,21 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
-    tzinfo (0.3.46)
+    sqlite3 (1.3.11)
+    thread_safe (0.3.5)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   active_type!
-  activerecord (= 3.2.22)
+  activerecord (~> 4.1.0)
   gemika
-  i18n (= 0.6.11)
-  mysql2 (= 0.3.17)
   rake
   rspec (~> 3.4)
+  sqlite3
 
 BUNDLED WITH
    1.16.1

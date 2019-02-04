@@ -1,5 +1,5 @@
 PATH
-  remote: ..
+  remote: .
   specs:
     active_type (0.7.5)
       activerecord (>= 3.2)
@@ -7,27 +7,24 @@ PATH
 GEM
   remote: https://rubygems.org/
   specs:
-    activemodel (4.2.5)
-      activesupport (= 4.2.5)
-      builder (~> 3.1)
-    activerecord (4.2.5)
-      activemodel (= 4.2.5)
-      activesupport (= 4.2.5)
-      arel (~> 6.0)
-    activesupport (4.2.5)
-      i18n (~> 0.7)
-      json (~> 1.7, >= 1.7.7)
-      minitest (~> 5.1)
-      thread_safe (~> 0.3, >= 0.3.4)
-      tzinfo (~> 1.1)
-    arel (6.0.3)
-    builder (3.2.2)
+    activemodel (3.2.22)
+      activesupport (= 3.2.22)
+      builder (~> 3.0.0)
+    activerecord (3.2.22)
+      activemodel (= 3.2.22)
+      activesupport (= 3.2.22)
+      arel (~> 3.0.2)
+      tzinfo (~> 0.3.29)
+    activesupport (3.2.22)
+      i18n (~> 0.6, >= 0.6.4)
+      multi_json (~> 1.0)
+    arel (3.0.3)
+    builder (3.0.4)
     diff-lcs (1.2.5)
     gemika (0.3.3)
-    i18n (0.7.0)
-    json (1.8.3)
-    minitest (5.8.3)
-    pg (0.18.4)
+    i18n (0.6.11)
+    multi_json (1.11.2)
+    mysql2 (0.3.17)
     rake (10.4.2)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
@@ -42,18 +39,17 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
-    thread_safe (0.3.5)
-    tzinfo (1.2.2)
-      thread_safe (~> 0.1)
+    tzinfo (0.3.46)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
   active_type!
-  activerecord (~> 4.2.1)
+  activerecord (= 3.2.22)
   gemika
-  pg
+  i18n (= 0.6.11)
+  mysql2 (= 0.3.17)
   rake
   rspec (~> 3.4)
 
