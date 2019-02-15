@@ -339,7 +339,7 @@ sign_up.is_a?(SignUp) # => true
 
 This is basically like [`ActiveRecord#becomes`](http://apidock.com/rails/v4.2.1/ActiveRecord/Persistence/becomes), but with less bugs and more consistent behavior.
 
-*Note that `cast` is destructive.* The originally casted record (`user`) and the returned record (`sign_up`)
+**Note that `cast` is destructive.** The originally casted record (`user`) and the returned record (`sign_up`)
 share internal state (such as attributes). To avoid unexpected behavior, do not use the original record
 after casting it.
 
