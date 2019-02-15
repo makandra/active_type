@@ -17,7 +17,7 @@ database.rewrite_schema! do
   end
 
   create_table :uuid_records, id: false do |t|
-    t.string :id, primary_key: true
+    t.string :id, primary_key: true, limit: 100
     t.string :persisted_string
   end
 

@@ -352,14 +352,14 @@ sign_up.is_a?(SignUp) # => true
 Supported Rails versions
 ------------------------
 
-ActiveType is tested against ActiveRecord 3.2, 4.0, 4.1, 4.2, 5.0, and 5.1.
+ActiveType is tested against ActiveRecord 3.2, 4.2, 5.1, and 5.2.
 
 Later versions might work, earlier will not.
 
 Supported Ruby versions
 ------------------------
 
-ActiveType is tested against 2.1.7 (for 3.2, 4.x only), 2.2.4 and 2.3.1.
+ActiveType is tested against 2.3, 2.4, and 2.5.
 
 
 Installation
