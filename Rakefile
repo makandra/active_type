@@ -10,6 +10,15 @@ end
 task default: 'matrix:spec'
 
 
+task :spec do
+  success = system("bundle exec rspec spec --exclude-pattern '**/isolated/**'")
+  for_each_isolated_spec do |isolated_spec|
+    success &= system("bundle exec rspec #{isolated_spec}")
+  end
+  fail "Tests failed" unless success
+end
+
+
 # we have to override the matrix:spec task, since we need some specs to run in isolation
 
 Rake::Task["matrix:spec"].clear
