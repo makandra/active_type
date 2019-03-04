@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 ## Unreleased
 
 * For some use cases, users need to access ActiveRecord's original `.attribute` method, which ActiveType overrides. We now alias `.attribute` as `.ar_attribute`.
+* In a `ActiveRecord::Record[MyRecord]`, `.has_many` now guesses `"my_record_id"` as the foreign key. Same for `.has_one`.
 
 ## 1.0.0 (2019-02-15)
 

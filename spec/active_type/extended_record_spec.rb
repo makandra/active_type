@@ -2,7 +2,11 @@ require 'spec_helper'
 
 module ExtendedRecordSpec
 
-  class BaseRecord < ActiveRecord::Base
+  class Child < ActiveRecord::Base
+    self.table_name = 'children'
+  end
+
+  class Record < ActiveRecord::Base
     self.table_name = 'records'
   end
 
@@ -12,8 +16,13 @@ module ExtendedRecordSpec
     attribute :virtual_string, :string
   end
 
-  class ExtendedRecord < ActiveType::Record[BaseRecord]
+  class ExtendedRecord < ActiveType::Record[Record]
     attribute :another_virtual_string, :string
+
+    has_many :children, class_name: 'Child'
+    has_one :child, nil, class_name: 'Child'
+
+    has_many :weird_children, class_name: 'Child', foreign_key: 'weird_id'
   end
 
   class ExtendedActiveTypeRecord < ActiveType::Record[BaseActiveTypeRecord]
@@ -38,11 +47,11 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
   subject { ExtendedRecordSpec::ExtendedRecord.new }
 
   it 'is inherits from the base type' do
-    expect(subject).to be_a(ExtendedRecordSpec::BaseRecord)
+    expect(subject).to be_a(ExtendedRecordSpec::Record)
   end
 
   it 'has the same model name as the base class' do
-    expect(subject.class.model_name.singular).to eq(ExtendedRecordSpec::BaseRecord.model_name.singular)
+    expect(subject.class.model_name.singular).to eq(ExtendedRecordSpec::Record.model_name.singular)
   end
 
   describe 'constructors' do
@@ -93,7 +102,24 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
 
   describe '.base_class' do
     it 'is the base class inherited from' do
-      expect(subject.class.base_class).to eq(ExtendedRecordSpec::BaseRecord)
+      expect(subject.class.base_class).to eq(ExtendedRecordSpec::Record)
+    end
+  end
+
+  describe 'associations' do
+    it 'guess the correct foreign key' do
+      expect(ExtendedRecordSpec::ExtendedRecord.reflect_on_association(:children).foreign_key).to eq 'record_id'
+    end
+
+    it 'allows to override the foreign key' do
+      expect(ExtendedRecordSpec::ExtendedRecord.reflect_on_association(:weird_children).foreign_key).to eq 'weird_id'
+    end
+
+    it 'work by default' do
+      subject.save
+      child = ExtendedRecordSpec::Child.create(record_id: subject.id)
+      expect(subject.children).to eq [child]
+      expect(subject.child).to eq child
     end
   end
 
@@ -108,7 +134,7 @@ describe "class ... < ActiveType::Record[ActiveRecord::Base]" do
   end
 
   it 'has the same model name as the base class' do
-    expect(subject.class.model_name.singular).to eq(ExtendedRecordSpec::BaseRecord.model_name.singular)
+    expect(subject.class.model_name.singular).to eq(ExtendedRecordSpec::Record.model_name.singular)
   end
 
   describe '#attributes' do
