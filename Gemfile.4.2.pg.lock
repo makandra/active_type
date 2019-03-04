@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    active_type (1.0.0)
+    active_type (1.1.0)
       activerecord (>= 3.2)
 
 GEM
@@ -58,4 +58,4 @@ DEPENDENCIES
   rspec (~> 3.4)
 
 BUNDLED WITH
-   1.16.3
+   1.16.6
