@@ -65,6 +65,16 @@ The following behaviours are different than in vanilla Rails 5:
 - You can override attributes with custom methods and use `super`.
 - Attributes will work on records retrieved via `.find`.
 - Attributes will be duped if you dup the record.
+- You cannot use `attribute :db_column` to override the behaviour of an existing database-backed attribute.
+
+If you need to use `ActiveRecord's` own `.attribute` method, you can still access is as `ar_attribute`:
+
+```
+class User < ApplicationRecord
+  # use my custom type to serialize to the database
+  ar_attribute :password, MyPasswordType.new
+end
+```
 
 
 ### ActiveType::Object

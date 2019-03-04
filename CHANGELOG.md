@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ActiveType is in a pre-1.0 state. This means that its APIs and behavior are subject to breaking changes without deprecation notices. Until 1.0, version numbers will follow a [Semver][]-ish `0.y.z` format, where `y` is incremented when new features or breaking changes are introduced, and `z` is incremented for lesser changes or bug fixes.
 
+## Unreleased
+
+* For some use cases, users need to access ActiveRecord's original `.attribute` method, which ActiveType overrides. We now alias `.attribute` as `.ar_attribute`.
+
+
 ## [1.0.0][] (2019-02-15)
 
 * No code changes.

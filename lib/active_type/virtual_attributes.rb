@@ -114,6 +114,12 @@ module ActiveType
     included do
       class_attribute :virtual_columns_hash
       self.virtual_columns_hash = {}
+
+      class << self
+        if method_defined?(:attribute)
+          alias_method :ar_attribute, :attribute
+        end
+      end
     end
 
     def initialize_dup(other)
