@@ -271,4 +271,20 @@ describe ActiveType::Record do
     expect(subject.class.find(subject.id).virtual_string).to eq(nil)
   end
 
+  if ActiveRecord::VERSION::MAJOR >= 5
+    describe '#ar_attribute' do
+      it 'delegates to ActiveRecord\'s original .attribute method' do
+        klass = Class.new(RecordSpec::Record) do
+          ar_attribute :ar_type, RecordSpec.type
+        end
+        subject = klass.new
+
+        expect(RecordSpec.type).to receive(:cast).with('input').and_return('output')
+        subject.ar_type = 'input'
+
+        expect(subject.ar_type).to eq('output')
+      end
+    end
+  end
+
 end
