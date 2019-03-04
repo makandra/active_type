@@ -10,6 +10,17 @@ module ActiveType
         class_attribute :extended_record_base_class
       end
 
+      def self.add_foreign_key_option(extended_record_base_class, scope = nil, options = {})
+        if scope.is_a?(Hash)
+          options = scope
+          scope = nil
+        end
+        unless options[:foreign_key]
+          options = options.merge(foreign_key: extended_record_base_class.name.foreign_key)
+        end
+        options
+      end
+
       module ClassMethods
 
         def model_name
@@ -20,6 +31,13 @@ module ActiveType
           extended_record_base_class.sti_name
         end
 
+        def has_many(name, *args, &extension)
+          super(name, Inheritance.add_foreign_key_option(extended_record_base_class, *args), &extension)
+        end
+
+        def has_one(name, *args, &extension)
+          super(name, Inheritance.add_foreign_key_option(extended_record_base_class, *args), &extension)
+        end
 
         private
 
