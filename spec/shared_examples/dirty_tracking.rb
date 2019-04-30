@@ -37,4 +37,32 @@ shared_examples_for "a class supporting dirty tracking for virtual attributes" d
 
   end
 
+  describe '#changed?' do
+
+    it 'returns true if any of the attribute is not nil' do
+      subject.virtual_attribute = 'foo'
+      expect(subject.changed?).to eq(true)
+    end
+
+    it 'returns false if all attributes are nil' do
+      subject.virtual_attribute = nil
+      expect(subject.changed?).to eq(false)
+    end
+
+  end
+
+  describe '#changes?' do
+
+    it 'returns hash of changes if any atribute is not nil' do
+      subject.virtual_attribute = 'foo'
+      expect(subject.changes).to eq(
+        "virtual_attribute" => [nil, 'foo']
+      )
+    end
+
+    it 'returns empty hash if all attributes are nil' do
+      subject.virtual_attribute = nil
+      expect(subject.changes).to eq({})
+    end
+  end
 end
