@@ -168,6 +168,20 @@ module ActiveType
       end
     end
 
+    def changed?
+      virtual_attributes = self.class._virtual_column_names
+
+      virtual_attributes.any? { |attribute| send(attribute) } || super
+    end
+
+    def changes
+      virtual_changes = virtual_attributes.select { |_, value| !value.nil? }.transform_values do |value|
+        [nil, value]
+      end
+
+      super.merge(virtual_changes)
+    end
+
     def read_virtual_attribute(name)
       name = name.to_s
       if virtual_attributes_cache.has_key?(name)

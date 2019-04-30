@@ -36,11 +36,11 @@ module UtilSpec
 end
 
 describe ActiveType::Util do
-  
+
   describe '.cast' do
 
     describe 'for a relation' do
-    
+
       it 'casts a scope to a scope of another class' do
         record = UtilSpec::BaseRecord.create!(:persisted_string => 'foo')
         base_scope = UtilSpec::BaseRecord.where(:persisted_string => 'foo')
@@ -117,7 +117,10 @@ describe ActiveType::Util do
         expect(base_record.changes).to eq({ 'persisted_string' => ['foo', 'bar'] })
         extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
         expect(extended_record).to be_a(UtilSpec::ExtendedRecord)
-        expect(extended_record.changes).to eq({ 'persisted_string' => ['foo', 'bar'] })
+        expect(extended_record.changes).to eq(
+          'persisted_string' => ['foo', 'bar'],
+          'virtual_string' => [nil, 'persisted_string is bar']
+        )
       end
 
       it 'associates the error object correctly with the new type (BUGFIX)' do
