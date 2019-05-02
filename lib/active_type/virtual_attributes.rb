@@ -75,13 +75,13 @@ module ActiveType
       def build_dirty_tracking_methods(name)
         @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
           def #{name}_was
-            nil
+            virtual_attributes_were["#{name}"]
           end
         BODY
 
         @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
           def #{name}_changed?
-            not #{name}.nil?
+            #{name} != virtual_attributes_were["#{name}"]
           end
         BODY
 
@@ -133,6 +133,10 @@ module ActiveType
       @virtual_attributes ||= {}
     end
 
+    def virtual_attributes_were
+      @virtual_attributes_were ||= {}
+    end
+
     def virtual_attributes_cache
       @virtual_attributes_cache ||= {}
     end
@@ -169,17 +173,26 @@ module ActiveType
     end
 
     def changed?
-      virtual_attributes = self.class._virtual_column_names
-
-      virtual_attributes.any? { |attribute| send(attribute) } || super
+      self.class._virtual_column_names.any? { |attr| virtual_attributes_were[attr] != send(attr) } || super
     end
 
     def changes
-      virtual_changes = virtual_attributes.select { |_, value| !value.nil? }.transform_values do |value|
-        [nil, value]
+      changes = self.class._virtual_column_names.each_with_object({}) do |attr, changes|
+        current_value = send(attr)
+        previous_value = virtual_attributes_were[attr]
+        changes[attr] = [previous_value, current_value] if  previous_value != current_value
       end
 
-      super.merge(virtual_changes)
+      super.merge(changes)
+    end
+
+    def changes_applied
+      super
+
+      virtual_attributes.each do |attr, _|
+        value = read_virtual_attribute(attr)
+        virtual_attributes_were[attr] = value.duplicable? ? value.clone : value
+      end
     end
 
     def read_virtual_attribute(name)
