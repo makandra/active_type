@@ -8,24 +8,32 @@ shared_examples_for "a class supporting dirty tracking for virtual attributes" d
 
   describe '#virtual_attribute_was' do
 
-    it 'always returns nil, since there can be no previously saved value' do
+    it 'returns value before changes were applied' do
       expect(subject.virtual_attribute_was).to be_nil
+      subject.virtual_attribute = 'foo'
+      subject.changes_applied
+      expect(subject.virtual_attribute_was).to eq('foo')
     end
 
   end
 
   describe '#virtual_attribute_changed?' do
 
-    it 'returns true if the attribute is not nil' do
+    it 'returns true if the attribute is different than previous one' do
       subject.virtual_attribute = 'foo'
       expect(subject.virtual_attribute_changed?).to eq(true)
     end
 
-    it 'returns false if the attribute is nil' do
+    it 'returns false if the attribute is the same as previous one' do
       subject.virtual_attribute = nil
       expect(subject.virtual_attribute_changed?).to be_falsey
     end
 
+    it 'returns false after changes were applied' do
+      subject.virtual_attribute = 'foo'
+      subject.changes_applied
+      expect(subject.virtual_attribute_changed?).to eq(false)
+    end
   end
 
   describe '#virtual_attribute_will_change!' do
@@ -49,6 +57,14 @@ shared_examples_for "a class supporting dirty tracking for virtual attributes" d
       expect(subject.changed?).to eq(false)
     end
 
+    context 'after applying changes' do
+      it 'returns false' do
+        subject.virtual_attribute = 'foo'
+        subject.changes_applied
+        expect(subject.changed?).to eq(false)
+      end
+    end
+
   end
 
   describe '#changes?' do
@@ -64,5 +80,14 @@ shared_examples_for "a class supporting dirty tracking for virtual attributes" d
       subject.virtual_attribute = nil
       expect(subject.changes).to eq({})
     end
+
+    context 'after applying changes' do
+      it 'returns empty hash' do
+        subject.virtual_attribute = 'foo'
+        subject.changes_applied
+        expect(subject.changes).to eq({})
+      end
+    end
+
   end
 end
