@@ -2,6 +2,12 @@
 
 All notable changes to this project will be documented in this file.
 
+## 1.1.1 (2019-05-07)
+
+* Improved dirty tracking (`#changes?` etc) for virtual attributes to bring it more in line with
+  the behaviour of non-virtual attributes. Behaviour with ActiveRecord < 4 remains unchanged.
+  Thanks to @lowski.
+
 ## 1.1.0 (2019-03-04)
 
 * For some use cases, users need to access ActiveRecord's original `.attribute` method, which ActiveType overrides. We now alias `.attribute` as `.ar_attribute`.
