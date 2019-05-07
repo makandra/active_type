@@ -389,13 +389,11 @@ Now run `bundle install` and restart your server.
 Development
 -----------
 
-- We run tests against several ActiveRecord versions.
-- You can bundle all versions with `rake all:install`.
-- You can run specs against all versions with `rake all:spec`.
-- You can run specs against a single version with `VERSION=4.2.1.pg rake` or `VERSION="4.2.1.*" rake`.
-
-If you are getting testing failures due to Mysql trying to connect as `root` user, you can put your Mysql credentials into `spec/support/database.yml`.
-See `spec/support/database.sample.yml` for an example.
+- We run tests against several ActiveRecord and Ruby versions using [gemika](https://github.com/makandra/gemika).
+- You can bundle all versions with `rake matrix:install`.
+- You can run specs against all Gemfiles compatible with your current ruby version with `rake matrix:spec`.
+- You can run specs against a single Gemfile with `BUNDLE_GEMFILE=Gemfile<variant> bundle exec rspec spec`.
+- When you make a pull request, tests are automatically run against all variants and Rubies on travis.ci.
 
 If you would like to contribute:
 
