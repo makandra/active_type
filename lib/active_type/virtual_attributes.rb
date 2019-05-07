@@ -125,6 +125,7 @@ module ActiveType
     def initialize_dup(other)
       @virtual_attributes_cache = {}
       @virtual_attributes = VirtualAttributes.deep_dup(virtual_attributes)
+      @virtual_attributes_were = VirtualAttributes.deep_dup(virtual_attributes_were)
 
       super
     end
@@ -186,12 +187,14 @@ module ActiveType
       super.merge(changes)
     end
 
-    def changes_applied
-      super
+    if ActiveRecord::VERSION::MAJOR >= 4
+      def changes_applied
+        super
 
-      virtual_attributes.each do |attr, _|
-        value = read_virtual_attribute(attr)
-        virtual_attributes_were[attr] = value.duplicable? ? value.clone : value
+        virtual_attributes.each do |attr, _|
+          value = read_virtual_attribute(attr)
+          virtual_attributes_were[attr] = value.duplicable? ? value.clone : value
+        end
       end
     end
 
