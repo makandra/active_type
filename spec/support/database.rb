@@ -14,6 +14,7 @@ database.rewrite_schema! do
 
   create_table :children do |t|
     t.integer :record_id
+    t.boolean :nice
   end
 
   create_table :uuid_records, id: false do |t|

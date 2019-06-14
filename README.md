@@ -363,6 +363,31 @@ sign_up.is_a?(SignUp) # => true
 ```
 
 
+Associations
+------------
+
+Sometimes, you have an association, and a form model for that association. Instead of always casting the associations manually, you can use the `change_association` macro to override an association's options. For example.
+
+
+```
+class Credential < ActiveRecord::Base
+end
+
+class User < ActiveRecord::Base
+  has_many :credentials
+end
+
+class SignUpCredential < ActiveType::Record[Credential]
+end
+
+class SignUp < ActiveType::Record[User]
+  change_association :credentials, class_name: 'SignUpCredential'
+end
+```
+
+Now, if you load `credentials`, you will automatically receive records of type `SignUpCredential`.
+
+
 Supported Rails versions
 ------------------------
 

@@ -1,4 +1,3 @@
-require 'active_type/virtual_attributes'
 require 'active_type/record_extension/inheritance'
 
 module ActiveType
@@ -15,6 +14,7 @@ module ActiveType
           include VirtualAttributes
           include NestedAttributes
           include Inheritance
+          include ChangeAssociation
 
           self.extended_record_base_class = base
         end
