@@ -1,6 +1,6 @@
 module ActiveType
 
-  module ExtendedRecord
+  module RecordExtension
 
     module Inheritance
 

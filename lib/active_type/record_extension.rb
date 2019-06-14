@@ -1,9 +1,9 @@
 require 'active_type/virtual_attributes'
-require 'active_type/extended_record/inheritance'
+require 'active_type/record_extension/inheritance'
 
 module ActiveType
 
-  module ExtendedRecord
+  module RecordExtension
 
     extend ActiveSupport::Concern
 

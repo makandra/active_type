@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-module ExtendedRecordSpec
+module RecordExtensionSpec
 
   class Child < ActiveRecord::Base
     self.table_name = 'children'
@@ -44,18 +44,18 @@ end
 
 describe "ActiveType::Record[ActiveRecord::Base]" do
 
-  subject { ExtendedRecordSpec::ExtendedRecord.new }
+  subject { RecordExtensionSpec::ExtendedRecord.new }
 
   it 'is inherits from the base type' do
-    expect(subject).to be_a(ExtendedRecordSpec::Record)
+    expect(subject).to be_a(RecordExtensionSpec::Record)
   end
 
   it 'has the same model name as the base class' do
-    expect(subject.class.model_name.singular).to eq(ExtendedRecordSpec::Record.model_name.singular)
+    expect(subject.class.model_name.singular).to eq(RecordExtensionSpec::Record.model_name.singular)
   end
 
   describe 'constructors' do
-    subject { ExtendedRecordSpec::ExtendedRecord }
+    subject { RecordExtensionSpec::ExtendedRecord }
 
     it_should_behave_like 'ActiveRecord-like constructors', { :persisted_string => "persisted string", :another_virtual_string => "another virtual string" }
   end
@@ -102,22 +102,22 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
 
   describe '.base_class' do
     it 'is the base class inherited from' do
-      expect(subject.class.base_class).to eq(ExtendedRecordSpec::Record)
+      expect(subject.class.base_class).to eq(RecordExtensionSpec::Record)
     end
   end
 
   describe 'associations' do
     it 'guess the correct foreign key' do
-      expect(ExtendedRecordSpec::ExtendedRecord.reflect_on_association(:children).foreign_key).to eq 'record_id'
+      expect(RecordExtensionSpec::ExtendedRecord.reflect_on_association(:children).foreign_key).to eq 'record_id'
     end
 
     it 'allows to override the foreign key' do
-      expect(ExtendedRecordSpec::ExtendedRecord.reflect_on_association(:weird_children).foreign_key).to eq 'weird_id'
+      expect(RecordExtensionSpec::ExtendedRecord.reflect_on_association(:weird_children).foreign_key).to eq 'weird_id'
     end
 
     it 'work by default' do
       subject.save
-      child = ExtendedRecordSpec::Child.create(record_id: subject.id)
+      child = RecordExtensionSpec::Child.create(record_id: subject.id)
       expect(subject.children).to eq [child]
       expect(subject.child).to eq child
     end
@@ -127,14 +127,14 @@ end
 
 describe "class ... < ActiveType::Record[ActiveRecord::Base]" do
 
-  subject { ExtendedRecordSpec::InheritingFromExtendedRecord.new }
+  subject { RecordExtensionSpec::InheritingFromExtendedRecord.new }
 
   it 'is inherits from the base type' do
-    expect(subject).to be_a(ExtendedRecordSpec::ExtendedRecord)
+    expect(subject).to be_a(RecordExtensionSpec::ExtendedRecord)
   end
 
   it 'has the same model name as the base class' do
-    expect(subject.class.model_name.singular).to eq(ExtendedRecordSpec::Record.model_name.singular)
+    expect(subject.class.model_name.singular).to eq(RecordExtensionSpec::Record.model_name.singular)
   end
 
   describe '#attributes' do
@@ -179,18 +179,18 @@ end
 
 describe "ActiveType::Record[ActiveType::Record]" do
 
-  subject { ExtendedRecordSpec::ExtendedActiveTypeRecord.new }
+  subject { RecordExtensionSpec::ExtendedActiveTypeRecord.new }
 
   it 'is inherits from the base type' do
-    expect(subject).to be_a(ExtendedRecordSpec::BaseActiveTypeRecord)
+    expect(subject).to be_a(RecordExtensionSpec::BaseActiveTypeRecord)
   end
 
   it 'has the same model name as the base class' do
-    expect(subject.class.model_name.singular).to eq(ExtendedRecordSpec::BaseActiveTypeRecord.model_name.singular)
+    expect(subject.class.model_name.singular).to eq(RecordExtensionSpec::BaseActiveTypeRecord.model_name.singular)
   end
 
   describe 'constructors' do
-    subject { ExtendedRecordSpec::ExtendedActiveTypeRecord }
+    subject { RecordExtensionSpec::ExtendedActiveTypeRecord }
 
     it_should_behave_like 'ActiveRecord-like constructors', { :persisted_string => "persisted string", :virtual_string => "virtual string", :another_virtual_string => "another virtual string" }
   end
@@ -220,7 +220,7 @@ describe "ActiveType::Record[ActiveType::Record]" do
   end
 
   describe 'validations' do
-    subject { ExtendedRecordSpec::ExtendedRecordWithValidations.new }
+    subject { RecordExtensionSpec::ExtendedRecordWithValidations.new }
 
     it 'has 1 error_on' do
       expect(subject.error_on(:persisted_string).size).to eq(1)
@@ -252,7 +252,7 @@ describe "ActiveType::Record[ActiveType::Record]" do
 
   describe '.base_class' do
     it 'is the base class inherited from' do
-      expect(subject.class.base_class).to eq(ExtendedRecordSpec::BaseActiveTypeRecord)
+      expect(subject.class.base_class).to eq(RecordExtensionSpec::BaseActiveTypeRecord)
     end
   end
 
