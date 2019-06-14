@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+* Fixed: Using `has_many` et al in an extended record ignored given scopes.
+
+
 ## 1.1.1 (2019-05-07)
 
 * Improved dirty tracking (`#changes?` etc) for virtual attributes to bring it more in line with

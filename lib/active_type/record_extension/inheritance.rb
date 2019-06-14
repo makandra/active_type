@@ -18,7 +18,7 @@ module ActiveType
         unless options[:foreign_key]
           options = options.merge(foreign_key: extended_record_base_class.name.foreign_key)
         end
-        options
+        [scope, options]
       end
 
       module ClassMethods
@@ -32,11 +32,11 @@ module ActiveType
         end
 
         def has_many(name, *args, &extension)
-          super(name, Inheritance.add_foreign_key_option(extended_record_base_class, *args), &extension)
+          super(name, *Inheritance.add_foreign_key_option(extended_record_base_class, *args), &extension)
         end
 
         def has_one(name, *args, &extension)
-          super(name, Inheritance.add_foreign_key_option(extended_record_base_class, *args), &extension)
+          super(name, *Inheritance.add_foreign_key_option(extended_record_base_class, *args), &extension)
         end
 
         private
