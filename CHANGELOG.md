@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+## 1.2.0 (2019-06-18)
+
 * Fixed: Using `has_many` et al in an extended record ignored given scopes.
 * Added: `change_association` on ActiveType::Record to change assocation options.
 
