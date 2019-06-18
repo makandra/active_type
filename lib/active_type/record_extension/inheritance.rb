@@ -18,7 +18,11 @@ module ActiveType
         unless options[:foreign_key]
           options = options.merge(foreign_key: extended_record_base_class.name.foreign_key)
         end
-        [scope, options]
+        if ActiveRecord::VERSION::MAJOR > 3
+          [scope, options]
+        else
+          [options]
+        end
       end
 
       module ClassMethods

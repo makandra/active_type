@@ -8,8 +8,11 @@ module ChangeAssociationSpec
 
   class Record < ActiveRecord::Base
     has_many :children, class_name: 'ChangeAssociationSpec::Child', dependent: :destroy
-    has_many :nice_children, -> { where(nice: true) }, class_name: 'ChangeAssociationSpec::Child'
     has_one :lone_child, class_name: 'ChangeAssociationSpec::Child'
+
+    if ActiveRecord::VERSION::MAJOR > 3
+      has_many :nice_children, -> { where(nice: true) }, class_name: 'ChangeAssociationSpec::Child'
+    end
   end
 
   class ExtendedChild < ActiveType::Record[Child]
@@ -57,26 +60,6 @@ module ChangeAssociationSpec
         expect(Record.first.children.first).not_to be_instance_of(ExtendedChild)
       end
 
-      it 'retains scopes of the existing association' do
-        record = Record.create
-        Child.create(record: record, nice: true)
-        Child.create(record: record, nice: false)
-        expect(record.nice_children.size).to eq 1
-
-        extended_class = Class.new(ActiveType::Record[Record]) do
-          def self.name
-            'ExtendedRecord'
-          end
-
-          change_association :nice_children, class_name: 'ChangeAssociationSpec::ExtendedChild'
-        end
-
-        extended_nice_children = extended_class.first.nice_children
-
-        expect(extended_nice_children.size).to eq 1
-        expect(extended_nice_children.first).to be_instance_of(ExtendedChild)
-      end
-
       it 'retains options of the existing association' do
         record = Record.create
         Child.create(record: record)
@@ -109,26 +92,48 @@ module ChangeAssociationSpec
         expect(extended_class.first.lone_child).to be_instance_of(ExtendedChild)
       end
 
-      it 'can override scopes' do
-        record = Record.create
-        Child.create(record: record, nice: true)
-        Child.create(record: record, nice: false)
-        Child.create(record: record, nice: false)
-        expect(record.nice_children.size).to eq 1
+      if ActiveRecord::VERSION::MAJOR > 3
+        it 'retains scopes of the existing association' do
+          record = Record.create
+          Child.create(record: record, nice: true)
+          Child.create(record: record, nice: false)
+          expect(record.nice_children.size).to eq 1
 
-        extended_class = Class.new(ActiveType::Record[Record]) do
-          def self.name
-            'ExtendedRecord'
+          extended_class = Class.new(ActiveType::Record[Record]) do
+            def self.name
+              'ExtendedRecord'
+            end
+
+            change_association :nice_children, class_name: 'ChangeAssociationSpec::ExtendedChild'
           end
 
-          # today is opposite day
-          change_association :nice_children, -> { where(nice: false) }, class_name: 'ChangeAssociationSpec::ExtendedChild'
+          extended_nice_children = extended_class.first.nice_children
+
+          expect(extended_nice_children.size).to eq 1
+          expect(extended_nice_children.first).to be_instance_of(ExtendedChild)
         end
 
-        extended_nice_children = extended_class.first.nice_children
+        it 'can override scopes' do
+          record = Record.create
+          Child.create(record: record, nice: true)
+          Child.create(record: record, nice: false)
+          Child.create(record: record, nice: false)
+          expect(record.nice_children.size).to eq 1
 
-        expect(extended_nice_children.size).to eq 2
-        expect(extended_nice_children.first).to be_instance_of(ExtendedChild)
+          extended_class = Class.new(ActiveType::Record[Record]) do
+            def self.name
+              'ExtendedRecord'
+            end
+
+            # today is opposite day
+            change_association :nice_children, -> { where(nice: false) }, class_name: 'ChangeAssociationSpec::ExtendedChild'
+          end
+
+          extended_nice_children = extended_class.first.nice_children
+
+          expect(extended_nice_children.size).to eq 2
+          expect(extended_nice_children.first).to be_instance_of(ExtendedChild)
+        end
       end
 
     end
