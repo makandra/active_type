@@ -101,6 +101,10 @@ module ActiveType
         def columns_hash(table_name)
           {}
         end
+        
+        def columns_hash?(table_name)
+          return false
+        end
 
         def data_source_exists?(table_name)
           false
