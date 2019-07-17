@@ -22,9 +22,6 @@ before_script:
 script: bundle exec rake spec
 sudo: false
 cache: bundler
-notifications:
-  email:
-    - fail@makandra.de
 matrix:
   exclude:
     - rvm: "2.4.5"
