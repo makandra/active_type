@@ -73,6 +73,8 @@ module ActiveType
 
       # Methods for compatibility with gems expecting the ActiveModel::Dirty API.
       def build_dirty_tracking_methods(name)
+        return if name.to_s == 'attribute' # clashes with internal methods
+
         @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
           def #{name}_was
             virtual_attributes_were["#{name}"]

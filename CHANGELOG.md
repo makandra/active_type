@@ -4,6 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased
 
+* Fixed: Do not override Rails internal methods when definining an attribute called `:attribute`.
+
+
 ## 1.2.1 (2019-07-03)
 * Fixed: Eager loading in Rails 6 no longer crashes trying to load `ActiveType::Object`s.
   Thanks to @teamhqapp for the fix.
