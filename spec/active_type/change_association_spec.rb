@@ -18,6 +18,9 @@ module ChangeAssociationSpec
   class ExtendedChild < ActiveType::Record[Child]
   end
 
+  class ExtendedRecord < ActiveType::Record[Record]
+  end
+
 
   describe 'ActiveType::Record[Base]' do
 
@@ -90,6 +93,21 @@ module ChangeAssociationSpec
         end
 
         expect(extended_class.first.lone_child).to be_instance_of(ExtendedChild)
+      end
+
+      it 'works for belongs_to' do
+        record = Record.create
+        Child.create(record: record)
+
+        extended_class = Class.new(ActiveType::Record[Child]) do
+          def self.name
+            "ExtendedChild"
+          end
+
+          change_association :record, class_name: 'ChangeAssociationSpec::ExtendedRecord'
+        end
+
+        expect(extended_class.first.record).to be_instance_of(ExtendedRecord)
       end
 
       if ActiveRecord::VERSION::MAJOR > 3
