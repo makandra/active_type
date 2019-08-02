@@ -31,6 +31,11 @@ describe 'ActiveType::Record[STIModel]' do
       expect(reloaded_child).to be_a(load_as)
     end
 
+    it 'it does not require an STI type condition' do
+      expect(STISpec::ExtendedChild.descends_from_active_record?).to eq(false)
+      expect(STISpec::ExtendedExtendedChild.descends_from_active_record?).to eq(false)
+    end
+
     it 'can save and load the active type record' do
 
       should_save_and_load(STISpec::ExtendedChild, STISpec::ExtendedChild)

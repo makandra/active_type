@@ -35,6 +35,10 @@ module ActiveType
           extended_record_base_class.sti_name
         end
 
+        def descends_from_active_record?
+          extended_record_base_class.descends_from_active_record?
+        end
+
         def has_many(name, *args, &extension)
           super(name, *Inheritance.add_foreign_key_option(extended_record_base_class, *args), &extension)
         end
