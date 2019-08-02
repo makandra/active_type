@@ -82,6 +82,10 @@ module ActiveType
             end
             #### our code starts here
             if self <= subclass
+              # If we are a derived class of the real class, replace it with ourselves
+              subclass = self
+            elsif extended_record_base_class >= subclass
+              # If the class is a subclass of our parent, replace it with ourselves to avoid the below error
               subclass = self
             end
             #### our code ends here

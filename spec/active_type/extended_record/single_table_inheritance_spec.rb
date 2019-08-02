@@ -15,6 +15,9 @@ module STISpec
   class ExtendedExtendedChild < ActiveType::Record[ExtendedChild]
   end
 
+  class ExtendedParent < ActiveType::Record[Parent]
+  end
+
 end
 
 
@@ -32,6 +35,7 @@ describe 'ActiveType::Record[STIModel]' do
     end
 
     it 'it does not require an STI type condition' do
+      expect(STISpec::ExtendedParent.descends_from_active_record?).to eq(true)
       expect(STISpec::ExtendedChild.descends_from_active_record?).to eq(false)
       expect(STISpec::ExtendedExtendedChild.descends_from_active_record?).to eq(false)
     end
@@ -43,6 +47,10 @@ describe 'ActiveType::Record[STIModel]' do
 
     it 'can save as base and load as active type record' do
       should_save_and_load(STISpec::Child, STISpec::ExtendedChild)
+    end
+
+    it 'can save as base and load as active type parent record' do
+      should_save_and_load(STISpec::Child, STISpec::ExtendedParent)
     end
 
     it 'can save as active type and load as base record' do
