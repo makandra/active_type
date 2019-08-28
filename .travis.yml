@@ -4,8 +4,9 @@ services:
   - postgresql
 rvm:
   - "2.3.8"
-  - "2.4.5"
-  - "2.5.3"
+  - "2.4.6"
+  - "2.5.5"
+  - "2.6.3"
 gemfile:
   - Gemfile.3.2.mysql2
   - Gemfile.3.2.sqlite3
