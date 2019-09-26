@@ -32,6 +32,14 @@ matrix:
     - rvm: "2.4.6"
       gemfile: Gemfile.3.2.sqlite3
     - rvm: "2.4.6"
+      gemfile: Gemfile.4.2.mysql2
+    - rvm: "2.4.6"
+      gemfile: Gemfile.4.2.pg
+    - rvm: "2.4.6"
+      gemfile: Gemfile.5.2.mysql2
+    - rvm: "2.4.6"
+      gemfile: Gemfile.5.2.pg
+    - rvm: "2.4.6"
       gemfile: Gemfile.6.0.pg
     - rvm: "2.5.5"
       gemfile: Gemfile.3.2.mysql2
@@ -43,6 +51,10 @@ matrix:
       gemfile: Gemfile.4.2.pg
     - rvm: "2.5.5"
       gemfile: Gemfile.4.2.sqlite3
+    - rvm: "2.5.5"
+      gemfile: Gemfile.5.2.mysql2
+    - rvm: "2.5.5"
+      gemfile: Gemfile.5.2.pg
     - rvm: "2.6.3"
       gemfile: Gemfile.3.2.mysql2
     - rvm: "2.6.3"
