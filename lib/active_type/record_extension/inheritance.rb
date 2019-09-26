@@ -35,6 +35,10 @@ module ActiveType
           extended_record_base_class.sti_name
         end
 
+        def descends_from_active_record?
+          extended_record_base_class.descends_from_active_record?
+        end
+
         def has_many(name, *args, &extension)
           super(name, *Inheritance.add_foreign_key_option(extended_record_base_class, *args), &extension)
         end
@@ -78,6 +82,10 @@ module ActiveType
             end
             #### our code starts here
             if self <= subclass
+              # If we are a derived class of the real class, replace it with ourselves
+              subclass = self
+            elsif extended_record_base_class >= subclass
+              # If the class is a subclass of our parent, replace it with ourselves to avoid the below error
               subclass = self
             end
             #### our code ends here
