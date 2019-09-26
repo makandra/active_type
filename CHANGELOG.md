@@ -2,9 +2,41 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## Unreleased changes
+
+
+## 1.3.0 (2019-09-26)
 
 * Fixed: Do not override Rails internal methods when definining an attribute called `:attribute`.
+* Fixed: Fix .find for extended records, when a record had a `#type` column that was not used for
+  single table inheritance. Thanks to @fsateler.
+* Changed: When extending a single table inheritance base class, `.find` no longer crashes, but
+  returns records derived from the extended class.
+
+  This means, that given the following class hierarchy:
+
+  ```ruby
+  class Parent < ActiveRecord::Base
+  end
+
+  class ExtendedParent < ActiveType::Record[Parent]
+  end
+
+  class Child < Parent
+  end
+  ```
+
+  queriying
+
+  ```
+  ExtendedParent.all
+  ```
+
+  will no longer crash, but always return records of type `ExtendedParent` (*even if they
+  would normally of type `Child`*). You should probably avoid this weird situation and not
+  extend STI Parent classes.
+
+  Thanks to @fsateler.
 
 
 ## 1.2.1 (2019-07-03)
