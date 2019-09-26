@@ -53,7 +53,23 @@ module ActiveType
 
           def find_sti_class(type_name)
             sti_class = super
-            if self <= sti_class
+
+            # Consider this class hierarchy
+            # class Parent < ActiveRecord::Base; end
+            # class Child < Parent; end
+            # class ExtendedParent < ActiveType::Record[Parent]; end
+            # class ExtendedChild < ActiveType::Record[Child]; end
+            if self < sti_class
+              # i.e. ExtendendChild.find(child.id)
+              # => self = ExtendedChild; sti_class = Child
+              # instantiate as ExtendedChild
+              self
+            elsif sti_class < extended_record_base_class
+              # i.e. ExtendedParent.find(child.id)
+              # => sti_class = Child; self = ExtendedParent; extended_record_base_class = Parent
+              # There is no really good solution here, since we cannot instantiate as both ExtendedParent
+              # and Child. We opt to instantiate as ExtendedParent, since the other option can be
+              # achieved by using Parent.find(child.id)
               self
             else
               sti_class
