@@ -6,6 +6,10 @@ module ChangeAssociationSpec
     belongs_to :record
   end
 
+  class Picture < ActiveRecord::Base
+    belongs_to :imageable, polymorphic: true
+  end
+
   class Record < ActiveRecord::Base
     has_many :children, class_name: 'ChangeAssociationSpec::Child', dependent: :destroy
     has_one :lone_child, class_name: 'ChangeAssociationSpec::Child'
@@ -13,12 +17,18 @@ module ChangeAssociationSpec
     if ActiveRecord::VERSION::MAJOR > 3
       has_many :nice_children, -> { where(nice: true) }, class_name: 'ChangeAssociationSpec::Child'
     end
+
+    has_many :pictures, class_name: 'ChangeAssociationSpec::Picture', as: :imageable
+    has_one :lone_picture, class_name: 'ChangeAssociationSpec::Picture', as: :imageable
   end
 
   class ExtendedChild < ActiveType::Record[Child]
   end
 
   class ExtendedRecord < ActiveType::Record[Record]
+  end
+
+  class ExtendedPicture < ActiveType::Record[Picture]
   end
 
 
@@ -108,6 +118,23 @@ module ChangeAssociationSpec
         end
 
         expect(extended_class.first.record).to be_instance_of(ExtendedRecord)
+      end
+
+      it 'works for polymorphic associations' do
+        record = Record.create
+        Picture.create(imageable: record)
+
+        extended_class = Class.new(ActiveType::Record[Record]) do
+          def self.name
+            "ExtendedRecord"
+          end
+
+          change_association :pictures, class_name: 'ChangeAssociationSpec::ExtendedPicture'
+          change_association :lone_picture, class_name: 'ChangeAssociationSpec::ExtendedPicture'
+        end
+
+        expect(extended_class.first.pictures.first).to be_instance_of(ExtendedPicture)
+        expect(extended_class.first.lone_picture).to be_instance_of(ExtendedPicture)
       end
 
       if ActiveRecord::VERSION::MAJOR > 3
