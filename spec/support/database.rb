@@ -17,6 +17,11 @@ database.rewrite_schema! do
     t.boolean :nice
   end
 
+  create_table :pictures do |t|
+    t.integer :imageable_id
+    t.string :imageable_type
+  end
+
   create_table :uuid_records, id: false do |t|
     t.string :id, primary_key: true, limit: 100
     t.string :persisted_string

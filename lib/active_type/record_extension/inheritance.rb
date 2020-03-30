@@ -15,7 +15,7 @@ module ActiveType
           options = scope
           scope = nil
         end
-        unless options[:foreign_key]
+        unless options[:foreign_key] || options[:as]
           options = options.merge(foreign_key: extended_record_base_class.name.foreign_key)
         end
         if ActiveRecord::VERSION::MAJOR > 3
