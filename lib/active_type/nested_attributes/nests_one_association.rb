@@ -30,8 +30,11 @@ module ActiveType
             end
           end
         elsif !destroy
-          assigned_child ||= add_child(parent, build_child(parent, {}))
-          assigned_child.attributes = attributes
+          if assigned_child
+            assigned_child.attributes = attributes
+          else
+            add_child(parent, build_child(parent, attributes))
+          end
         end
       end
 
