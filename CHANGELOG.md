@@ -3,6 +3,7 @@
 All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
+* Fixed: `nests_one` association record building used empty hash instead of passed in attributes. Credit to @chriscz.
 
 ## 1.3.1 (2020-03-31)
 * Fixed: Avoid #change_association breaking for polymorphic associations. Thanks to @lucthev.
