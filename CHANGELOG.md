@@ -4,9 +4,32 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+## 1.4.0 (2020-07-27)
+
+* Extended records now use their own I18n namespace when looking up translations for models or attributes.
+  If the extended record's namespace does not contain a translation, the lookup will fall back to the
+  base record's namespace.
+
+  For instance, given the following class hierarchy:
+
+  ```
+  class User < ActiveRecord::Base
+  end
+
+  class User::Form < ActiveType::Record[User]
+  end
+  ```
+
+  The call `ExtendedParent.human_attribute_name(:foo)` would first look up the key in
+  `activerecord.attributes.user/form` first, then falls back to `activerecord.attributes.user`.
+
+  Thank you @fsateler!
+
+
 ## 1.3.2 (2020-06-16)
 
 * Fixed: `nests_one` association record building used empty hash instead of passed in attributes. Credit to @chriscz.
+
 
 ## 1.3.1 (2020-03-31)
 
