@@ -137,6 +137,10 @@ describe "class ... < ActiveType::Record[ActiveRecord::Base]" do
     expect(subject.class.model_name.singular).to eq(RecordExtensionSpec::Record.model_name.singular)
   end
 
+  it 'has a different i18n_key than the base class' do
+    expect(subject.class.model_name.i18n_key).to eq(RecordExtensionSpec::InheritingFromExtendedRecord.name.underscore)
+  end
+
   describe '#attributes' do
 
     it 'returns a hash of virtual and persisted attributes' do
@@ -256,4 +260,45 @@ describe "ActiveType::Record[ActiveType::Record]" do
     end
   end
 
+end
+
+describe 'i18n' do
+
+  around :each do |test|
+    begin
+      orig_backend = I18n.backend
+      I18n.backend = I18n::Backend::KeyValue.new({})
+      test.run
+    ensure
+      I18n.backend = orig_backend
+    end
+  end
+
+  describe 'translation of model name' do
+
+    it 'has its own I18n key' do
+      I18n.backend.store_translations(:en, activerecord: { models: { 'record_extension_spec/extended_record': 'ExtendedRecord translation' } })
+      expect(RecordExtensionSpec::ExtendedRecord.model_name.human).to eq('ExtendedRecord translation')
+    end
+
+    it 'falls back to the I18n key of the base class if does not have its own I18n key' do
+      I18n.backend.store_translations(:en, activerecord: { models: { 'record_extension_spec/record': 'BaseRecord translation' } })
+      expect(RecordExtensionSpec::ExtendedRecord.model_name.human).to eq('BaseRecord translation')
+    end
+
+  end
+
+  describe 'translation of attribute name' do
+
+    it 'has its own I18n key' do
+      I18n.backend.store_translations(:en, activerecord: { attributes: { 'record_extension_spec/extended_record': { persisted_string: 'ExtendedRecord translation' } } })
+      expect(RecordExtensionSpec::ExtendedRecord.human_attribute_name(:persisted_string)).to eq('ExtendedRecord translation')
+    end
+
+    it 'falls back to the I18n key of the base class if does not have its own I18n key' do
+      I18n.backend.store_translations(:en, activerecord: { attributes: { 'record_extension_spec/record': { persisted_string: 'BaseRecord translation' } } })
+      expect(RecordExtensionSpec::ExtendedRecord.human_attribute_name(:persisted_string)).to eq('BaseRecord translation')
+    end
+
+  end
 end
