@@ -31,7 +31,7 @@ module ActiveType
           @_model_name ||= begin
             if name
               # Namespace detection copied from ActiveModel::Naming
-              namespace = module_parents.detect do |n|
+              namespace = module_ancestors.detect do |n|
                 n.respond_to?(:use_relative_model_naming?) && n.use_relative_model_naming?
               end
               # We create a Name object, with the parent class name, but self as the @klass reference
@@ -48,7 +48,7 @@ module ActiveType
           end
         end
 
-        def module_parents
+        def module_ancestors
           if extended_record_base_class.respond_to?(:module_parents)
             extended_record_base_class.module_parents
           else
