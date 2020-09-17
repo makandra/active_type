@@ -144,28 +144,47 @@ module ActiveType
       @virtual_attributes_cache ||= {}
     end
 
-    def [](name)
+    def read_existing_virtual_attribute(name, &block_when_not_virtual)
       if self.singleton_class._has_virtual_column?(name)
         read_virtual_attribute(name)
       else
-        super
+        yield
       end
     end
 
-    # ActiveRecord 4.2.1
-    def _read_attribute(name)
+    def write_existing_virtual_attribute(name, value, &block_when_not_virtual)
       if self.singleton_class._has_virtual_column?(name)
-        read_virtual_attribute(name)
+        write_virtual_attribute(name, value)
       else
-        super
+        yield
+      end
+    end
+
+    def [](name)
+      read_existing_virtual_attribute(name) { super }
+    end
+
+    if ActiveRecord::VERSION::STRING >= '4.2.0'
+      def _read_attribute(name)
+        read_existing_virtual_attribute(name) { super }
+      end
+    else
+      def read_attribute(name)
+        read_existing_virtual_attribute(name) { super }
       end
     end
 
     def []=(name, value)
-      if self.singleton_class._has_virtual_column?(name)
-        write_virtual_attribute(name, value)
-      else
-        super
+      write_existing_virtual_attribute(name, value) { super }
+    end
+
+    if ActiveRecord::VERSION::STRING >= '5.2.0'
+      def _write_attribute(name, value)
+        write_existing_virtual_attribute(name, value) { super }
+      end
+    else
+      def write_attribute(name, value)
+        write_existing_virtual_attribute(name, value) { super }
       end
     end
 
