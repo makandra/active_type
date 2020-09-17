@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+## 1.4.2 (2020-09-17)
+
+* Fixed: Assigning values to virtual attributes through internal setter methods (e.g. `_write_attribute`) no longer results in "can't write unknown attribute" errors.
+
+## 1.4.1 (2020-08-05)
+
+* Fixed: Avoid `Module#parents` deprecation warning on Rails 6. Thanks to @cilim.
+
 ## 1.4.0 (2020-07-27)
 
 * Extended records now use their own I18n namespace when looking up translations for models or attributes.
