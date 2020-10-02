@@ -1,4 +1,4 @@
-ActiveType [![Tests](https://github.com/makandra/active_type/workflows/Tests/badge.svg)](https://github.com/{owner}/{repo}/actions)
+ActiveType [![Tests](https://github.com/makandra/active_type/workflows/Tests/badge.svg)](https://github.com/makandra/active_type/actions)
 ==========
 
 Make any Ruby object quack like ActiveRecord
