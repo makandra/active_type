@@ -1,0 +1,180 @@
+name: Tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test_sqlite:
+    runs-on: ubuntu-18.04
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - "2.3.8"
+          - "2.4.6"
+          - "2.5.5"
+          - "2.6.3"
+        gemfile:
+          - Gemfile.3.2.sqlite3
+          - Gemfile.4.2.sqlite3
+          - Gemfile.5.2.sqlite3
+        exclude:
+          - ruby: "2.4.6"
+            gemfile: Gemfile.3.2.sqlite3
+          - ruby: "2.5.5"
+            gemfile: Gemfile.3.2.sqlite3
+          - ruby: "2.5.5"
+            gemfile: Gemfile.4.2.sqlite3
+          - ruby: "2.6.3"
+            gemfile: Gemfile.3.2.sqlite3
+          - ruby: "2.6.3"
+            gemfile: Gemfile.4.2.sqlite3
+
+    env:
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Bundle
+        run: |
+          gem install bundler:2.0.2
+          bundle install --no-deployment
+      - name: Run tests
+        run: bundle exec rake spec
+
+
+  test_mysql:
+    runs-on: ubuntu-18.04
+
+    services:
+      mysql:
+        image: mysql:5.6
+        env:
+          MYSQL_ROOT_PASSWORD: password
+        ports:
+        - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=3
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - "2.3.8"
+          - "2.4.6"
+          - "2.5.5"
+          - "2.6.3"
+        gemfile:
+          - Gemfile.3.2.mysql2
+          - Gemfile.4.2.mysql2
+          - Gemfile.5.2.mysql2
+        exclude:
+          - ruby: "2.4.6"
+            gemfile: Gemfile.3.2.mysql2
+          - ruby: "2.4.6"
+            gemfile: Gemfile.4.2.mysql2
+          - ruby: "2.4.6"
+            gemfile: Gemfile.5.2.mysql2
+          - ruby: "2.5.5"
+            gemfile: Gemfile.3.2.mysql2
+          - ruby: "2.5.5"
+            gemfile: Gemfile.4.2.mysql2
+          - ruby: "2.5.5"
+            gemfile: Gemfile.5.2.mysql2
+          - ruby: "2.6.3"
+            gemfile: Gemfile.3.2.mysql2
+          - ruby: "2.6.3"
+            gemfile: Gemfile.4.2.mysql2
+
+    env:
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Install database client
+        run: |
+          sudo apt-get install -y mysql-client libmariadbclient-dev
+      - name: Bundle
+        run: |
+          gem install bundler:2.0.2
+          bundle install --no-deployment
+      - name: Setup databases
+        run: |
+          mysql -e 'create database IF NOT EXISTS active_type_test;' -u root --password=password -P 3306 -h 127.0.0.1
+      - name: Run tests
+        run: bundle exec rake spec
+
+
+  test_pg:
+    runs-on: ubuntu-18.04
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_PASSWORD: postgres
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby:
+          - "2.3.8"
+          - "2.5.5"
+          - "2.6.3"
+        gemfile:
+          - Gemfile.4.2.pg
+          - Gemfile.5.2.pg
+          - Gemfile.6.0.pg
+        exclude:
+          - ruby: "2.3.8"
+            gemfile: Gemfile.6.0.pg
+          - ruby: "2.5.5"
+            gemfile: Gemfile.4.2.pg
+          - ruby: "2.5.5"
+            gemfile: Gemfile.5.2.pg
+          - ruby: "2.6.3"
+            gemfile: Gemfile.4.2.pg
+
+    env:
+      BUNDLE_GEMFILE: ${{ matrix.gemfile }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+      - name: Install database client
+        run: |
+          sudo apt-get install -y postgresql-client
+      - name: Bundle
+        run: |
+          gem install bundler:2.0.2
+          bundle install --no-deployment
+      - name: Setup databases
+        run: |
+          PGPASSWORD=postgres psql -c 'create database active_type_test;' -U postgres -p 5432 -h localhost
+      - name: Run tests
+        run: bundle exec rake spec
