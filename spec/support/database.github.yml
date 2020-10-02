@@ -1,0 +1,16 @@
+mysql:
+  database: active_type_test
+  host: 127.0.0.1
+  username: root
+  password: password
+  port: 3306
+
+postgresql:
+  database: active_type_test
+  host: localhost
+  username: postgres
+  password: postgres
+  port: 5432
+
+sqlite:
+  database: ":memory:"
