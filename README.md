@@ -1,4 +1,4 @@
-ActiveType [![Build Status](https://travis-ci.org/makandra/active_type.svg?branch=master)](https://travis-ci.org/makandra/active_type)
+ActiveType [![Tests](https://github.com/makandra/active_type/workflows/Tests/badge.svg)](https://github.com/{owner}/{repo}/actions)
 ==========
 
 Make any Ruby object quack like ActiveRecord
