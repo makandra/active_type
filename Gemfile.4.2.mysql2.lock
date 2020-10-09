@@ -27,7 +27,7 @@ GEM
     i18n (0.9.5)
       concurrent-ruby (~> 1.0)
     minitest (5.11.3)
-    mysql2 (0.3.20)
+    mysql2 (0.5.3)
     rake (10.4.2)
     rspec (3.4.0)
       rspec-core (~> 3.4.0)
@@ -53,7 +53,7 @@ DEPENDENCIES
   active_type!
   activerecord (~> 4.2.1)
   gemika
-  mysql2 (~> 0.3.17)
+  mysql2
   rake
   rspec (~> 3.4)
 

@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'activerecord', '~> 3.2.22.5'
 gem 'rspec', '~> 3.4'
-gem 'mysql2', '= 0.3.17'
+gem 'mysql2', git: 'https://github.com/makandra/mysql2', branch: '0.3.x-lts'
 gem 'rake'
 gem 'gemika'
 
