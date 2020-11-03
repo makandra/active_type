@@ -75,6 +75,10 @@ describe SignUpSpec::SignUp do
       subject.save
     end
 
+    context 'before save' do
+      it_should_behave_like 'an instance supporting serialization'
+    end
+
   end
 
   context 'with valid data' do
@@ -96,6 +100,14 @@ describe SignUpSpec::SignUp do
       subject.save
     end
 
+    context 'before save' do
+      it_should_behave_like 'an instance supporting serialization'
+    end
+
+    context 'after save' do
+      before { subject.save }
+      it_should_behave_like 'an instance supporting serialization'
+    end
   end
 
 

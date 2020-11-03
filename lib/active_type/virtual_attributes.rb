@@ -8,6 +8,23 @@ module ActiveType
 
   module VirtualAttributes
 
+    module Serialization
+      extend ActiveSupport::Concern
+
+      def init_with(coder)
+        if coder['virtual_attributes'].present?
+          @virtual_attributes = coder['virtual_attributes']
+        end
+        super(coder)
+      end
+
+      def encode_with(coder)
+        coder['virtual_attributes'] = @virtual_attributes
+        coder['active_type_yaml_version'] = 1
+        super(coder)
+      end
+    end
+
     class VirtualColumn
 
       def initialize(name, type_caster, options)
@@ -110,10 +127,10 @@ module ActiveType
       result
     end
 
-
     extend ActiveSupport::Concern
 
     included do
+      include ActiveType::VirtualAttributes::Serialization
       class_attribute :virtual_columns_hash
       self.virtual_columns_hash = {}
 
