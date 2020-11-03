@@ -5,7 +5,5 @@ shared_examples_for "an instance supporting serialization" do
     subject.attributes.each do |attr, value|
       expect(deserialized.send(attr)).to eq(value)
     end
-
-    expect(deserialized.new_record?).to eq(subject.new_record?)
   end
 end
