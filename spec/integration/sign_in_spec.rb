@@ -74,6 +74,10 @@ describe SignInSpec::SignIn do
       subject.save
     end
 
+    context 'before save' do
+      it_should_behave_like 'an instance supporting serialization'
+    end
+
   end
 
   describe 'with valid credentials' do
@@ -94,6 +98,15 @@ describe SignInSpec::SignIn do
     it 'sets the session' do
       expect(subject).to receive :set_session
       subject.save
+    end
+
+    context 'before save' do
+      it_should_behave_like 'an instance supporting serialization'
+    end
+
+    context 'after save' do
+      before { subject.save }
+      it_should_behave_like 'an instance supporting serialization'
     end
 
   end
