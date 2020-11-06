@@ -8,7 +8,7 @@ GIT
 PATH
   remote: .
   specs:
-    active_type (1.4.2)
+    active_type (1.5.0)
       activerecord (>= 3.2)
 
 GEM

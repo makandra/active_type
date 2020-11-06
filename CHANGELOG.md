@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+## 1.5.0 (2020-11-06)
+
+* Added: When serializing/deserializing `ActiveType::Record` or `ActiveType::Object` with YAML, virtual attributes are restored.
+  Credits to @chriscz.
+
 ## 1.4.2 (2020-09-17)
 
 * Fixed: Assigning values to virtual attributes through internal setter methods (e.g. `_write_attribute`) no longer results in "can't write unknown attribute" errors.
