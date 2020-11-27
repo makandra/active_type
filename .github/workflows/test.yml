@@ -15,16 +15,17 @@ jobs:
       matrix:
         ruby:
           - "2.3.8"
-          - "2.4.6"
           - "2.5.5"
           - "2.6.3"
+          - "2.7.2"
         gemfile:
           - Gemfile.3.2.sqlite3
           - Gemfile.4.2.sqlite3
           - Gemfile.5.2.sqlite3
+          - Gemfile.6.0.sqlite3
         exclude:
-          - ruby: "2.4.6"
-            gemfile: Gemfile.3.2.sqlite3
+          - ruby: "2.3.8"
+            gemfile: Gemfile.6.0.sqlite3
           - ruby: "2.5.5"
             gemfile: Gemfile.3.2.sqlite3
           - ruby: "2.5.5"
@@ -32,6 +33,10 @@ jobs:
           - ruby: "2.6.3"
             gemfile: Gemfile.3.2.sqlite3
           - ruby: "2.6.3"
+            gemfile: Gemfile.4.2.sqlite3
+          - ruby: "2.7.2"
+            gemfile: Gemfile.3.2.sqlite3
+          - ruby: "2.7.2"
             gemfile: Gemfile.4.2.sqlite3
 
     env:
@@ -72,20 +77,14 @@ jobs:
       matrix:
         ruby:
           - "2.3.8"
-          - "2.4.6"
           - "2.5.5"
           - "2.6.3"
+          - "2.7.2"
         gemfile:
           - Gemfile.3.2.mysql2
           - Gemfile.4.2.mysql2
           - Gemfile.5.2.mysql2
         exclude:
-          - ruby: "2.4.6"
-            gemfile: Gemfile.3.2.mysql2
-          - ruby: "2.4.6"
-            gemfile: Gemfile.4.2.mysql2
-          - ruby: "2.4.6"
-            gemfile: Gemfile.5.2.mysql2
           - ruby: "2.5.5"
             gemfile: Gemfile.3.2.mysql2
           - ruby: "2.5.5"
@@ -95,6 +94,10 @@ jobs:
           - ruby: "2.6.3"
             gemfile: Gemfile.3.2.mysql2
           - ruby: "2.6.3"
+            gemfile: Gemfile.4.2.mysql2
+          - ruby: "2.7.2"
+            gemfile: Gemfile.3.2.mysql2
+          - ruby: "2.7.2"
             gemfile: Gemfile.4.2.mysql2
 
     env:
@@ -144,6 +147,7 @@ jobs:
           - "2.3.8"
           - "2.5.5"
           - "2.6.3"
+          - "2.7.2"
         gemfile:
           - Gemfile.4.2.pg
           - Gemfile.5.2.pg
@@ -156,6 +160,8 @@ jobs:
           - ruby: "2.5.5"
             gemfile: Gemfile.5.2.pg
           - ruby: "2.6.3"
+            gemfile: Gemfile.4.2.pg
+          - ruby: "2.7.2"
             gemfile: Gemfile.4.2.pg
 
     env:

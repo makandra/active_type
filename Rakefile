@@ -27,7 +27,7 @@ namespace :matrix do
 
   desc "Run specs for all Ruby #{RUBY_VERSION} gemfiles"
   task :spec, :files do |t, options|
-    Gemika::Matrix.from_travis_yml.each do |row|
+    Gemika::Matrix.from_ci_config.each do |row|
       options = options.to_hash.merge(
         :gemfile => row.gemfile,
         :fatal => false,
