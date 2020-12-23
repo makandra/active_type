@@ -51,17 +51,30 @@ module ObjectSpec
 
   class IncludingObject < Object
 
-    module Module
+    module ConcernModule
       extend ActiveSupport::Concern
 
       included do
         attribute :another_virtual_string, :string
+        attribute :raising_attribute_from_concern, :string
+      end
+
+      def raising_attribute_from_concern
+        raise "Error Test Concern"
       end
     end
 
-    include Module
-  end
+    module RegularModule
+      def raising_attribute_from_module
+        raise "Error Test Module"
+      end
+    end
 
+    attribute :raising_attribute_from_module
+
+    include ConcernModule
+    include RegularModule
+  end
 
   class ObjectWithCallbacks < Object
 
@@ -282,6 +295,8 @@ describe ActiveType::Object do
         "virtual_attribute" => nil,
         "another_virtual_string" => nil,
         "virtual_type_attribute" => nil,
+        "raising_attribute_from_concern" => nil,
+        "raising_attribute_from_module" => nil,
       })
     end
 
@@ -318,6 +333,16 @@ describe ActiveType::Object do
     it 'does not define the attribute on the parent class' do
       object = ObjectSpec::Object.new
       expect(object).not_to respond_to(:another_virtual_string)
+    end
+
+    it 'correctly raises if the getter is overwritten in a ActiveRecord::Concern and raises an error' do
+      object = ObjectSpec::IncludingObject.new
+      expect{ object.raising_attribute_from_concern }.to raise_error(/Error Test Concern/)
+    end
+
+    it 'correctly raises if the getter is overwritten in a Module and raises an error' do
+      object = ObjectSpec::IncludingObject.new
+      expect{ object.raising_attribute_from_module }.to raise_error(/Error Test Module/)
     end
   end
 

@@ -70,7 +70,10 @@ module ActiveType
 
       def build_reader(name)
         @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
-          def #{name}
+          def #{name}(**args)
+            if defined?(super)
+              super(**args)
+            end
             read_virtual_attribute('#{name}')
           end
 
