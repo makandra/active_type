@@ -114,6 +114,9 @@ This means your object has all usual `ActiveRecord::Base` methods. Some of those
 - "saving" (returning `true` or `false`, without actually persisting)
 - belongs_to (after saying `attribute :child_id, :integer`)
 
+#### Note on transactions
+
+Since `ActiveType::Object` is not backed by a database, it does not open a real transaction when saving, so you should not rely on database changes that might have happend in a `#save` callback to be rolled back when `#save` fails. If you need this, make sure to wrap those changes in an explicit transaction yourself.
 
 ### ActiveType::Record
 
