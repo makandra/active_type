@@ -43,10 +43,11 @@ module ActiveType
       def validate(parent)
         changed_children(parent).each_with_index do |child, index|
           unless child.valid?
-            child.errors.each do |attribute, message|
-              attribute = @index_errors ? "#{@target_name}[#{index}].#{attribute}" : "#{@target_name}.#{attribute}"
-              parent.errors[attribute] << message
-              parent.errors[attribute].uniq!
+            child.errors.each do |error|
+              attribute = @index_errors ?
+                "#{@target_name}[#{index}].#{error.attribute}" :
+                "#{@target_name}.#{error.attribute}"
+              parent.errors.add(attribute, error.message)
             end
           end
         end
