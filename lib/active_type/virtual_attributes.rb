@@ -185,7 +185,10 @@ module ActiveType
       def _read_attribute(name)
         read_existing_virtual_attribute(name) { super }
       end
-    else
+    end
+
+    if ActiveRecord::VERSION::STRING < '4.2.0' || ActiveRecord::VERSION::STRING >= '6.1.0'
+      # in 6.1, read_attribute does not call _read_attribute
       def read_attribute(name)
         read_existing_virtual_attribute(name) { super }
       end
@@ -199,7 +202,10 @@ module ActiveType
       def _write_attribute(name, value)
         write_existing_virtual_attribute(name, value) { super }
       end
-    else
+    end
+
+    if ActiveRecord::VERSION::STRING < '5.2.0' || ActiveRecord::VERSION::STRING >= '6.1.0'
+      # in 6.1, write_attribute does not call _write_attribute
       def write_attribute(name, value)
         write_existing_virtual_attribute(name, value) { super }
       end

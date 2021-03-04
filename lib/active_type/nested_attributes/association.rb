@@ -42,13 +42,7 @@ module ActiveType
 
       def validate(parent)
         changed_children(parent).each_with_index do |child, index|
-          unless child.valid?
-            child.errors.each do |attribute, message|
-              attribute = @index_errors ? "#{@target_name}[#{index}].#{attribute}" : "#{@target_name}.#{attribute}"
-              parent.errors[attribute] << message
-              parent.errors[attribute].uniq!
-            end
-          end
+          add_errors_to_parent(parent, child, index) unless child.valid?
         end
       end
 
@@ -131,6 +125,24 @@ module ActiveType
         [:build_scope, :find_scope, :scope, :allow_destroy, :reject_if]
       end
 
+      def add_errors_to_parent(parent, child, index)
+        if ActiveRecord::VERSION::MAJOR >= 6 && ActiveRecord::VERSION::MINOR >= 1
+          child.errors.each do |error|
+            attribute = translate_error_attribute(error.attribute, index)
+            parent.errors.add(attribute, error.message)
+          end
+        else
+          child.errors.each do |attribute, message|
+            attribute = translate_error_attribute(attribute, index)
+            parent.errors.add(attribute, message)
+            parent.errors[attribute].uniq!
+          end
+        end
+      end
+
+      def translate_error_attribute(attribute, index)
+        @index_errors ? "#{@target_name}[#{index}].#{attribute}" : "#{@target_name}.#{attribute}"
+      end
     end
 
   end
