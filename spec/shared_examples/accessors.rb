@@ -35,7 +35,7 @@ shared_examples_for "ActiveRecord-like accessors" do |attributes|
     it 'allows reading via _read_attribute' do
       attributes.each do |key, value|
         subject.send("#{key}=", value)
-        expect(subject._read_attribute(key)).to eq(value)
+        expect(subject._read_attribute(key.to_s)).to eq(value)
       end
     end
   end
@@ -53,7 +53,7 @@ shared_examples_for "ActiveRecord-like accessors" do |attributes|
     # It is called by `write_attribute` and other ActiveRecord methods, so we test its behavior explicitly.
     it 'allows writing via _write_attribute' do
       attributes.each do |key, value|
-        subject._write_attribute(key, value)
+        subject._write_attribute(key.to_s, value)
         expect(subject.send(key)).to eq(value)
       end
     end
