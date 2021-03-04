@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+## 1.6.0 (2021-03-04)
+
+* Fixed: Numerous issues with Rails 6.1. Thanks to @vr4b4c for some of the changes.
+
 ## 1.5.0 (2020-11-06)
 
 * Added: When serializing/deserializing `ActiveType::Record` or `ActiveType::Object` with YAML, virtual attributes are restored.
