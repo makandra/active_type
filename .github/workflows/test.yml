@@ -23,9 +23,12 @@ jobs:
           - Gemfile.4.2.sqlite3
           - Gemfile.5.2.sqlite3
           - Gemfile.6.0.sqlite3
+          - Gemfile.6.1.sqlite3
         exclude:
           - ruby: "2.3.8"
             gemfile: Gemfile.6.0.sqlite3
+          - ruby: "2.3.8"
+            gemfile: Gemfile.6.1.sqlite3
           - ruby: "2.5.5"
             gemfile: Gemfile.3.2.sqlite3
           - ruby: "2.5.5"
@@ -151,10 +154,10 @@ jobs:
         gemfile:
           - Gemfile.4.2.pg
           - Gemfile.5.2.pg
-          - Gemfile.6.0.pg
+          - Gemfile.6.1.pg
         exclude:
           - ruby: "2.3.8"
-            gemfile: Gemfile.6.0.pg
+            gemfile: Gemfile.6.1.pg
           - ruby: "2.5.5"
             gemfile: Gemfile.4.2.pg
           - ruby: "2.5.5"
