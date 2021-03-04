@@ -51,7 +51,7 @@ end
 ```
 
 
-### A note on Rails 5
+### A note on Rails 5+
 
 Rails 5 comes with its own implementation of `.attribute`. This implementation is functionally very
 similar, but not identical to ActiveType's.
