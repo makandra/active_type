@@ -65,11 +65,17 @@ module ActiveType
         end
 
         def has_many(name, *args, &extension)
-          super(name, *Inheritance.add_foreign_key_option(extended_record_base_class, *args), &extension)
+          merged_opts = Inheritance.add_foreign_key_option(extended_record_base_class, *args)
+          options = merged_opts[-1]
+          scope = merged_opts.first == options ? nil : merged_opts.first
+          super(name, scope, **options, &extension)
         end
 
         def has_one(name, *args, &extension)
-          super(name, *Inheritance.add_foreign_key_option(extended_record_base_class, *args), &extension)
+          merged_opts = Inheritance.add_foreign_key_option(extended_record_base_class, *args)
+          options = merged_opts[-1]
+          scope = merged_opts.first == options ? nil : merged_opts.first
+          super(name, scope, **options, &extension)
         end
 
         private
