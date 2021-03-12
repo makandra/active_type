@@ -68,14 +68,22 @@ module ActiveType
           merged_opts = Inheritance.add_foreign_key_option(extended_record_base_class, *args)
           options = merged_opts[-1]
           scope = merged_opts.first == options ? nil : merged_opts.first
-          super(name, scope, **options, &extension)
+          if ActiveRecord::VERSION::MAJOR > 3
+            super(name, scope, **options, &extension)
+          else
+            super(name, **options, &extension)
+          end
         end
 
         def has_one(name, *args, &extension)
           merged_opts = Inheritance.add_foreign_key_option(extended_record_base_class, *args)
           options = merged_opts[-1]
           scope = merged_opts.first == options ? nil : merged_opts.first
-          super(name, scope, **options, &extension)
+          if ActiveRecord::VERSION::MAJOR > 3
+            super(name, scope, **options, &extension)
+          else
+            super(name, **options, &extension)
+          end
         end
 
         private
