@@ -129,12 +129,23 @@ Virtual attributes will not be persisted.
 
 `ActiveType::Record[BaseClass]` is used to extend a given `BaseClass` (that itself has to be an `ActiveRecord` model) with additional functionality, that is not meant to be shared to the rest of the application.
 
-You class will inherit from `BaseClass`. You can add additional methods, validations, callbacks, as well as use (virtual) attributes like an `ActiveType::Object`:
+Your class will inherit from `BaseClass`. You can add additional methods, validations, callbacks, as well as use (virtual) attributes like an `ActiveType::Object`:
 
 ```ruby
 class SignUp < ActiveType::Record[User]
   # ...
 end
+```
+
+If you need to access the extended `BaseClass` from your presenter model, you may call `extended_record_base_class` on its class:
+
+```ruby
+SignUp.extended_record_base_class # => "User (...)"
+
+# or
+sign_up = SignUp.new
+sign_up.class # => "SignUp (...)"
+sign_up.class.extended_record_base_class # => "User (...)"
 ```
 
 ### Inheriting from ActiveType:: objects
