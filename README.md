@@ -405,14 +405,14 @@ Now, if you load `credentials`, you will automatically receive records of type `
 Supported Rails versions
 ------------------------
 
-ActiveType is tested against ActiveRecord 3.2, 4.2, 5.1, and 5.2.
+ActiveType is tested against ActiveRecord 3.2, 4.2, 5.1, 5.2, 6.0 and 6.1.
 
 Later versions might work, earlier will not.
 
 Supported Ruby versions
 ------------------------
 
-ActiveType is tested against 2.3, 2.4, and 2.5.
+ActiveType is tested against 2.3, 2.4, 2.5 and 3.0.
 
 
 Installation
