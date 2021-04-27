@@ -33,6 +33,22 @@ module UtilSpec
   class ExtendedChild < ActiveType::Record[Child]
   end
 
+  class Car < ActiveRecord::Base
+    has_many :wheels
+    has_one :steering_wheel
+  end
+
+  class Wheel < ActiveRecord::Base
+    belongs_to :car
+  end
+
+  class SteeringWheel <ActiveRecord::Base
+    belongs_to :car
+  end
+
+  class ExtendedCar < ActiveType::Record[Car]
+  end
+
 end
 
 describe ActiveType::Util do
@@ -134,6 +150,31 @@ describe ActiveType::Util do
         expect(base_record.errors.size).to eq 0
       end
 
+      it 'keeps the associations when casting a saved record with associations' do
+        wheel = UtilSpec::Wheel.create
+        steering_wheel = UtilSpec::SteeringWheel.create
+        car = UtilSpec::Car.create(steering_wheel: steering_wheel, wheels: [wheel])
+
+        expect(car.wheels.first).to be_present
+        expect(car.steering_wheel).to be_present
+
+        extended_car = ActiveType.cast(car, UtilSpec::ExtendedCar)
+        expect(extended_car.wheels.first).to be_present
+        expect(extended_car.steering_wheel).to be_present
+      end
+
+      it 'keeps the associations when casting a unsaved record with associations' do
+        wheel = UtilSpec::Wheel.create
+        steering_wheel = UtilSpec::SteeringWheel.create
+        car = UtilSpec::Car.new(steering_wheel: steering_wheel, wheels: [wheel])
+
+        expect(car.wheels.first).to eq wheel
+        expect(car.steering_wheel).to eq steering_wheel
+
+        extended_car = ActiveType.cast(car, UtilSpec::ExtendedCar)
+        expect(extended_car.wheels.first).to eq wheel
+        expect(extended_car.steering_wheel).to eq steering_wheel
+      end
     end
 
   end

@@ -34,6 +34,9 @@ module ActiveType
         casted.instance_variable_set(:@new_record, record.new_record?)
         # Rails 3.2, 4.2
         casted.instance_variable_set(:@destroyed, record.destroyed?)
+
+        casted.instance_variable_set(:@association_cache, record.instance_variable_get(:@association_cache))
+
         # Rails 3.2, 4.2
         errors = record.errors
         if errors.kind_of? ActiveModel::Errors
