@@ -20,7 +20,7 @@ GEM
       zeitwerk (~> 2.3)
     concurrent-ruby (1.1.8)
     diff-lcs (1.4.4)
-    gemika (0.5.0)
+    gemika (0.6.0)
     i18n (1.8.9)
       concurrent-ruby (~> 1.0)
     minitest (5.14.4)
@@ -55,4 +55,4 @@ DEPENDENCIES
   rspec (~> 3.4)
 
 BUNDLED WITH
-   2.2.6
+   2.2.16

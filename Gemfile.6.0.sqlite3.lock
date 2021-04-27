@@ -20,7 +20,7 @@ GEM
       zeitwerk (~> 2.2, >= 2.2.2)
     concurrent-ruby (1.1.7)
     diff-lcs (1.4.4)
-    gemika (0.5.0)
+    gemika (0.6.0)
     i18n (1.8.5)
       concurrent-ruby (~> 1.0)
     minitest (5.14.2)
@@ -56,4 +56,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   2.1.4
+   2.2.16
