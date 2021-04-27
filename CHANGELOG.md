@@ -4,9 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+## 1.8.0 (2021-04-27)
+
+* Added: When casting an unsaved record, the new record will have the same associations as the base record.
+
 ## 1.7.0 (2021-04-27)
 
-* Added: Ruby 3.0 support
+* Added: Support for Ruby 3.0.
 
 ## 1.6.0 (2021-03-04)
 
