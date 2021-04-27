@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+## 1.7.0 (2021-04-27)
+
+* Added: Ruby 3.0 support
+
 ## 1.6.0 (2021-03-04)
 
 * Fixed: Numerous issues with Rails 6.1. Thanks to @vr4b4c for some of the changes.
