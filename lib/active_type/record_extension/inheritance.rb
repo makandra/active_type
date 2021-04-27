@@ -19,7 +19,7 @@ module ActiveType
           options = options.merge(foreign_key: extended_record_base_class.name.foreign_key)
         end
         if ActiveRecord::VERSION::MAJOR > 3
-          [scope, options]
+          [options, scope]
         else
           [options]
         end
@@ -64,12 +64,22 @@ module ActiveType
           extended_record_base_class.descends_from_active_record?
         end
 
-        def has_many(name, *args, &extension)
-          super(name, *Inheritance.add_foreign_key_option(extended_record_base_class, *args), &extension)
+        def has_many(name, scope=nil, *args, &extension)
+          new_args, new_scope = Inheritance.add_foreign_key_option(extended_record_base_class, scope, *args)
+          if ActiveRecord::VERSION::MAJOR <= 3 || new_scope.nil?
+            super(name, **new_args, &extension)
+          else
+            super(name, new_scope, **new_args, &extension)
+          end
         end
 
-        def has_one(name, *args, &extension)
-          super(name, *Inheritance.add_foreign_key_option(extended_record_base_class, *args), &extension)
+        def has_one(name, scope=nil, *args, &extension)
+          new_args, new_scope = Inheritance.add_foreign_key_option(extended_record_base_class, scope, *args)
+          if ActiveRecord::VERSION::MAJOR <= 3 || new_scope.nil?
+            super(name, **new_args, &extension)
+          else
+            super(name, new_scope, **new_args, &extension)
+          end
         end
 
         private

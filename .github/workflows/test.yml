@@ -38,6 +38,10 @@ jobs:
             gemfile: Gemfile.6.0.sqlite3
           - ruby: "2.7.2"
             gemfile: Gemfile.6.1.sqlite3
+          - ruby: "3.0.1"
+            gemfile: Gemfile.6.0.sqlite3
+          - ruby: "3.0.1"
+            gemfile: Gemfile.6.1.sqlite3
 
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
@@ -144,6 +148,8 @@ jobs:
           - ruby: "2.7.2"
             gemfile: Gemfile.5.2.pg
           - ruby: "2.7.2"
+            gemfile: Gemfile.6.1.pg
+          - ruby: "3.0.1"
             gemfile: Gemfile.6.1.pg
 
     env:
