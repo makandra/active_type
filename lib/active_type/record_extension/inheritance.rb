@@ -34,13 +34,13 @@ module ActiveType
               namespace = module_ancestors.detect do |n|
                 n.respond_to?(:use_relative_model_naming?) && n.use_relative_model_naming?
               end
-              # We create a Name object, with the parent class name, but self as the @klass reference
+              # We create a Name object, with the sti class name, but self as the @klass reference
               # This way lookup_ancestors is invoked on the right class instead of the extended_record_base_class
-              dup_model_name = ActiveModel::Name.new(self, namespace, extended_record_base_class.name)
-              key = name.underscore
-              # We fake the `i18n_key` to lookup on the derived class key
+              dup_model_name = ActiveModel::Name.new(self, namespace, sti_name)
+              key = name.underscore.to_sym
+              # We set the `i18n_key` to lookup on the derived class key
               # We keep the others the same to preserve parameter and route names
-              dup_model_name.define_singleton_method(:i18n_key) { key }
+              dup_model_name.instance_variable_set(:@i18n_key, key)
               dup_model_name
             else # name is nil for the anonymous intermediate class
               extended_record_base_class.model_name

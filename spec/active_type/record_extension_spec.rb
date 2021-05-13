@@ -51,7 +51,34 @@ describe "ActiveType::Record[ActiveRecord::Base]" do
   end
 
   it 'has the same model name as the base class' do
-    expect(subject.class.model_name.singular).to eq(RecordExtensionSpec::Record.model_name.singular)
+    base_model_name = RecordExtensionSpec::Record.model_name
+    model_name = subject.class.model_name
+
+    expect(model_name.singular).to eq(base_model_name.singular)
+    expect(model_name.plural).to eq(base_model_name.plural)
+  end
+
+  it 'has the same route keys as the base class' do
+    base_model_name = RecordExtensionSpec::Record.model_name
+    model_name = subject.class.model_name
+
+    expect(model_name.route_key).to eq(base_model_name.route_key)
+    expect(model_name.singular_route_key).to eq(base_model_name.singular_route_key)
+  end
+
+  it 'has the same param key as the base class' do
+    base_model_name = RecordExtensionSpec::Record.model_name
+    model_name = subject.class.model_name
+
+    expect(model_name.param_key).to eq(base_model_name.param_key)
+  end
+
+  it 'has a different i18n_key than the base class' do
+    base_model_name = RecordExtensionSpec::Record.model_name
+    model_name = subject.class.model_name
+
+    expect(model_name.i18n_key).not_to eq(base_model_name.i18n_key)
+    expect(model_name.i18n_key).to eq(:'record_extension_spec/extended_record')
   end
 
   describe 'constructors' do
@@ -134,11 +161,34 @@ describe "class ... < ActiveType::Record[ActiveRecord::Base]" do
   end
 
   it 'has the same model name as the base class' do
-    expect(subject.class.model_name.singular).to eq(RecordExtensionSpec::Record.model_name.singular)
+    base_model_name = RecordExtensionSpec::ExtendedRecord.model_name
+    model_name = subject.class.model_name
+
+    expect(model_name.singular).to eq(base_model_name.singular)
+    expect(model_name.plural).to eq(base_model_name.plural)
+  end
+
+  it 'has the same route keys as the base class' do
+    base_model_name = RecordExtensionSpec::ExtendedRecord.model_name
+    model_name = subject.class.model_name
+
+    expect(model_name.route_key).to eq(base_model_name.route_key)
+    expect(model_name.singular_route_key).to eq(base_model_name.singular_route_key)
+  end
+
+  it 'has the same param key as the base class' do
+    base_model_name = RecordExtensionSpec::ExtendedRecord.model_name
+    model_name = subject.class.model_name
+
+    expect(model_name.param_key).to eq(base_model_name.param_key)
   end
 
   it 'has a different i18n_key than the base class' do
-    expect(subject.class.model_name.i18n_key).to eq(RecordExtensionSpec::InheritingFromExtendedRecord.name.underscore)
+    base_model_name = RecordExtensionSpec::ExtendedRecord.model_name
+    model_name = subject.class.model_name
+
+    expect(model_name.i18n_key).not_to eq(base_model_name.i18n_key)
+    expect(model_name.i18n_key).to eq(:'record_extension_spec/inheriting_from_extended_record')
   end
 
   describe '#attributes' do
@@ -190,7 +240,34 @@ describe "ActiveType::Record[ActiveType::Record]" do
   end
 
   it 'has the same model name as the base class' do
-    expect(subject.class.model_name.singular).to eq(RecordExtensionSpec::BaseActiveTypeRecord.model_name.singular)
+    base_model_name = RecordExtensionSpec::BaseActiveTypeRecord.model_name
+    model_name = subject.class.model_name
+
+    expect(model_name.singular).to eq(base_model_name.singular)
+    expect(model_name.plural).to eq(base_model_name.plural)
+  end
+
+  it 'has the same route keys as the base class' do
+    base_model_name = RecordExtensionSpec::BaseActiveTypeRecord.model_name
+    model_name = subject.class.model_name
+
+    expect(model_name.route_key).to eq(base_model_name.route_key)
+    expect(model_name.singular_route_key).to eq(base_model_name.singular_route_key)
+  end
+
+  it 'has the same param key as the base class' do
+    base_model_name = RecordExtensionSpec::BaseActiveTypeRecord.model_name
+    model_name = subject.class.model_name
+
+    expect(model_name.param_key).to eq(base_model_name.param_key)
+  end
+
+  it 'has a different i18n_key than the base class' do
+    base_model_name = RecordExtensionSpec::BaseActiveTypeRecord.model_name
+    model_name = subject.class.model_name
+
+    expect(model_name.i18n_key).not_to eq(base_model_name.i18n_key)
+    expect(model_name.i18n_key).to eq(:'record_extension_spec/extended_active_type_record')
   end
 
   describe 'constructors' do

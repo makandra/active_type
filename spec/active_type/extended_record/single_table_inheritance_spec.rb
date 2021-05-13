@@ -93,4 +93,211 @@ describe 'ActiveType::Record[STIModel]' do
 
   end
 
+  describe '.model_name' do
+
+    context 'when extending an ActiveRecord' do
+      let(:base_model_name) { STISpec::Child.model_name }
+      let(:extended_model_name) { STISpec::ExtendedChild.model_name }
+
+      it 'has the same model name as the active record base class' do
+        expect(extended_model_name.singular).to eq(base_model_name.singular)
+        expect(extended_model_name.plural).to eq(base_model_name.plural)
+
+        expect(extended_model_name.collection).to eq(base_model_name.collection)
+        expect(extended_model_name.element).to eq(base_model_name.element)
+        expect(extended_model_name.human).to eq(base_model_name.human)
+      end
+
+      it 'has the same route keys as the active record base class' do
+        expect(extended_model_name.route_key).to eq(base_model_name.route_key)
+        expect(extended_model_name.singular_route_key).to eq(base_model_name.singular_route_key)
+      end
+
+      it 'has the same param key as the active record base class' do
+        expect(extended_model_name.param_key).to eq(base_model_name.param_key)
+      end
+
+      it 'has a different i18n_key than the active record base class' do
+        expect(extended_model_name.i18n_key).not_to eq(base_model_name.i18n_key)
+        expect(extended_model_name.i18n_key).to eq(:'sti_spec/extended_child')
+      end
+    end
+
+    context 'when extending an already extended ActiveRecord' do
+      let(:base_model_name) { STISpec::Child.model_name }
+      let(:extended_model_name) { STISpec::ExtendedChild.model_name }
+      let(:extended_extended_model_name) { STISpec::ExtendedExtendedChild.model_name }
+
+      it 'has still the same model name as the active record base class' do
+        expect(extended_extended_model_name.singular).to eq(base_model_name.singular)
+        expect(extended_extended_model_name.plural).to eq(base_model_name.plural)
+
+        expect(extended_extended_model_name.collection).to eq(base_model_name.collection)
+        expect(extended_extended_model_name.element).to eq(base_model_name.element)
+        expect(extended_extended_model_name.human).to eq(base_model_name.human)
+      end
+
+      it 'has still the same route keys as the active record base class' do
+        expect(extended_extended_model_name.route_key).to eq(base_model_name.route_key)
+        expect(extended_extended_model_name.singular_route_key).to eq(base_model_name.singular_route_key)
+      end
+
+      it 'has still the same param key as the active record base class' do
+        expect(extended_extended_model_name.param_key).to eq(base_model_name.param_key)
+      end
+
+      it 'has a different i18n_key than the active record base and the extended class' do
+        expect(extended_extended_model_name.i18n_key).not_to eq(base_model_name.i18n_key)
+        expect(extended_extended_model_name.i18n_key).not_to eq(extended_model_name.i18n_key)
+        expect(extended_extended_model_name.i18n_key).to eq(:'sti_spec/extended_extended_child')
+      end
+
+    end
+
+  end
+
+  describe 'i18n' do
+
+    around :each do |test|
+      begin
+        orig_backend = I18n.backend
+        I18n.backend = I18n::Backend::KeyValue.new({})
+        test.run
+      ensure
+        I18n.backend = orig_backend
+      end
+    end
+
+    describe 'translation of model name' do
+
+      context 'when extending an ActiveRecord' do
+
+        it 'has its own I18n key' do
+          translations = {
+            models: {
+              'sti_spec/child': 'Child translation',
+              'sti_spec/extended_child': 'ExtendedChild translation',
+            },
+          }
+
+          I18n.backend.store_translations(:en, activerecord: translations)
+          expect(STISpec::ExtendedChild.model_name.human).to eq('ExtendedChild translation')
+        end
+
+        it 'falls back to the I18n key of the base class if does not have its own I18n key' do
+          translations = {
+            models: {
+              'sti_spec/child': 'Child translation',
+            },
+          }
+
+          I18n.backend.store_translations(:en, activerecord: translations)
+          expect(STISpec::ExtendedChild.model_name.human).to eq('Child translation')
+        end
+
+      end
+
+      context 'when extending an already extended ActiveRecord' do
+
+        it 'has its own I18n key' do
+          translations = {
+            models: {
+              'sti_spec/child': 'Child translation',
+              'sti_spec/extended_child': 'ExtendedChild translation',
+              'sti_spec/extended_extended_child': 'ExtendedExtendedChild translation',
+            },
+          }
+
+          I18n.backend.store_translations(:en, activerecord: translations)
+          expect(STISpec::ExtendedExtendedChild.model_name.human).to eq('ExtendedExtendedChild translation')
+        end
+
+        it 'falls back to the I18n key of the extended class if does not have its own I18n key' do
+          translations = {
+            models: {
+              'sti_spec/child': 'Child translation',
+              'sti_spec/extended_child': 'ExtendedChild translation',
+            },
+          }
+
+          I18n.backend.store_translations(:en, activerecord: translations)
+          expect(STISpec::ExtendedExtendedChild.model_name.human).to eq('ExtendedChild translation')
+        end
+
+        it 'falls back to the I18n key of the base class if neither itself nor the extended class has its own I18n key' do
+          translations = { models: { 'sti_spec/child': 'Child translation' } }
+
+          I18n.backend.store_translations(:en, activerecord: translations)
+          expect(STISpec::ExtendedExtendedChild.model_name.human).to eq('Child translation')
+        end
+
+      end
+
+    end
+
+    describe 'translation of attribute name' do
+
+      context 'when extending an ActiveRecord' do
+
+        it 'has its own I18n key' do
+          translations = {
+            attributes: {
+              'sti_spec/child': { persisted_string: 'Child translation' },
+              'sti_spec/extended_child': { persisted_string: 'ExtendedChild translation' },
+            },
+          }
+
+          I18n.backend.store_translations(:en, activerecord: translations)
+          expect(STISpec::ExtendedChild.human_attribute_name(:persisted_string)).to eq('ExtendedChild translation')
+        end
+
+        it 'falls back to the I18n key of the base class if does not have its own I18n key' do
+          translations = { attributes: { 'sti_spec/child': { persisted_string: 'Child translation' } } }
+
+          I18n.backend.store_translations(:en, activerecord: translations)
+          expect(STISpec::ExtendedChild.human_attribute_name(:persisted_string)).to eq('Child translation')
+        end
+
+      end
+
+      context 'when extending an already extended ActiveRecord' do
+
+        it 'has its own I18n key' do
+          translations = {
+            attributes: {
+              'sti_spec/child': { persisted_string: 'Child translation' },
+              'sti_spec/extended_child': { persisted_string: 'ExtendedChild translation' },
+              'sti_spec/extended_extended_child': { persisted_string: 'ExtendedExtendedChild translation' },
+            },
+          }
+
+          I18n.backend.store_translations(:en, activerecord: translations)
+          expect(STISpec::ExtendedExtendedChild.human_attribute_name(:persisted_string)).to eq('ExtendedExtendedChild translation')
+        end
+
+        it 'falls back to the I18n key of the extended class if does not have its own I18n key' do
+          translations = {
+            attributes: {
+              'sti_spec/child': { persisted_string: 'Child translation' },
+              'sti_spec/extended_child': { persisted_string: 'ExtendedChild translation' },
+            },
+          }
+
+          I18n.backend.store_translations(:en, activerecord: translations)
+          expect(STISpec::ExtendedExtendedChild.human_attribute_name(:persisted_string)).to eq('ExtendedChild translation')
+        end
+
+        it 'falls back to the I18n key of the base class if neither itself nor the extended class has its own I18n key' do
+          translations = { attributes: { 'sti_spec/child': { persisted_string: 'Child translation' } } }
+
+          I18n.backend.store_translations(:en, activerecord: translations)
+          expect(STISpec::ExtendedExtendedChild.human_attribute_name(:persisted_string)).to eq('Child translation')
+        end
+
+      end
+
+    end
+
+  end
+
 end
