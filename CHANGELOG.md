@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+## 1.9.0 (2021-05-20)
+
+* Fixed: Extended records now use their own I18n namespace when looking up translations for models or attributes.
+  (introduced in [1.4.0](https://github.com/makandra/active_type/commit/b2aa4247ed1d45a4cd7e51e13d945cba7c38c597))
+
+  There was an issue ([#142](https://github.com/makandra/active_type/issues/142)) when extending an already extended records again. Now the I18n lookup will fall back
+  fall back correctly to the extended record's or even the base record's namespace.
+
 ## 1.8.0 (2021-04-27)
 
 * Added: When casting an unsaved record, the new record will have the same associations as the base record.
