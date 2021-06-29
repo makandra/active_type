@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+## 1.9.1 (2021-06-29)
+
+* Fixed: Retain `#mutations_from_database` when using ActiveType.cast (Rails 5.2+). Thanks to @unrooty-infinum.
+
 ## 1.9.0 (2021-05-20)
 
 * Fixed: Extended records now use their own I18n namespace when looking up translations for models or attributes.

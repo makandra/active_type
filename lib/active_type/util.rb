@@ -22,7 +22,6 @@ module ActiveType
       klass.new do |casted|
         using_single_table_inheritance = using_single_table_inheritance?(klass, casted)
 
-        casted.instance_variable_set(:@mutations_from_database, record.instance_variable_get(:@mutations_from_database))
         # Rails 3.2, 4.2
         casted.instance_variable_set(:@attributes, record.instance_variable_get(:@attributes))
         # Rails 3.2
@@ -35,6 +34,8 @@ module ActiveType
         casted.instance_variable_set(:@new_record, record.new_record?)
         # Rails 3.2, 4.2
         casted.instance_variable_set(:@destroyed, record.destroyed?)
+        # Rails 5.2+
+        casted.instance_variable_set(:@mutations_from_database, record.instance_variable_get(:@mutations_from_database))
 
         casted.instance_variable_set(:@association_cache, record.instance_variable_get(:@association_cache))
 
