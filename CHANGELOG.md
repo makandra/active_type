@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+## 1.10.0 (2021-08-11)
+
+* Removed: Tests for Ruby 2.4 and ActiveRecord 3.2.
+
 ## 1.9.1 (2021-06-29)
 
 * Fixed: Retain `#mutations_from_database` when using ActiveType.cast (Rails 5.2+). Thanks to @unrooty-infinum.
