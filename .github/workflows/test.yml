@@ -14,12 +14,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby: "2.3.8"
-            gemfile: Gemfile.3.2.sqlite3
-          - ruby: "2.3.8"
+          - ruby: "2.5.5"
             gemfile: Gemfile.4.2.sqlite3
-          - ruby: "2.3.8"
-            gemfile: Gemfile.5.2.sqlite3
           - ruby: "2.5.5"
             gemfile: Gemfile.5.2.sqlite3
           - ruby: "2.5.5"
@@ -80,12 +76,8 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby: "2.3.8"
-            gemfile: Gemfile.3.2.mysql2
-          - ruby: "2.3.8"
+          - ruby: "2.5.5"
             gemfile: Gemfile.4.2.mysql2
-          - ruby: "2.3.8"
-            gemfile: Gemfile.5.2.mysql2
           - ruby: "2.6.3"
             gemfile: Gemfile.5.2.mysql2
           - ruby: "2.7.2"
@@ -135,9 +127,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby: "2.3.8"
+          - ruby: "2.5.5"
             gemfile: Gemfile.4.2.pg
-          - ruby: "2.3.8"
+          - ruby: "2.5.5"
             gemfile: Gemfile.5.2.pg
           - ruby: "2.5.5"
             gemfile: Gemfile.6.1.pg
