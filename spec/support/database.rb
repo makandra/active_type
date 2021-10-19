@@ -36,14 +36,4 @@ database.rewrite_schema! do
     t.string :other_string
   end
 
-  create_table :cars do |t|
-  end
-
-  create_table :wheels do |t|
-    t.integer :car_id
-  end
-
-  create_table :steering_wheels do |t|
-    t.string :car_id
-  end
 end

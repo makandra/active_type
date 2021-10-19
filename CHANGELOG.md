@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+## 1.10.1 (2021-10-19)
+
+* Removed: When casting an unsaved record, the new record will no longer have the same associations as the base record. This was introduced with version 1.8.0 and lead to issues (#147 and #148). Therefore the change was rolled back.
+
 ## 1.10.0 (2021-08-11)
 
 * Removed: Tests for Ruby 2.4 and ActiveRecord 3.2.
