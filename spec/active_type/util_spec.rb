@@ -4,6 +4,7 @@ module UtilSpec
 
   class BaseRecord < ActiveRecord::Base
     self.table_name = 'records'
+    has_many :associated_records
   end
 
   class ExtendedRecord < ActiveType::Record[BaseRecord]
@@ -31,6 +32,10 @@ module UtilSpec
   end
 
   class ExtendedChild < ActiveType::Record[Child]
+  end
+
+  class AssociatedRecord < ActiveRecord::Base
+    belongs_to :base_record
   end
 
 end
@@ -72,6 +77,54 @@ describe ActiveType::Util do
         expect(extended_record.id).to be_present
         expect(extended_record.id).to eq(base_record.id)
         expect(extended_record.persisted_string).to eq('foo')
+      end
+
+      context 'casting without copying the @association cache' do
+        # When casting, the @association_cache is not copied, because of Issues #146, #147 and #148.
+        # This may be unexpected to a user of Active Type, so we decided to not allow
+        # casting of records with loaded associations if the associated records
+        # already have changes.
+        # Only the cases where the @association_cache is loaded and aware of changes could
+        # be problematic.
+
+        it 'casts a record that has unsaved changes in an associated record which is not loaded through the association' do
+          base_record = UtilSpec::BaseRecord.create!
+          associated_record = UtilSpec::AssociatedRecord.create!(:persisted_string => 'initial value', base_record: base_record)
+
+          associated_record.persisted_string = 'changed value'
+
+          expect{ ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord) }.not_to raise_error
+        end
+
+        it 'casts a record that has unsaved changes in its associations which are not known to the casted record' do
+          base_record = UtilSpec::BaseRecord.create!
+          UtilSpec::AssociatedRecord.create!(:persisted_string => 'initial value', base_record: base_record)
+
+          associated_record = base_record.associated_records.first # <- this does not use the @associations_cache
+          associated_record.persisted_string = 'changed value'
+
+          expect{ ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord) }.not_to raise_error
+        end
+
+        it 'casts a record with loaded associations without changes' do
+          base_record = UtilSpec::BaseRecord.create!
+          UtilSpec::AssociatedRecord.create!(:persisted_string => 'initial value', base_record: base_record)
+
+          base_record.associated_records.to_a
+
+          expect{ ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord) }.not_to raise_error
+        end
+
+        it 'does not cast an record that has unsaved changes in its associations' do
+          base_record = UtilSpec::BaseRecord.create!
+          UtilSpec::AssociatedRecord.create!(:persisted_string => 'initial value', base_record: base_record)
+
+          associated_record = base_record.associated_records.to_a.first
+          associated_record.persisted_string = 'changed value'
+
+          expect{ ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord) }.to raise_error ActiveType::NotCastableError
+        end
+
       end
 
       it 'casts an extended record to a base record' do

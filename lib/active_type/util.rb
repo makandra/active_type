@@ -1,3 +1,5 @@
+require 'active_type/not_castable_error'
+
 module ActiveType
   module Util
 
@@ -18,6 +20,8 @@ module ActiveType
     private
 
     def cast_record(record, klass)
+      raise NotCastableError, 'Record has changes in its loaded associations!' if associations_touched?(record)
+
       # record.becomes(klass).dup
       klass.new do |casted|
         using_single_table_inheritance = using_single_table_inheritance?(klass, casted)
@@ -59,6 +63,14 @@ module ActiveType
 
     def cast_relation(relation, klass)
       scoped(klass).merge(scoped(relation))
+    end
+
+    def associations_touched?(record)
+      return false unless record.instance_variable_get(:@association_cache)
+
+      !!record.instance_variable_get(:@association_cache)[:associated_records]&.target&.any? do |target|
+        target.changed?
+      end
     end
 
     extend self

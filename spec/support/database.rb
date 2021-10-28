@@ -17,6 +17,11 @@ database.rewrite_schema! do
     t.boolean :nice
   end
 
+  create_table :associated_records do |t|
+    t.integer :base_record_id
+    t.string :persisted_string
+  end
+
   create_table :pictures do |t|
     t.integer :imageable_id
     t.string :imageable_type
