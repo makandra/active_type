@@ -127,7 +127,7 @@ describe ActiveType::Util do
 
       end
 
-      it 'casts an extended record to a base record' do
+      it 'does not change the base record' do
         extended_record = UtilSpec::ExtendedRecord.create!(:persisted_string => 'foo')
         base_record = ActiveType::Util.cast(extended_record, UtilSpec::BaseRecord)
         expect(base_record).to be_a(UtilSpec::BaseRecord)
@@ -187,6 +187,34 @@ describe ActiveType::Util do
         expect(base_record.errors.size).to eq 0
       end
 
+      it 'prevents changing of the casted record' do
+        base_record = UtilSpec::BaseRecord.create!(:persisted_string => 'old value')
+        expect{ base_record.persisted_string = 'changed value' }.not_to raise_error
+
+        extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
+
+        expect{ base_record.persisted_string = 'change after cast' }.to raise_error(ActiveType::MutationAfterCastError)
+        expect{ extended_record.persisted_string = 'change after cast' }.not_to raise_error
+      end
+
+      it 'prevents saving of the casted record' do
+        base_record = UtilSpec::BaseRecord.create!
+        expect{ base_record.save! }.not_to raise_error
+
+        extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
+
+        expect{ base_record.save! }.to raise_error(ActiveType::MutationAfterCastError)
+        expect{ extended_record.save! }.not_to raise_error
+      end
+
+      it 'does not prevent inspecting the casted record' do
+        base_record = UtilSpec::BaseRecord.create!
+        expect{ base_record.inspect }.not_to raise_error
+
+        ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
+
+        expect{ base_record.inspect }.not_to raise_error(ActiveType::MutationAfterCastError)
+      end
     end
 
   end

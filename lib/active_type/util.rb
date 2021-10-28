@@ -1,4 +1,5 @@
 require 'active_type/not_castable_error'
+require 'active_type/util/unmutable_attributes'
 
 module ActiveType
   module Util
@@ -52,6 +53,9 @@ module ActiveType
         casted.instance_variable_set(:@errors, errors)
 
         casted[klass.inheritance_column] = klass.sti_name if using_single_table_inheritance
+
+        make_record_unusable(record)
+        casted
       end
     end
 
@@ -71,6 +75,15 @@ module ActiveType
       !!record.instance_variable_get(:@association_cache)[:associated_records]&.target&.any? do |target|
         target.changed?
       end
+    end
+
+    def make_record_unusable(record)
+      # Changing and saving the base record may lead to unexpected behaviour,
+      # since the casted record may have different changes in its autosave
+      # associations and will be saved to the same record in the database as
+      # the casted record. Therefore we prevent that.
+      original_attributes = record.instance_variable_get(:@attributes)
+      record.instance_variable_set(:@attributes, UnmutableAttributes.new(original_attributes) )
     end
 
     extend self
