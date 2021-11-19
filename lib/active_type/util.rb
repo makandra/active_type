@@ -4,11 +4,11 @@ require 'active_type/util/unmutable_attributes'
 module ActiveType
   module Util
 
-    def cast(object, klass)
+    def cast(object, klass, force: false)
       if object.is_a?(ActiveRecord::Relation)
         cast_relation(object, klass)
       elsif object.is_a?(ActiveRecord::Base)
-        cast_record(object, klass)
+        cast_record(object, klass, force: force)
       else
         raise ArgumentError, "Don't know how to cast #{object.inspect}"
       end
@@ -20,8 +20,10 @@ module ActiveType
 
     private
 
-    def cast_record(record, klass)
-      raise NotCastableError, 'Record has changes in its loaded associations!' if associations_touched?(record)
+    def cast_record(record, klass, force: false)
+      if associations_touched?(record) && !force
+        raise NotCastableError, 'Record has changes in its loaded associations!'
+      end
 
       # record.becomes(klass).dup
       klass.new do |casted|
@@ -54,7 +56,9 @@ module ActiveType
 
         casted[klass.inheritance_column] = klass.sti_name if using_single_table_inheritance
 
-        make_record_unusable(record)
+        if !force
+          make_record_unusable(record)
+        end
         casted
       end
     end
