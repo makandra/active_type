@@ -1,3 +1,3 @@
 module ActiveType
-  VERSION = '1.10.1'
+  VERSION = '2.0'
 end

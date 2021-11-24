@@ -4,6 +4,11 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+## 2.0.0 (2021-11-24)
+
+* Added: Casting is prevented when the base record has changes in its already loaded associations, because those would be lost. Option `force: true` can be used to override this and still do the cast (this is not recommended).
+* Added: After casting, the base record will not be usable any more. The base record and the newly created casted record share state which is unexpected. Option `force: true` can be used to override this, so the base record is still usable (this is not recommended).
+
 ## 1.10.1 (2021-10-19)
 
 * Removed: When casting an unsaved record, the new record will no longer have the same associations as the base record. This was introduced with version 1.8.0 and lead to issues (#147 and #148). Therefore the change was rolled back.
