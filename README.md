@@ -53,7 +53,7 @@ end
 
 ### A note on Rails 5+
 
-Rails 5 comes with its own implementation of `.attribute`. This implementation is functionally very
+Rails 5+ comes with its own implementation of `.attribute`. This implementation is functionally very
 similar, but not identical to ActiveType's.
 
 We have decided to continue to use our own implementation. This means that if you use ActiveType, `ActiveRecord::Base.attribute` will be overriden.

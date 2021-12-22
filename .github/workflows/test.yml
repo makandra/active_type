@@ -56,7 +56,7 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
       - name: Bundle
         run: |
-          gem install bundler:2.0.2
+          gem install bundler:2.2.27
           bundle install --no-deployment
       - name: Run tests
         run: bundle exec rake spec
@@ -103,7 +103,7 @@ jobs:
           sudo apt-get install -y mariadb-client libmariadbclient-dev
       - name: Bundle
         run: |
-          gem install bundler:2.0.2
+          gem install bundler:2.2.27
           bundle install --no-deployment
       - name: Setup databases
         run: |
@@ -166,7 +166,7 @@ jobs:
           sudo apt-get install -y postgresql-client
       - name: Bundle
         run: |
-          gem install bundler:2.0.2
+          gem install bundler:2.2.27
           bundle install --no-deployment
       - name: Setup databases
         run: |
