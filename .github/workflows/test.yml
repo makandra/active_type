@@ -2,9 +2,9 @@ name: Tests
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
   pull_request:
-    branches: [ master ]
+    branches: [master]
 
 jobs:
   test_sqlite:
@@ -28,16 +28,22 @@ jobs:
             gemfile: Gemfile.6.0.sqlite3
           - ruby: "2.6.3"
             gemfile: Gemfile.6.1.sqlite3
-          - ruby: "2.7.2"
+          - ruby: "2.6.3"
+            gemfile: Gemfile.7.0.sqlite3
+          - ruby: "2.7.4"
             gemfile: Gemfile.5.2.sqlite3
-          - ruby: "2.7.2"
+          - ruby: "2.7.4"
             gemfile: Gemfile.6.0.sqlite3
-          - ruby: "2.7.2"
+          - ruby: "2.7.4"
             gemfile: Gemfile.6.1.sqlite3
+          - ruby: "2.7.4"
+            gemfile: Gemfile.7.0.sqlite3
           - ruby: "3.0.1"
             gemfile: Gemfile.6.0.sqlite3
           - ruby: "3.0.1"
             gemfile: Gemfile.6.1.sqlite3
+          - ruby: "3.0.1"
+            gemfile: Gemfile.7.0.sqlite3
 
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
@@ -55,7 +61,6 @@ jobs:
       - name: Run tests
         run: bundle exec rake spec
 
-
   test_mysql:
     runs-on: ubuntu-20.04
 
@@ -65,7 +70,7 @@ jobs:
         env:
           MYSQL_ROOT_PASSWORD: password
         ports:
-        - 3306:3306
+          - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping"
           --health-interval=10s
@@ -80,7 +85,7 @@ jobs:
             gemfile: Gemfile.4.2.mysql2
           - ruby: "2.6.3"
             gemfile: Gemfile.5.2.mysql2
-          - ruby: "2.7.2"
+          - ruby: "2.7.4"
             gemfile: Gemfile.5.2.mysql2
 
     env:
@@ -105,7 +110,6 @@ jobs:
           mysql -e 'create database IF NOT EXISTS active_type_test;' -u root --password=password -P 3306 -h 127.0.0.1
       - name: Run tests
         run: bundle exec rake spec
-
 
   test_pg:
     runs-on: ubuntu-20.04
@@ -137,12 +141,16 @@ jobs:
             gemfile: Gemfile.5.2.pg
           - ruby: "2.6.3"
             gemfile: Gemfile.6.1.pg
-          - ruby: "2.7.2"
+          - ruby: "2.7.4"
             gemfile: Gemfile.5.2.pg
-          - ruby: "2.7.2"
+          - ruby: "2.7.4"
             gemfile: Gemfile.6.1.pg
+          - ruby: "2.7.4"
+            gemfile: Gemfile.7.0.pg
           - ruby: "3.0.1"
             gemfile: Gemfile.6.1.pg
+          - ruby: "3.0.1"
+            gemfile: Gemfile.7.0.pg
 
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
