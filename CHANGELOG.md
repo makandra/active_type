@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+## 2.1.0 (2021-12-22)
+
+* Fixed: ActiveType now works for Rails 7.
+
 ## 2.0.0 (2021-11-24)
 
 * Added: Casting is prevented when the base record has changes in its already loaded associations, because those would be lost. Option `force: true` can be used to override this and still do the cast (this is not recommended).
