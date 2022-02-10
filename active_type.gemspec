@@ -10,6 +10,7 @@ Gem::Specification.new do |s|
   s.summary = 'Make any Ruby object quack like ActiveRecord'
   s.description = s.summary
   s.license = 'MIT'
+  s.metadata = { 'rubygems_mfa_required' => 'true' }
 
   s.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   s.executables   = s.files.grep(%r{^bin/}) { |f| File.basename(f) }
