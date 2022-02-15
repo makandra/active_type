@@ -112,7 +112,7 @@ module ActiveType
       end
 
       def validate_attribute_name!(name)
-        unless name.to_s =~ /\A[A-z0-9_]*\z/
+        unless name.to_s =~ /\A[A-z0-9]*\z/
           raise InvalidAttributeNameError.new("'#{name}' is not a valid name for a virtual attribute")
         end
       end
