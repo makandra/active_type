@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+## 2.1.1 (2021-12-22)
+
+* Fixed: Ruby compiler warning and suboptimal attribut name validation. Thanks to @remofrizsche.
+
 ## 2.1.0 (2021-12-22)
 
 * Fixed: ActiveType now works for Rails 7.
