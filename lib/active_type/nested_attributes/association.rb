@@ -16,11 +16,15 @@ module ActiveType
         @allow_destroy = options.fetch(:allow_destroy, false)
         @reject_if = options.delete(:reject_if)
         @options = options.dup
-        @index_errors = if ActiveRecord::VERSION::MAJOR < 5
-          @options[:index_errors]
-        else
-          @options[:index_errors] || ActiveRecord::Base.index_nested_attribute_errors
-        end
+
+        @index_errors = case
+                        when ActiveRecord::VERSION::MAJOR < 5
+                          @options[:index_errors]
+                        when ActiveRecord::VERSION::MAJOR < 7
+                          @options[:index_errors] || ActiveRecord::Base.index_nested_attribute_errors
+                        else
+                          @options[:index_errors] || ActiveRecord.index_nested_attribute_errors
+                        end
       end
 
       def assign_attributes(parent, attributes)
