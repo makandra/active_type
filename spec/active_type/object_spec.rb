@@ -229,7 +229,7 @@ describe ActiveType::Object do
       subject.virtual_boolean = true
       subject.virtual_attribute = OpenStruct.new({:test => "openstruct"})
 
-      expect(subject.inspect).to eq("#<ObjectSpec::Object virtual_attribute: #<OpenStruct test=\"openstruct\">, virtual_boolean: true, virtual_date: \"#{Date.today}\", virtual_integer: 17, virtual_string: \"string\", virtual_time: \"#{t.to_s(:db)}\", virtual_type_attribute: nil>")
+      expect(subject.inspect).to eq("#<ObjectSpec::Object virtual_attribute: #<OpenStruct test=\"openstruct\">, virtual_boolean: true, virtual_date: \"#{Date.today}\", virtual_integer: 17, virtual_string: \"string\", virtual_time: \"#{t.to_formatted_s(:db)}\", virtual_type_attribute: nil>")
     end
 
   end
