@@ -130,7 +130,7 @@ module ActiveType
       end
 
       def add_errors_to_parent(parent, child, index)
-        if ActiveRecord::VERSION::MAJOR >= 6 && ActiveRecord::VERSION::MINOR >= 1
+        if Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new("6.1")
           child.errors.each do |error|
             attribute = translate_error_attribute(error.attribute, index)
             parent.errors.add(attribute, error.message)
