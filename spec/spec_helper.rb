@@ -5,7 +5,41 @@ $: << File.join(File.dirname(__FILE__), "/../../lib" )
 require 'gemika'
 require 'active_type'
 
-ActiveRecord::Base.default_timezone = :local
+ActiveRecord.class_eval do
+  def self.version_agnostic_default_timezone
+    if respond_to?(:default_timezone)
+      self.default_timezone
+    else
+      self::Base.default_timezone
+    end
+  end
+
+  def self.version_agnostic_default_timezone=(zone)
+    if respond_to?(:default_timezone=)
+      self.default_timezone = zone
+    else
+      self::Base.default_timezone = zone
+    end
+  end
+
+  def self.version_agnostic_index_nested_attribute_errors
+    if respond_to?(:index_nested_attribute_errors)
+      self.index_nested_attribute_errors
+    else
+      self::Base.index_nested_attribute_errors
+    end
+  end
+
+  def self.version_agnostic_index_nested_attribute_errors=(zone)
+    if respond_to?(:index_nested_attribute_errors=)
+      self.index_nested_attribute_errors = zone
+    else
+      self::Base.index_nested_attribute_errors = zone
+    end
+  end
+end
+
+ActiveRecord.version_agnostic_default_timezone = :local
 ActiveRecord::Base.raise_in_transactional_callbacks = true if ActiveRecord::Base.respond_to?(:raise_in_transactional_callbacks) && ActiveRecord::VERSION::MAJOR < 5
 
 Dir["#{File.dirname(__FILE__)}/support/*.rb"].each {|f| require f}

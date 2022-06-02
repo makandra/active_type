@@ -101,7 +101,7 @@ module ActiveType
         def columns_hash(table_name)
           {}
         end
-        
+
         def columns_hash?(table_name)
           return false
         end
@@ -141,6 +141,10 @@ module ActiveType
         end
 
         def find_by_sql(*)
+          []
+        end
+
+        def _query_by_sql(*)
           []
         end
 

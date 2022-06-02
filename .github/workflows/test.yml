@@ -28,8 +28,6 @@ jobs:
             gemfile: Gemfile.6.0.sqlite3
           - ruby: "2.6.3"
             gemfile: Gemfile.6.1.sqlite3
-          - ruby: "2.6.3"
-            gemfile: Gemfile.7.0.sqlite3
           - ruby: "2.7.4"
             gemfile: Gemfile.5.2.sqlite3
           - ruby: "2.7.4"
