@@ -97,10 +97,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-      - name: Install database client
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y mariadb-client libmariadbclient-dev
       - name: Bundle
         run: |
           gem install bundler:2.2.27
