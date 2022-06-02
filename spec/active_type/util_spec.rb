@@ -226,7 +226,7 @@ describe ActiveType::Util do
 
           ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
 
-          expect{ base_record.inspect }.not_to raise_error(ActiveType::MutationAfterCastError)
+          expect{ base_record.inspect }.not_to raise_error
         end
 
         context 'with option force: true' do

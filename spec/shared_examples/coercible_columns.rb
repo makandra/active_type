@@ -80,12 +80,12 @@ shared_examples_for 'a coercible time column' do |column|
     begin
       old_time_zone = Time.zone
       old_time_zone_aware_attributes = ActiveRecord::Base.time_zone_aware_attributes
-      old_default_timezone = ActiveRecord::Base.default_timezone
+      old_default_timezone = ActiveRecord.version_agnostic_default_timezone
       example.run
     ensure
       Time.zone = old_time_zone
       ActiveRecord::Base.time_zone_aware_attributes = old_time_zone_aware_attributes
-      ActiveRecord::Base.default_timezone = old_default_timezone
+      ActiveRecord.version_agnostic_default_timezone = old_default_timezone
       subject.class.reset_column_information
     end
   end
@@ -149,14 +149,14 @@ shared_examples_for 'a coercible time column' do |column|
 
     it "converts '#{time}' the same as ActiveRecord if default_timezone is :utc" do
       Time.zone = 'Hawaii'
-      ActiveRecord::Base.default_timezone = :utc
+      ActiveRecord.version_agnostic_default_timezone = :utc
 
       it_should_convert_like_active_record(column, time)
     end
 
     it "converts '#{time}' the same as ActiveRecord if time_zone_aware_attributes is set, default_timezone is :utc" do
       Time.zone = 'Hawaii'
-      ActiveRecord::Base.default_timezone = :utc
+      ActiveRecord.version_agnostic_default_timezone = :utc
       ActiveRecord::Base.time_zone_aware_attributes = true
 
       it_should_convert_like_active_record(column, time)
