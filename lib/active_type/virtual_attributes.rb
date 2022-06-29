@@ -137,6 +137,7 @@ module ActiveType
       class << self
         if method_defined?(:attribute)
           alias_method :ar_attribute, :attribute
+          alias_method :attribute, :at_attribute
         end
       end
     end
@@ -323,7 +324,7 @@ module ActiveType
         end
       end
 
-      def attribute(name, *args)
+      def at_attribute(name, *args)
         options = args.extract_options!
         type = args.first
 
