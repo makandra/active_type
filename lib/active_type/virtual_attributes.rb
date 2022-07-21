@@ -218,6 +218,10 @@ module ActiveType
       end
     end
 
+    def attribute_names
+      super + self.class._virtual_column_names
+    end
+
     def changed?
       self.class._virtual_column_names.any? { |attr| virtual_attributes_were[attr] != send(attr) } || super
     end
