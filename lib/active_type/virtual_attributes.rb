@@ -100,7 +100,7 @@ module ActiveType
 
         @module.module_eval <<-BODY, __FILE__, __LINE__ + 1
           def #{name}_changed?
-            #{name} != virtual_attributes_were["#{name}"]
+            self.#{name} != virtual_attributes_were["#{name}"]
           end
         BODY
 
