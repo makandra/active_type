@@ -460,4 +460,21 @@ describe ActiveType::Object do
     end
   end
 
+  describe "#serializable_hash" do
+    it "returns a hash of virtual attributes for serialization" do
+      subject.virtual_string = "string"
+      subject.virtual_integer = "17"
+
+      expect(subject.serializable_hash).to eq({
+        "virtual_string" => "string",
+        "virtual_integer" => 17,
+        "virtual_time" => nil,
+        "virtual_date" => nil,
+        "virtual_boolean" => nil,
+        "virtual_attribute" => nil,
+        "virtual_type_attribute" => nil,
+      })
+    end
+  end
+
 end
