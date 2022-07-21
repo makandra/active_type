@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+## 2.3.0 (2022-07-21)
+
+* Fixed: Fixed an issue when certain keywords are used as attribute names. Thanks to @tom-kuca.
+* Fixed: Original Rails #attribute method now aliased as #ar_attribute correctly. Thanks to @sudoremo.
+* Fixed: ActiveType::Object#serializable_hash includes virtual attributes.
+
 ## 2.2.0 (2022-06-02)
 
 * Fixed: ActiveType now actually works for Rails 7. Sorry for that. Thanks to @atcruice.
