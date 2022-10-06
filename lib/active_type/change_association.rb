@@ -6,7 +6,7 @@ module ActiveType
 
     module ClassMethods
 
-      def change_association(association_name, new_scope, new_options = nil)
+      def change_association(association_name, new_scope, new_options = {})
         if (existing_association = self.reflect_on_association(association_name))
           if new_scope.is_a?(Hash)
             new_options = new_scope

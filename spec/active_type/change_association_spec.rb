@@ -179,6 +179,29 @@ module ChangeAssociationSpec
           expect(extended_nice_children.size).to eq 2
           expect(extended_nice_children.first).to be_instance_of(ExtendedChild)
         end
+
+        it 'does not raise an error when overriding scopes without new_options' do
+          record = Record.create
+          Child.create(record: record, nice: true)
+          Child.create(record: record, nice: false)
+          Child.create(record: record, nice: false)
+          expect(record.nice_children.size).to eq 1
+
+          extended_proc = ->(_class) do
+            def self.name
+              'ExtendedRecord'
+            end
+
+            # today is opposite day
+            change_association :nice_children, -> { where(nice: false) }
+          end
+
+          expect { @extended_class = Class.new(ActiveType::Record[Record], &extended_proc) }.not_to raise_error
+
+          extended_nice_children = @extended_class.first.nice_children
+          expect(extended_nice_children.size).to eq 2
+          expect(extended_nice_children.first).to be_instance_of(Child)
+        end
       end
 
     end
