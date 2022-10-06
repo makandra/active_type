@@ -4,6 +4,10 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+## 2.3.1 (2022-10-06)
+
+* Fixed: Fixed an issue ([#168](https://github.com/makandra/active_type/issues/168)) when `change_association` is called with a scope proc only. Thanks to @foobear.
+
 ## 2.3.0 (2022-07-21)
 
 * Fixed: Fixed an issue when certain keywords are used as attribute names. Thanks to @tom-kuca.
