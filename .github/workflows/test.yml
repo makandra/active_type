@@ -15,34 +15,17 @@ jobs:
       matrix:
         include:
           - ruby: "2.5.5"
-            gemfile: Gemfile.4.2.sqlite3
-          - ruby: "2.5.5"
-            gemfile: Gemfile.5.2.sqlite3
-          - ruby: "2.5.5"
-            gemfile: Gemfile.6.0.sqlite3
-          - ruby: "2.5.5"
-            gemfile: Gemfile.6.1.sqlite3
-          - ruby: "2.6.3"
-            gemfile: Gemfile.5.2.sqlite3
-          - ruby: "2.6.3"
-            gemfile: Gemfile.6.0.sqlite3
-          - ruby: "2.6.3"
-            gemfile: Gemfile.6.1.sqlite3
-          - ruby: "2.7.4"
             gemfile: Gemfile.5.2.sqlite3
           - ruby: "2.7.4"
+            gemfile: Gemfile.5.2.sqlite3
+          - ruby: "3.0.4"
             gemfile: Gemfile.6.0.sqlite3
-          - ruby: "2.7.4"
+          - ruby: "3.0.4"
             gemfile: Gemfile.6.1.sqlite3
-          - ruby: "2.7.4"
+          - ruby: "3.0.4"
             gemfile: Gemfile.7.0.sqlite3
-          - ruby: "3.0.1"
-            gemfile: Gemfile.6.0.sqlite3
-          - ruby: "3.0.1"
-            gemfile: Gemfile.6.1.sqlite3
-          - ruby: "3.0.1"
+          - ruby: "3.1.2"
             gemfile: Gemfile.7.0.sqlite3
-
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
 
@@ -79,10 +62,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby: "2.5.5"
-            gemfile: Gemfile.4.2.mysql2
-          - ruby: "2.6.3"
-            gemfile: Gemfile.5.2.mysql2
           - ruby: "2.7.4"
             gemfile: Gemfile.5.2.mysql2
 
@@ -126,21 +105,9 @@ jobs:
       matrix:
         include:
           - ruby: "2.5.5"
-            gemfile: Gemfile.4.2.pg
-          - ruby: "2.5.5"
-            gemfile: Gemfile.5.2.pg
-          - ruby: "2.5.5"
-            gemfile: Gemfile.6.1.pg
-          - ruby: "2.6.3"
-            gemfile: Gemfile.5.2.pg
-          - ruby: "2.6.3"
-            gemfile: Gemfile.6.1.pg
-          - ruby: "2.7.4"
             gemfile: Gemfile.5.2.pg
           - ruby: "2.7.4"
-            gemfile: Gemfile.6.1.pg
-          - ruby: "2.7.4"
-            gemfile: Gemfile.7.0.pg
+            gemfile: Gemfile.5.2.pg
           - ruby: "3.0.1"
             gemfile: Gemfile.6.1.pg
           - ruby: "3.0.1"
