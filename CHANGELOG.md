@@ -4,6 +4,8 @@ All notable changes to this project will be documented in this file.
 
 ## Unreleased changes
 
+* Fixed: Allowed some more attribute methods on casted objects without causing a UnmutableAttributes error.
+
 ## 2.3.1 (2022-10-06)
 
 * Fixed: Fixed an issue ([#168](https://github.com/makandra/active_type/issues/168)) when `change_association` is called with a scope proc only. Thanks to @foobear.

@@ -19,6 +19,10 @@ module ActiveType
         original_attributes.fetch_value(key)
       end
 
+      def [](key)
+        original_attributes[key]
+      end
+
       def key?(key)
         original_attributes.key?(key)
       end
