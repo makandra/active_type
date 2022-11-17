@@ -229,6 +229,16 @@ describe ActiveType::Util do
           expect{ base_record.inspect }.not_to raise_error
         end
 
+        it 'allows access attributes and $attribute_was' do
+          base_record = UtilSpec::BaseRecord.create!(persisted_string: 'string')
+          ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
+
+          expect do
+            expect(base_record.persisted_string).to eq('string')
+            expect(base_record.persisted_string_was).to eq('string')
+          end.not_to raise_error
+        end
+
         context 'with option force: true' do
           it 'will not prevent changing or saving it' do
             base_record = UtilSpec::BaseRecord.create!(:persisted_string => 'old value')
