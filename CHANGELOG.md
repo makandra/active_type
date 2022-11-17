@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased changes
+## 2.3.2 (2022-11-17)
 
 * Fixed: Allowed some more attribute methods on casted objects without causing a UnmutableAttributes error.
 
