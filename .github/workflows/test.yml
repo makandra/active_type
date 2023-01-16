@@ -16,29 +16,28 @@ jobs:
         include:
           - ruby: "2.5.5"
             gemfile: Gemfile.5.2.sqlite3
-          - ruby: "2.7.4"
+          - ruby: "2.7.7"
             gemfile: Gemfile.5.2.sqlite3
-          - ruby: "3.0.4"
+          - ruby: "3.0.5"
             gemfile: Gemfile.6.0.sqlite3
-          - ruby: "3.0.4"
+          - ruby: "3.0.5"
             gemfile: Gemfile.6.1.sqlite3
-          - ruby: "3.0.4"
+          - ruby: "3.0.5"
             gemfile: Gemfile.7.0.sqlite3
-          - ruby: "3.1.2"
+          - ruby: "3.1.3"
+            gemfile: Gemfile.7.0.sqlite3
+          - ruby: "3.2.0"
             gemfile: Gemfile.7.0.sqlite3
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-      - name: Bundle
-        run: |
-          gem install bundler:2.2.27
-          bundle install --no-deployment
+          bundler-cache: true
       - name: Run tests
         run: bundle exec rake spec
 
@@ -62,22 +61,18 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby: "2.7.4"
+          - ruby: "2.7.7"
             gemfile: Gemfile.5.2.mysql2
-
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Install ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-      - name: Bundle
-        run: |
-          gem install bundler:2.2.27
-          bundle install --no-deployment
+          bundler-cache: true
       - name: Setup databases
         run: |
           mysql -e 'create database IF NOT EXISTS active_type_test;' -u root --password=password -P 3306 -h 127.0.0.1
@@ -106,29 +101,29 @@ jobs:
         include:
           - ruby: "2.5.5"
             gemfile: Gemfile.5.2.pg
-          - ruby: "2.7.4"
+          - ruby: "2.7.7"
             gemfile: Gemfile.5.2.pg
-          - ruby: "3.0.1"
+          - ruby: "3.0.5"
             gemfile: Gemfile.6.1.pg
-          - ruby: "3.0.1"
+          - ruby: "3.0.5"
             gemfile: Gemfile.7.0.pg
-
+          - ruby: "3.1.3"
+            gemfile: Gemfile.7.0.pg
+          - ruby: "3.2.0"
+            gemfile: Gemfile.7.0.pg
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - name: Install database client
+        run: |
+          sudo apt-get install -y postgresql-client
       - name: Install ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-      - name: Install database client
-        run: |
-          sudo apt-get install -y postgresql-client
-      - name: Bundle
-        run: |
-          gem install bundler:2.2.27
-          bundle install --no-deployment
+          bundler-cache: true
       - name: Setup databases
         run: |
           PGPASSWORD=postgres psql -c 'create database active_type_test;' -U postgres -p 5432 -h localhost
