@@ -218,8 +218,11 @@ module ActiveType
       end
     end
 
-    def attribute_names
-      super + self.class._virtual_column_names
+    if ActiveRecord::VERSION::STRING >= '7.0.3'
+      def attribute_names_for_serialization
+        attribute_names + self.class._virtual_column_names
+      end
+      private :attribute_names_for_serialization
     end
 
     def changed?
