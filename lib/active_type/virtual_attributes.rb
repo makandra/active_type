@@ -218,13 +218,6 @@ module ActiveType
       end
     end
 
-    if ActiveRecord::VERSION::STRING >= '7.0.3'
-      def attribute_names_for_serialization
-        attribute_names + self.class._virtual_column_names
-      end
-      private :attribute_names_for_serialization
-    end
-
     def changed?
       self.class._virtual_column_names.any? { |attr| virtual_attributes_were[attr] != send(attr) } || super
     end
@@ -287,6 +280,14 @@ module ActiveType
         %(#{inspected[0...-1]}, ...])
       else
         value.inspect
+      end
+    end
+
+    private
+
+    if ActiveRecord::Base.private_method_defined?(:attribute_names_for_serialization)
+      def attribute_names_for_serialization
+        super + self.class._virtual_column_names
       end
     end
 

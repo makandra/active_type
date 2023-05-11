@@ -14,6 +14,7 @@ database.rewrite_schema! do
 
   create_table :children do |t|
     t.integer :record_id
+    t.string :persisted_string
     t.boolean :nice
   end
 
