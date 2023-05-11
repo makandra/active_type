@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.3.3 (2023-05-11)
+
+* Fixed: `accepts_nested_attributes_for` ignores virtual attributes. Thanks to @nalabjp.
+
 ## 2.3.2 (2022-11-17)
 
 * Fixed: Allowed some more attribute methods on casted objects without causing a UnmutableAttributes error.
