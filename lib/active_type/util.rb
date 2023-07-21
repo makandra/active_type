@@ -1,5 +1,6 @@
 require 'active_type/not_castable_error'
 require 'active_type/util/unmutable_attributes'
+require 'active_type/util/active_record'
 
 module ActiveType
   module Util
@@ -65,6 +66,9 @@ module ActiveType
         if !force
           make_record_unusable(record)
         end
+
+        casted.after_cast(record)
+        
         casted
       end
     end
