@@ -5,6 +5,13 @@ module UtilSpec
   class BaseRecord < ActiveRecord::Base
     self.table_name = 'records'
     has_many :associated_records
+
+    attr_accessor :persisted_attribute
+
+    def after_cast(record)
+      @persisted_attribute = record.persisted_attribute
+    end
+
   end
 
   class ExtendedRecord < ActiveType::Record[BaseRecord]
@@ -77,6 +84,18 @@ describe ActiveType::Util do
         expect(extended_record.id).to be_present
         expect(extended_record.id).to eq(base_record.id)
         expect(extended_record.persisted_string).to eq('foo')
+      end
+
+      it 'casts a base record persist attr_reader' do
+        base_record = UtilSpec::BaseRecord.create!(:persisted_string => 'foo')
+        base_record.persisted_attribute = 'bar'
+        extended_record = ActiveType::Util.cast(base_record, UtilSpec::BaseRecord)
+        expect(extended_record).to be_a(UtilSpec::BaseRecord)
+        expect(extended_record).to be_persisted
+        expect(extended_record.id).to be_present
+        expect(extended_record.id).to eq(base_record.id)
+        expect(extended_record.persisted_string).to eq('foo')
+        expect(extended_record.persisted_attribute).to eq('bar')
       end
 
       context 'casting without copying the @association cache' do
