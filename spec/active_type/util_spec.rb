@@ -199,6 +199,34 @@ describe ActiveType::Util do
         expect(base_record.errors.size).to eq 0
       end
 
+      it 'preserves the readonly status' do
+        base_record = UtilSpec::BaseRecord.create!
+        base_record.readonly!
+        expect(base_record).to be_readonly
+        extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
+        expect(extended_record).to be_readonly
+      end
+
+      if ActiveRecord::VERSION::MAJOR >= 7 || (ActiveRecord::VERSION::MAJOR == 6 && ActiveRecord::VERSION::MINOR >= 1)
+        it 'preserves the strict loading status' do
+          base_record = UtilSpec::BaseRecord.create!
+          base_record.strict_loading!
+          expect(base_record).to be_strict_loading
+          extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
+          expect(extended_record).to be_strict_loading
+        end
+      end
+
+      if ActiveRecord::VERSION::MAJOR >= 7
+        it 'preserves the strict loading mode' do
+          base_record = UtilSpec::BaseRecord.create!
+          base_record.strict_loading!(mode: :n_plus_one_only)
+          expect(base_record.strict_loading_mode).to eq :n_plus_one_only
+          extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
+          expect(extended_record.strict_loading_mode).to eq :n_plus_one_only
+        end
+      end
+
       context 'altering the record used as base for casting' do
         it 'to prevent changing it' do
           base_record = UtilSpec::BaseRecord.create!(:persisted_string => 'old value')

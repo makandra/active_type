@@ -43,6 +43,12 @@ module ActiveType
         casted.instance_variable_set(:@destroyed, record.destroyed?)
         # Rails 5.2+
         casted.instance_variable_set(:@mutations_from_database, record.instance_variable_get(:@mutations_from_database))
+        # Rails 6.1+
+        casted.instance_variable_set(:@strict_loading, record.instance_variable_get(:@strict_loading))
+        # Rails 7.0+
+        casted.instance_variable_set(:@strict_loading_mode, record.instance_variable_get(:@strict_loading_mode))
+        # Rails 1.0+
+        casted.instance_variable_set(:@readonly, record.instance_variable_get(:@readonly))
 
         # Rails 3.2, 4.2
         errors = record.errors
