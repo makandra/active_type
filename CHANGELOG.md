@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.3.4 (2023-05-11)
+
+* Fixed: ActiveType.cast preserves `.strict_loading?` and `.readonly?`
+
 ## 2.3.3 (2023-05-11)
 
 * Fixed: `accepts_nested_attributes_for` ignores virtual attributes. Thanks to @nalabjp.
