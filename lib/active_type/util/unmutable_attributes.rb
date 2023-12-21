@@ -10,6 +10,7 @@ module ActiveType
     class UnmutableAttributes
 
       attr_reader :original_attributes
+      delegate :to_hash, to: :original_attributes
 
       def initialize(attributes)
         @original_attributes = attributes
