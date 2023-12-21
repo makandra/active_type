@@ -282,6 +282,13 @@ describe ActiveType::Util do
           end.not_to raise_error
         end
 
+        it 'still allows to access the attributes of the original record after cast via #attributes' do
+          base_record = UtilSpec::BaseRecord.create!(persisted_string: 'foo')
+          ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
+
+          expect(base_record.attributes).to include('persisted_string' => 'foo')
+        end
+
         context 'with option force: true' do
           it 'will not prevent changing or saving it' do
             base_record = UtilSpec::BaseRecord.create!(:persisted_string => 'old value')
