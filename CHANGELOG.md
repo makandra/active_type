@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.4.0 (2023-12-22)
+* Added: You can implement an `#after_cast` that is called with the original record when calling `ActiveType.cast`.
+ Thanks to @MaximilianoGarciaRoe.
+
 ## 2.3.4 (2023-05-11)
 
 * Fixed: ActiveType.cast preserves `.strict_loading?` and `.readonly?`
