@@ -1,6 +1,5 @@
 require 'active_type/not_castable_error'
 require 'active_type/util/unmutable_attributes'
-require 'active_type/util/active_record'
 
 module ActiveType
   module Util
@@ -63,12 +62,12 @@ module ActiveType
 
         casted[klass.inheritance_column] = klass.sti_name if using_single_table_inheritance
 
+        casted.after_cast(record) if casted.respond_to?(:after_cast)
+
         if !force
           make_record_unusable(record)
         end
 
-        casted.after_cast(record)
-        
         casted
       end
     end
