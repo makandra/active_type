@@ -14,13 +14,13 @@ Examples for use cases are models to support sign in:
 class SignIn < ActiveType::Object
 
   # this is not backed by a db table
-  
+
   attribute :username, :string
   attribute :password, :string
 
   validates :username, presence: true
   validates :password, presence: true
-  
+
   # ...
 
 end
@@ -38,15 +38,15 @@ class SignUp < ActiveType::Record[User]
   # this inherits from User
 
   validates :password, confirmation: true
-  
+
   after_create :send_confirmation_email
-  
+
   def send_confirmation_email
     # this should happen on sign-up, but not when creating a user in tests etc.
   end
-  
+
   # ...
-  
+
 end
 ```
 
@@ -86,12 +86,12 @@ You can define "columns" by saying `attribute`:
 
 ```ruby
 class SignIn < ActiveType::Object
-  
+
   attribute :email, :string
   attribute :date_of_birth, :date
   attribute :accepted_terms, :boolean
   attribute :account_type
-  
+
 end
 ```
 
@@ -103,7 +103,7 @@ sign_in.date_of_birth.class # Date
 sign_in.accepted_terms? # true
 ```
 
-ActiveType knows all the types that are allowed in migrations (i.e. `:string`, `:integer`, `:float`, `:decimal`, `:datetime`, `:time`, `:date`, `:boolean`). You can also skip the type to have a virtual attribute without typecasting. 
+ActiveType knows all the types that are allowed in migrations (i.e. `:string`, `:integer`, `:float`, `:decimal`, `:datetime`, `:time`, `:date`, `:boolean`). You can also skip the type to have a virtual attribute without typecasting.
 
 **`ActiveType::Object` actually inherits from `ActiveRecord::Base`, but simply skips all database access, inspired by [ActiveRecord Tableless](https://github.com/softace/activerecord-tableless).**
 
@@ -197,15 +197,15 @@ class SignIn < ActiveType::Object
 
   attribute :email, :string
   attribute :nickname, :string
-  
+
   def email
     super.downcase
   end
-  
+
   def nickname=(value)
     super(value.titleize)
   end
-  
+
 end
 ```
 
