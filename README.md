@@ -379,6 +379,16 @@ sign_up.is_a?(SignUp) # => true
 ```
 
 
+If you need to add some special logic after casting you can add an `after_cast` method:
+
+class SignUp < ActiveType::Record[User]
+  def after_cast(user)
+    # Called with the original user upon casting.
+  end
+end
+
+
+
 Associations
 ------------
 
