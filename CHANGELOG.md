@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.4.1 (2024-01-08)
+
+* Fixed: Calling `#attributes` on the base record after a cast works now and does not throw a `MutationAfterCastError`
+
 ## 2.4.0 (2023-12-22)
 * Added: You can implement an `#after_cast` that is called with the original record when calling `ActiveType.cast`.
  Thanks to @MaximilianoGarciaRoe.
