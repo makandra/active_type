@@ -87,6 +87,7 @@ jobs:
         image: postgres
         env:
           POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: active_type_test
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -116,16 +117,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Install database client
-        run: |
-          sudo apt-get install -y postgresql-client
       - name: Install ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
-      - name: Setup databases
-        run: |
-          PGPASSWORD=postgres psql -c 'create database active_type_test;' -U postgres -p 5432 -h localhost
       - name: Run tests
         run: bundle exec rake spec
