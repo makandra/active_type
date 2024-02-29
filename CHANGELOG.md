@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## 2.5.0 (2024-02-29)
 
 * Passing unfrozen objects as a default for an attribute is deprecated, since these objects might be shared between records.
 
