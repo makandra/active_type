@@ -54,6 +54,7 @@ module ActiveType
       def build(name, type, options)
         validate_attribute_name!(name)
         options.assert_valid_keys(:default)
+        deprecate_non_frozen_defaults(options[:default], name)
         add_virtual_column(name, type, options)
         build_reader(name)
         build_writer(name)
@@ -66,6 +67,12 @@ module ActiveType
         type_caster = TypeCaster.get(type)
         column = VirtualColumn.new(name, type_caster, options.slice(:default))
         @owner.virtual_columns_hash = @owner.virtual_columns_hash.merge(name.to_s => column)
+      end
+
+      def deprecate_non_frozen_defaults(default, name)
+        unless default.respond_to?(:call) || default.frozen?
+          ActiveType.deprecator.warn("##{name}: Passing a non-frozen object as a default is deprecated. Mutating the attribute can change the default for other records. You can also wrap it in a proc.", caller_locations(3))
+        end
       end
 
       def build_reader(name)

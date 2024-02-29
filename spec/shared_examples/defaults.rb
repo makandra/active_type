@@ -1,11 +1,14 @@
+require 'active_support/testing/deprecation'
+
 shared_examples_for "a class accepting attribute defaults" do |klass|
+  include ActiveSupport::Testing::Deprecation
 
   subject do
     Class.new(klass) do
-      attribute :static_string, :string, :default => "static string"
+      attribute :static_string, :string, :default => "static string".freeze
       attribute :dynamic_string, :string, :default => proc { "dynamic string" }
       attribute :referential_string, :string, :default => proc { value }
-      attribute :number, :integer, :default => "10"
+      attribute :number, :integer, :default => "10".freeze
       attribute :computed, :default => proc { compute }
 
       def value
@@ -57,4 +60,53 @@ shared_examples_for "a class accepting attribute defaults" do |klass|
     expect(subject.static_string).to eq(nil)
   end
 
+  context 'deprecation for default option' do
+    def deprecations_for
+      _result, messages = collect_deprecations(ActiveType.deprecator) do
+        yield
+      end
+      messages
+    end
+
+    it 'shows a deprecation warning when passing a non-frozen object' do
+      messages = deprecations_for do
+        Class.new(klass) do
+          attribute :static_string, :string, default: "static string"
+        end
+      end
+
+      expect(messages.size).to eq(1)
+      expect(messages.first).to include('Passing a non-frozen object as a default is deprecated.')
+    end
+
+    it 'shows no deprecation warning when passing a frozen object' do
+      messages = deprecations_for do
+        Class.new(klass) do
+          attribute :static_string, :string, default: "static string".freeze
+        end
+      end
+
+      expect(messages.size).to eq(0)
+    end
+
+    it 'shows no deprecation warning when passing a proc' do
+      messages = deprecations_for do
+        Class.new(klass) do
+          attribute :static_string, :string, default: -> { 'string' }
+        end
+      end
+
+      expect(messages.size).to eq(0)
+    end
+
+    it 'reports the call location' do
+      messages = deprecations_for do
+        Class.new(klass) do
+          attribute :static_string, :string, default: "static string"
+        end
+      end
+
+      expect(messages.first).to include(__FILE__)
+    end
+  end
 end
