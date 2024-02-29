@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+* Passing unfrozen objects as a default for an attribute is deprecated, since these objects might be shared between records.
+
 ## 2.4.1 (2024-01-08)
 
 * Fixed: Calling `#attributes` on the base record after a cast works now and does not throw a `MutationAfterCastError`

@@ -21,4 +21,8 @@ module ActiveType
   # Make Util methods available under the `ActiveType` namespace
   # like `ActiveType.cast(...)`
   extend Util
+
+  def self.deprecator
+    @deprecator ||= ActiveSupport::Deprecation.new
+  end
 end
