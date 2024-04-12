@@ -381,12 +381,13 @@ sign_up.is_a?(SignUp) # => true
 
 If you need to add some special logic after casting you can add an `after_cast` method:
 
+```ruby
 class SignUp < ActiveType::Record[User]
   def after_cast(user)
     # Called with the original user upon casting.
   end
 end
-
+```
 
 
 Associations
@@ -395,7 +396,7 @@ Associations
 Sometimes, you have an association, and a form model for that association. Instead of always casting the associations manually, you can use the `change_association` macro to override an association's options. For example.
 
 
-```
+```ruby
 class Credential < ActiveRecord::Base
 end
 
