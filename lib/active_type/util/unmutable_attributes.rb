@@ -28,6 +28,10 @@ module ActiveType
         original_attributes.key?(key)
       end
 
+      def keys
+        original_attributes.keys
+      end
+
       def method_missing(*args)
         raise MutationAfterCastError, 'Changing a record that has been used to create an ActiveType::Record could have unexpected side effects!'
       end
