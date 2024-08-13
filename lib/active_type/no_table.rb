@@ -132,6 +132,10 @@ module ActiveType
           @connection ||= DummyConnection.new(nil)
         end
 
+        def with_connection(**)
+          yield(connection)
+        end
+
         def destroy(*)
           new
         end
@@ -148,6 +152,13 @@ module ActiveType
           []
         end
 
+        def cached_find_by(*)
+          nil
+        end
+
+        def schema_cache
+          DummySchemaCache.new
+        end
       end
 
       def destroy

@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## Unreleased
+
+* Fixed: Make `ActiveType::Object` work on Rails 7.2.
+
 ## 2.5.0 (2024-02-29)
 
 * Passing unfrozen objects as a default for an attribute is deprecated, since these objects might be shared between records.
@@ -11,6 +15,7 @@ All notable changes to this project will be documented in this file.
 * Fixed: Calling `#attributes` on the base record after a cast works now and does not throw a `MutationAfterCastError`
 
 ## 2.4.0 (2023-12-22)
+
 * Added: You can implement an `#after_cast` that is called with the original record when calling `ActiveType.cast`.
  Thanks to @MaximilianoGarciaRoe.
 
