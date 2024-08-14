@@ -2,7 +2,7 @@
 
 All notable changes to this project will be documented in this file.
 
-## Unreleased
+## 2.5.1 (2024-08-14)
 
 * Fixed: Make `ActiveType::Object` work on Rails 7.2.
 
