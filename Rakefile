@@ -1,54 +1,28 @@
 require 'rake'
 require 'bundler/gem_tasks'
 
-begin
-  require 'gemika/tasks'
-rescue LoadError
-  puts 'Run `gem install gemika` for additional tasks'
-end
-
-task default: 'matrix:spec'
+task default: 'spec:all'
 
 
 task :spec do
-  success = system("bundle exec rspec spec --exclude-pattern '**/isolated/**'")
+  success = system("bundle exec rspec spec --exclude-pattern 'spec/{isolated,interoperability}/**/*'")
   for_each_isolated_spec do |isolated_spec|
     success &= system("bundle exec rspec #{isolated_spec}")
   end
   fail "Tests failed" unless success
 end
 
+namespace :spec do
+  task :all => [:spec, :"interoperability:spec:shoulda_matchers"]
 
-# we have to override the matrix:spec task, since we need some specs to run in isolation
-
-Rake::Task["matrix:spec"].clear
-
-namespace :matrix do
-
-  desc "Run specs for all Ruby #{RUBY_VERSION} gemfiles"
-  task :spec, :files do |t, options|
-    Gemika::Matrix.from_ci_config.each do |row|
-      options = options.to_hash.merge(
-        :gemfile => row.gemfile,
-        :fatal => false,
-        :bundle_exec => true,
-      )
-      success = Gemika::RSpec.run_specs(options.merge(
-        :options => '--exclude-pattern "**/isolated/**"',
-      ))
-
-      for_each_isolated_spec do |isolated_spec|
-        isolated_success = Gemika::RSpec.run_specs(options.merge(
-          :files => isolated_spec,
-        ))
-        success &&= isolated_success
-      end
-
-      success
+  namespace :interoperability do
+    task :shoulda_matchers do
+      success = system("bundle exec rspec spec/interoperability")
+      fail "Tests failed" unless success
     end
   end
-
 end
+
 
 def for_each_isolated_spec
   Dir["spec/isolated/**/*_spec.rb"].sort.each do |isolated_spec|
