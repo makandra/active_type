@@ -1,8 +1,8 @@
 PATH
   remote: .
   specs:
-    active_type (2.5.1)
-      activerecord (>= 3.2)
+    active_type (2.6.0)
+      activerecord (>= 6.1)
 
 GEM
   remote: https://rubygems.org/
