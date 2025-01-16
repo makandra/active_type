@@ -124,6 +124,10 @@ module ActiveType
           @schema_cache = DummySchemaCache.new
         end
 
+        def self.quote_column_name(column_name)
+          column_name.to_s
+        end
+
       end
 
       module ClassMethods
