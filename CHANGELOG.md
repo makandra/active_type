@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.6.1 (2025-01-17)
+
+* Fixed: Issue with `ActiveType::Object` when using has_many on Rails 7.2.
+  Thanks to @corableus.
+
+## 2.6.0 (2024-12-20)
+
+* Drop support for Rails < 5, Ruby < 2.7.
+
 ## 2.5.1 (2024-08-14)
 
 * Fixed: Make `ActiveType::Object` work on Rails 7.2.
