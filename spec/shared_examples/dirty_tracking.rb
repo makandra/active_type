@@ -103,4 +103,28 @@ shared_examples_for "a class supporting dirty tracking for virtual attributes" d
     end
 
   end
+
+  describe '#attribute_changed?' do
+    it 'returns true if specified attribute is not nil' do
+      subject.virtual_attribute = 'foo'
+      expect(subject.attribute_changed?(:virtual_attribute)).to eq(true)
+    end
+
+    it 'returns false if specified attribute is nil' do
+      subject.virtual_attribute = nil
+      expect(subject.attribute_changed?(:virtual_attribute)).to eq(false)
+    end
+
+    context 'after applying changes' do
+      it 'returns false' do
+        subject.virtual_attribute = 'foo'
+        subject.changes_applied
+        expect(subject.attribute_changed?(:virtual_attribute)).to eq(false)
+      end
+    end
+
+    it 'returns false if specified attribute does not exist' do
+      expect(subject.attribute_changed?(:not_exist)).to eq(false)
+    end
+  end
 end

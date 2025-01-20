@@ -239,6 +239,15 @@ module ActiveType
       super.merge(changes)
     end
 
+    def attribute_changed?(attr, **)
+      attr = attr.to_s
+      if virtual_attributes.key?(attr)
+        virtual_attributes_were[attr] != send(attr)
+      else
+        super
+      end
+    end
+
     if ActiveRecord::VERSION::MAJOR >= 4
       def changes_applied
         super
