@@ -91,12 +91,44 @@ module ObjectSpec
   class Child < ActiveRecord::Base
   end
 
-  class ObjectWithBelongsTo < Object
+  class ObjectWithRequiredBelongsTo < Object
 
     attribute :child_id, :integer
 
-    belongs_to :child
+    belongs_to :child, optional: false
 
+  end
+
+  class ObjectWithOptionalBelongsTo < Object
+
+    attribute :child_id, :integer
+
+    belongs_to :child, optional: true
+
+  end
+
+  if ActiveRecord::VERSION::STRING >= '7.1.0'
+    ActiveRecord.belongs_to_required_validates_foreign_key = !ActiveRecord.belongs_to_required_validates_foreign_key
+
+    class ObjectWithRequiredBelongsToFlippedValidatesForeignKey < Object
+      BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY = ActiveRecord.belongs_to_required_validates_foreign_key
+
+      attribute :child_id, :integer
+
+      belongs_to :child, optional: false
+
+    end
+
+    class ObjectWithOptionalBelongsToFlippedValidatesForeignKey < Object
+      BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY = ActiveRecord.belongs_to_required_validates_foreign_key
+
+      attribute :child_id, :integer
+
+      belongs_to :child, optional: true
+
+    end
+
+    ActiveRecord.belongs_to_required_validates_foreign_key = !ActiveRecord.belongs_to_required_validates_foreign_key
   end
 
   class ObjectWithUnsupportedTypes < Object
@@ -327,7 +359,7 @@ describe ActiveType::Object do
     it 'has 1 error_on' do
       expect(subject.error_on(:virtual_string).size).to eq(1)
     end
-    
+
     it 'validates the presence of boolean values' do
       subject.virtual_boolean = false
       expect(subject.error_on(:virtual_boolean).size).to eq(1)
@@ -369,10 +401,32 @@ describe ActiveType::Object do
     it_should_behave_like 'a class supporting dirty tracking for virtual attributes', ActiveType::Object
   end
 
-  describe '#belongs_to' do
-    subject { ObjectSpec::ObjectWithBelongsTo.new }
+  describe '#belongs_to, optional: false' do
+    subject { ObjectSpec::ObjectWithRequiredBelongsTo.new }
 
-    it_should_behave_like 'a belongs_to association', :child, ObjectSpec::Child
+    it_should_behave_like 'a required belongs_to association', :child, ObjectSpec::Child
+  end
+
+  describe '#belongs_to, optional: true' do
+    subject { ObjectSpec::ObjectWithOptionalBelongsTo.new }
+
+    it_should_behave_like 'an optional belongs_to association', :child, ObjectSpec::Child
+  end
+
+  if ActiveRecord::VERSION::STRING >= '7.1.0'
+    v = ObjectSpec::ObjectWithRequiredBelongsToFlippedValidatesForeignKey::BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY
+    describe "#belongs_to, optional: false, belongs_to_required_validates_foreign_key: #{v}" do
+      subject { ObjectSpec::ObjectWithRequiredBelongsToFlippedValidatesForeignKey.new }
+
+      it_should_behave_like 'a required belongs_to association', :child, ObjectSpec::Child
+    end
+
+    v = ObjectSpec::ObjectWithOptionalBelongsToFlippedValidatesForeignKey::BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY
+    describe "#belongs_to, optional: true, belongs_to_required_validates_foreign_key: #{v}" do
+      subject { ObjectSpec::ObjectWithOptionalBelongsToFlippedValidatesForeignKey.new }
+
+      it_should_behave_like 'an optional belongs_to association', :child, ObjectSpec::Child
+    end
   end
 
   describe '#save' do
