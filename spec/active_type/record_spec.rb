@@ -52,12 +52,44 @@ module RecordSpec
   class Child < ActiveRecord::Base
   end
 
-  class RecordWithBelongsTo < Record
+  class RecordWithRequiredBelongsTo < Record
 
     attribute :child_id, :integer
 
-    belongs_to :child
+    belongs_to :child, optional: false
 
+  end
+
+  class RecordWithOptionalBelongsTo < Record
+
+    attribute :child_id, :integer
+
+    belongs_to :child, optional: true
+
+  end
+
+  if ActiveRecord::VERSION::STRING >= '7.1.0'
+    ActiveRecord.belongs_to_required_validates_foreign_key = !ActiveRecord.belongs_to_required_validates_foreign_key
+
+    class RecordWithRequiredBelongsToFlippedValidatesForeignKey < Record
+      BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY = ActiveRecord.belongs_to_required_validates_foreign_key
+
+      attribute :child_id, :integer
+
+      belongs_to :child, optional: false
+
+    end
+
+    class RecordWithOptionalBelongsToFlippedValidatesForeignKey < Record
+      BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY = ActiveRecord.belongs_to_required_validates_foreign_key
+
+      attribute :child_id, :integer
+
+      belongs_to :child, optional: true
+
+    end
+
+    ActiveRecord.belongs_to_required_validates_foreign_key = !ActiveRecord.belongs_to_required_validates_foreign_key
   end
 end
 
@@ -239,6 +271,17 @@ describe ActiveType::Record do
     it_should_behave_like 'a class supporting dirty tracking for virtual attributes', RecordSpec::Record
   end
 
+  describe '#attribute_changed?' do
+    it "returns true for persisted attributes if changed" do
+      subject.persisted_string = "persisted string"
+      expect(subject.attribute_changed?(:persisted_string)).to eq(true)
+    end
+
+    it "returns true for persisted attributes if not changed" do
+      expect(subject.attribute_changed?(:persisted_string)).to eq(false)
+    end
+  end
+
   describe 'persistence' do
 
     it 'persists to the database' do
@@ -259,10 +302,32 @@ describe ActiveType::Record do
     end
   end
 
-  describe '#belongs_to' do
-    subject { RecordSpec::RecordWithBelongsTo.new }
+  describe '#belongs_to, optional: false' do
+    subject { RecordSpec::RecordWithRequiredBelongsTo.new }
 
-    it_should_behave_like 'a belongs_to association', :child, RecordSpec::Child
+    it_should_behave_like 'a required belongs_to association', :child, RecordSpec::Child
+  end
+
+  describe '#belongs_to, optional: true' do
+    subject { RecordSpec::RecordWithOptionalBelongsTo.new }
+
+    it_should_behave_like 'an optional belongs_to association', :child, RecordSpec::Child
+  end
+
+  if ActiveRecord::VERSION::STRING >= '7.1.0'
+    v = RecordSpec::RecordWithRequiredBelongsToFlippedValidatesForeignKey::BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY
+    describe "#belongs_to, optional: false, belongs_to_required_validates_foreign_key: #{v}" do
+      subject { RecordSpec::RecordWithRequiredBelongsToFlippedValidatesForeignKey.new }
+
+      it_should_behave_like 'a required belongs_to association', :child, RecordSpec::Child
+    end
+
+    v = RecordSpec::RecordWithOptionalBelongsToFlippedValidatesForeignKey::BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY
+    describe "#belongs_to, optional: true, belongs_to_required_validates_foreign_key: #{v}" do
+      subject { RecordSpec::RecordWithOptionalBelongsToFlippedValidatesForeignKey.new }
+
+      it_should_behave_like 'an optional belongs_to association', :child, RecordSpec::Child
+    end
   end
 
   it 'can access virtual attributes after .find' do
