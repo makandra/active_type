@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.6.2 (2025-02-12)
+
+* Fixed: Issue with `ActiveType::Object` when using an optional `belongs_to` on a virtual attribute.
+  Thanks to @kyanagi.
+
 ## 2.6.1 (2025-01-17)
 
 * Fixed: Issue with `ActiveType::Object` when using has_many on Rails 7.2.
