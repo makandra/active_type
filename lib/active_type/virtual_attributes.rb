@@ -229,6 +229,10 @@ module ActiveType
       self.class._virtual_column_names.any? { |attr| virtual_attributes_were[attr] != send(attr) } || super
     end
 
+    def changed_for_autosave?
+      changed? || super
+    end
+
     def changes
       changes = self.class._virtual_column_names.each_with_object({}) do |attr, changes|
         current_value = send(attr)
