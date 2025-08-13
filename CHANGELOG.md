@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.6.3 (2025-08-11)
+
+* Fixed: Autosave on associations will triggers saves when only virtual attributes have changed.
+  Thanks to @RohanM.
+
 ## 2.6.2 (2025-02-12)
 
 * Fixed: Issue with `ActiveType::Object` when using an optional `belongs_to` on a virtual attribute.
