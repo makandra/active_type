@@ -85,7 +85,7 @@ The following behaviours are different than in vanilla Rails 5:
 
 If you need to use `ActiveRecord's` own `.attribute` method, you can still access is as `ar_attribute`:
 
-```
+```rb
 class User < ApplicationRecord
   # use my custom type to serialize to the database
   ar_attribute :password, MyPasswordType.new
