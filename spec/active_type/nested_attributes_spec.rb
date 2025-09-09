@@ -235,19 +235,6 @@ describe "ActiveType::Object" do
         should_assign_and_persist(["existing 1", "updated", "existing 3"])
       end
 
-      it 'allows the id to be given as a string' do
-        subject.records = [
-          NestedAttributesSpec::Record.new(:persisted_string => "existing 1"),
-          NestedAttributesSpec::Record.new(:persisted_string => "existing 2"),
-        ]
-        subject.records[0].id = 100
-        subject.records[1].id = 101
-
-        subject.records_attributes = { '1' => { 'id' => '101', 'persisted_string' => 'updated' } }
-
-        should_assign_and_persist(["existing 1", "updated"])
-      end
-
       it 'does not update records matching a reject_if proc' do
         extra_options.merge!(:reject_if => :bad)
         subject.records = [

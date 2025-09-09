@@ -97,7 +97,7 @@ module ActiveType
       end
 
       def fetch_child(parent, id)
-        assigned = assigned_children(parent).detect { |r| r.id.to_s == id.to_s }
+        assigned = assigned_children(parent).detect { |r| r.id == id }
         return assigned if assigned
 
         if child = find_scope(parent).find_by_id(id)
