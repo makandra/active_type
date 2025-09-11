@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.6.4 (2025-09-11)
+
+* Fixed: When using nests_many, nested updates, with preloaded records, using string ids will no longer cause additional DB queries.
+
 ## 2.6.3 (2025-08-11)
 
 * Fixed: Autosave on associations will triggers saves when only virtual attributes have changed.
