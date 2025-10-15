@@ -531,4 +531,81 @@ describe ActiveType::Object do
     end
   end
 
+  describe "marshalling" do
+    shared_examples "marshalling attributes" do
+      it "marshals attributes properly" do
+        object = ObjectSpec::Object.create(
+          virtual_string: "foobar",
+          virtual_integer: 123,
+          virtual_time: Time.parse("12:00 15.10.2025"),
+          virtual_date: Date.parse("15.10.2025"),
+          virtual_boolean: true,
+          virtual_attribute: { some: "random object" },
+          virtual_type_attribute: "ObjectSpec::Object::PlainObject",
+        )
+
+        serialized_object = Marshal.dump(object)
+        deserialized_object = Marshal.load(serialized_object)
+
+        expect(deserialized_object.virtual_string).to eq "foobar"
+        expect(deserialized_object.virtual_integer).to eq 123
+        expect(deserialized_object.virtual_time).to eq Time.parse("12:00 15.10.2025")
+        expect(deserialized_object.virtual_date).to eq Date.parse("15.10.2025")
+        expect(deserialized_object.virtual_boolean).to eq true
+        expect(deserialized_object.virtual_attribute).to eq({ some: "random object" })
+        expect(deserialized_object.virtual_type_attribute).to eq "ObjectSpec::Object::PlainObject"
+      end
+    end
+
+    if ActiveRecord::VERSION::MAJOR >= 7 && ActiveRecord::VERSION::MINOR >= 1
+      context 'for 6.1 marshalling' do
+        before do
+          ActiveRecord::Marshalling.format_version = 6.1
+        end
+
+        include_examples "marshalling attributes"
+      end
+
+      context 'for 7.1 marshalling' do
+        before do
+          ActiveRecord::Marshalling.format_version = 7.1
+        end
+
+        include_examples "marshalling attributes"
+      end
+
+      describe "loading a object marshalled with format version 6.1, but the current version is 7.1" do
+        it "marshals attributes properly" do
+          object = ObjectSpec::Object.create(virtual_attribute: "foobar")
+
+          ActiveRecord::Marshalling.format_version = 6.1
+          serialized_object = Marshal.dump(object)
+
+          ActiveRecord::Marshalling.format_version = 7.1
+          deserialized_object = Marshal.load(serialized_object)
+
+          expect(deserialized_object.virtual_attribute).to eq "foobar"
+        end
+      end
+
+      describe "loading a object marshalled with format version 7.1, but the current version is 6.1" do
+        it "marshals attributes properly" do
+          object = ObjectSpec::Object.create(virtual_attribute: "foobar")
+
+          ActiveRecord::Marshalling.format_version = 7.1
+          serialized_object = Marshal.dump(object)
+
+          ActiveRecord::Marshalling.format_version = 6.1
+          deserialized_object = Marshal.load(serialized_object)
+
+          expect(deserialized_object.virtual_attribute).to eq "foobar"
+        end
+      end
+
+    else
+      include_examples "marshalling attributes"
+    end
+
+  end
+
 end
