@@ -189,34 +189,24 @@ module ActiveType
       read_existing_virtual_attribute(name) { super }
     end
 
-    if ActiveRecord::VERSION::STRING >= '4.2.0'
-      def _read_attribute(name)
-        read_existing_virtual_attribute(name) { super }
-      end
+    def _read_attribute(name)
+      read_existing_virtual_attribute(name) { super }
     end
 
-    if ActiveRecord::VERSION::STRING < '4.2.0' || ActiveRecord::VERSION::STRING >= '6.1.0'
-      # in 6.1, read_attribute does not call _read_attribute
-      def read_attribute(name)
-        read_existing_virtual_attribute(name) { super }
-      end
+    def read_attribute(name)
+      read_existing_virtual_attribute(name) { super }
     end
 
     def []=(name, value)
       write_existing_virtual_attribute(name, value) { super }
     end
 
-    if ActiveRecord::VERSION::STRING >= '5.2.0'
-      def _write_attribute(name, value)
-        write_existing_virtual_attribute(name, value) { super }
-      end
+    def _write_attribute(name, value)
+      write_existing_virtual_attribute(name, value) { super }
     end
 
-    if ActiveRecord::VERSION::STRING < '5.2.0' || ActiveRecord::VERSION::STRING >= '6.1.0'
-      # in 6.1, write_attribute does not call _write_attribute
-      def write_attribute(name, value)
-        write_existing_virtual_attribute(name, value) { super }
-      end
+    def write_attribute(name, value)
+      write_existing_virtual_attribute(name, value) { super }
     end
 
     def attributes
@@ -252,14 +242,12 @@ module ActiveType
       end
     end
 
-    if ActiveRecord::VERSION::MAJOR >= 4
-      def changes_applied
-        super
+    def changes_applied
+      super
 
-        virtual_attributes.each do |attr, _|
-          value = read_virtual_attribute(attr)
-          virtual_attributes_were[attr] = value.duplicable? ? value.clone : value
-        end
+      virtual_attributes.each do |attr, _|
+        value = read_virtual_attribute(attr)
+        virtual_attributes_were[attr] = value.duplicable? ? value.clone : value
       end
     end
 

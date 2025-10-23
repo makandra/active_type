@@ -2,13 +2,7 @@ module ActiveType
   class TypeCaster
 
     def self.get(type)
-      native_caster = if ActiveRecord::VERSION::STRING < '4.2'
-        NativeCasters::DelegateToColumn.new(type)
-      elsif ActiveRecord::VERSION::STRING < '5'
-        NativeCasters::DelegateToRails4Type.new(type)
-      else
-        NativeCasters::DelegateToRails5Type.new(type)
-      end
+      native_caster = NativeCasters::DelegateToRailsType.new(type)
       new(type, native_caster)
     end
 
@@ -104,7 +98,7 @@ module ActiveType
 
       # Adapter for Rails 5+.
       # In these versions, casting logic lives in subclasses of ActiveRecord::Type::Value
-      class DelegateToRails5Type
+      class DelegateToRailsType
 
         def initialize(type)
           @active_record_type = lookup(type)

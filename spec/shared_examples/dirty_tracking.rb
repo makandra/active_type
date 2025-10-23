@@ -8,18 +8,11 @@ shared_examples_for "a class supporting dirty tracking for virtual attributes" d
 
   describe '#virtual_attribute_was' do
 
-    if ActiveRecord::VERSION::MAJOR >= 4
-      it 'returns value before changes were applied' do
-        expect(subject.virtual_attribute_was).to be_nil
-        subject.virtual_attribute = 'foo'
-        subject.changes_applied
-        expect(subject.virtual_attribute_was).to eq('foo')
-      end
-    else
-      it 'returns nil' do
-        subject.virtual_attribute = 'foo'
-        expect(subject.virtual_attribute_was).to be_nil
-      end
+    it 'returns value before changes were applied' do
+      expect(subject.virtual_attribute_was).to be_nil
+      subject.virtual_attribute = 'foo'
+      subject.changes_applied
+      expect(subject.virtual_attribute_was).to eq('foo')
     end
 
   end
@@ -36,12 +29,10 @@ shared_examples_for "a class supporting dirty tracking for virtual attributes" d
       expect(subject.virtual_attribute_changed?).to be_falsey
     end
 
-    if ActiveRecord::VERSION::MAJOR >= 4
-      it 'returns false after changes were applied' do
-        subject.virtual_attribute = 'foo'
-        subject.changes_applied
-        expect(subject.virtual_attribute_changed?).to eq(false)
-      end
+    it 'returns false after changes were applied' do
+      subject.virtual_attribute = 'foo'
+      subject.changes_applied
+      expect(subject.virtual_attribute_changed?).to eq(false)
     end
   end
 
@@ -66,13 +57,11 @@ shared_examples_for "a class supporting dirty tracking for virtual attributes" d
       expect(subject.changed?).to eq(false)
     end
 
-    if ActiveRecord::VERSION::MAJOR >= 4
-      context 'after applying changes' do
-        it 'returns false' do
-          subject.virtual_attribute = 'foo'
-          subject.changes_applied
-          expect(subject.changed?).to eq(false)
-        end
+    context 'after applying changes' do
+      it 'returns false' do
+        subject.virtual_attribute = 'foo'
+        subject.changes_applied
+        expect(subject.changed?).to eq(false)
       end
     end
 
@@ -92,13 +81,11 @@ shared_examples_for "a class supporting dirty tracking for virtual attributes" d
       expect(subject.changes).to eq({})
     end
 
-    if ActiveRecord::VERSION::MAJOR >= 4
-      context 'after applying changes' do
-        it 'returns empty hash' do
-          subject.virtual_attribute = 'foo'
-          subject.changes_applied
-          expect(subject.changes).to eq({})
-        end
+    context 'after applying changes' do
+      it 'returns empty hash' do
+        subject.virtual_attribute = 'foo'
+        subject.changes_applied
+        expect(subject.changes).to eq({})
       end
     end
 

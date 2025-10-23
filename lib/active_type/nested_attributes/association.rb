@@ -17,14 +17,7 @@ module ActiveType
         @reject_if = options.delete(:reject_if)
         @options = options.dup
 
-        @index_errors = case
-                        when ActiveRecord::VERSION::MAJOR < 5
-                          @options[:index_errors]
-                        when ActiveRecord::VERSION::MAJOR < 7
-                          @options[:index_errors] || ActiveRecord::Base.index_nested_attribute_errors
-                        else
-                          @options[:index_errors] || ActiveRecord.index_nested_attribute_errors
-                        end
+        @index_errors =  @options[:index_errors] || ActiveRecord.index_nested_attribute_errors
       end
 
       def assign_attributes(parent, attributes)
@@ -130,17 +123,9 @@ module ActiveType
       end
 
       def add_errors_to_parent(parent, child, index)
-        if Gem::Version.new(ActiveRecord::VERSION::STRING) >= Gem::Version.new("6.1")
-          child.errors.each do |error|
-            attribute = translate_error_attribute(error.attribute, index)
-            parent.errors.add(attribute, error.message)
-          end
-        else
-          child.errors.each do |attribute, message|
-            attribute = translate_error_attribute(attribute, index)
-            parent.errors.add(attribute, message)
-            parent.errors[attribute].uniq!
-          end
+        child.errors.each do |error|
+          attribute = translate_error_attribute(error.attribute, index)
+          parent.errors.add(attribute, error.message)
         end
       end
 

@@ -13,11 +13,7 @@ module NestedAttributesSpec
 
     def check_fail
       if fail_on_save == true
-        if ActiveRecord::VERSION::MAJOR >= 5
-          throw :abort
-        else
-          false
-        end
+        throw :abort
       end
     end
 

@@ -4,9 +4,7 @@ require 'ostruct'
 module RecordSpec
 
   def self.type
-    if ActiveRecord::VERSION::MAJOR >= 5
-      @type ||= ActiveModel::Type::Value.new
-    end
+    @type ||= ActiveModel::Type::Value.new
   end
 
   class Record < ActiveType::Record
@@ -68,29 +66,27 @@ module RecordSpec
 
   end
 
-  if ActiveRecord::VERSION::STRING >= '7.1.0'
-    ActiveRecord.belongs_to_required_validates_foreign_key = !ActiveRecord.belongs_to_required_validates_foreign_key
+  ActiveRecord.belongs_to_required_validates_foreign_key = !ActiveRecord.belongs_to_required_validates_foreign_key
 
-    class RecordWithRequiredBelongsToFlippedValidatesForeignKey < Record
-      BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY = ActiveRecord.belongs_to_required_validates_foreign_key
+  class RecordWithRequiredBelongsToFlippedValidatesForeignKey < Record
+    BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY = ActiveRecord.belongs_to_required_validates_foreign_key
 
-      attribute :child_id, :integer
+    attribute :child_id, :integer
 
-      belongs_to :child, optional: false
+    belongs_to :child, optional: false
 
-    end
-
-    class RecordWithOptionalBelongsToFlippedValidatesForeignKey < Record
-      BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY = ActiveRecord.belongs_to_required_validates_foreign_key
-
-      attribute :child_id, :integer
-
-      belongs_to :child, optional: true
-
-    end
-
-    ActiveRecord.belongs_to_required_validates_foreign_key = !ActiveRecord.belongs_to_required_validates_foreign_key
   end
+
+  class RecordWithOptionalBelongsToFlippedValidatesForeignKey < Record
+    BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY = ActiveRecord.belongs_to_required_validates_foreign_key
+
+    attribute :child_id, :integer
+
+    belongs_to :child, optional: true
+
+  end
+
+  ActiveRecord.belongs_to_required_validates_foreign_key = !ActiveRecord.belongs_to_required_validates_foreign_key
 end
 
 
@@ -314,20 +310,18 @@ describe ActiveType::Record do
     it_should_behave_like 'an optional belongs_to association', :child, RecordSpec::Child
   end
 
-  if ActiveRecord::VERSION::STRING >= '7.1.0'
-    v = RecordSpec::RecordWithRequiredBelongsToFlippedValidatesForeignKey::BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY
-    describe "#belongs_to, optional: false, belongs_to_required_validates_foreign_key: #{v}" do
-      subject { RecordSpec::RecordWithRequiredBelongsToFlippedValidatesForeignKey.new }
+  v = RecordSpec::RecordWithRequiredBelongsToFlippedValidatesForeignKey::BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY
+  describe "#belongs_to, optional: false, belongs_to_required_validates_foreign_key: #{v}" do
+    subject { RecordSpec::RecordWithRequiredBelongsToFlippedValidatesForeignKey.new }
 
-      it_should_behave_like 'a required belongs_to association', :child, RecordSpec::Child
-    end
+    it_should_behave_like 'a required belongs_to association', :child, RecordSpec::Child
+  end
 
-    v = RecordSpec::RecordWithOptionalBelongsToFlippedValidatesForeignKey::BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY
-    describe "#belongs_to, optional: true, belongs_to_required_validates_foreign_key: #{v}" do
-      subject { RecordSpec::RecordWithOptionalBelongsToFlippedValidatesForeignKey.new }
+  v = RecordSpec::RecordWithOptionalBelongsToFlippedValidatesForeignKey::BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY
+  describe "#belongs_to, optional: true, belongs_to_required_validates_foreign_key: #{v}" do
+    subject { RecordSpec::RecordWithOptionalBelongsToFlippedValidatesForeignKey.new }
 
-      it_should_behave_like 'an optional belongs_to association', :child, RecordSpec::Child
-    end
+    it_should_behave_like 'an optional belongs_to association', :child, RecordSpec::Child
   end
 
   it 'can access virtual attributes after .find' do
@@ -336,19 +330,17 @@ describe ActiveType::Record do
     expect(subject.class.find(subject.id).virtual_string).to eq(nil)
   end
 
-  if ActiveRecord::VERSION::MAJOR >= 5
-    describe '#ar_attribute' do
-      it 'delegates to ActiveRecord\'s original .attribute method' do
-        klass = Class.new(RecordSpec::Record) do
-          ar_attribute :ar_type, RecordSpec.type
-        end
-        subject = klass.new
-
-        expect(RecordSpec.type).to receive(:cast).with('input').and_return('output')
-        subject.ar_type = 'input'
-
-        expect(subject.ar_type).to eq('output')
+  describe '#ar_attribute' do
+    it 'delegates to ActiveRecord\'s original .attribute method' do
+      klass = Class.new(RecordSpec::Record) do
+        ar_attribute :ar_type, RecordSpec.type
       end
+      subject = klass.new
+
+      expect(RecordSpec.type).to receive(:cast).with('input').and_return('output')
+      subject.ar_type = 'input'
+
+      expect(subject.ar_type).to eq('output')
     end
   end
 
@@ -404,60 +396,56 @@ describe ActiveType::Record do
       end
     end
 
-    if ActiveRecord::VERSION::MAJOR >= 7 && ActiveRecord::VERSION::MINOR >= 1
-      context 'for 6.1 marshalling' do
-        before do
-          ActiveRecord::Marshalling.format_version = 6.1
-        end
-
-        include_examples "marshalling attributes"
+    context 'for 6.1 marshalling' do
+      before do
+        ActiveRecord::Marshalling.format_version = 6.1
       end
 
-      context 'for 7.1 marshalling' do
-        before do
-          ActiveRecord::Marshalling.format_version = 7.1
-        end
-
-        include_examples "marshalling attributes"
-      end
-
-      describe "loading a object marshalled with format version 6.1, but the current version is 7.1" do
-        it "marshals attributes properly" do
-          object = RecordSpec::Record.create!(
-            virtual_string: "foo",
-            persisted_string: "bar"
-          )
-
-          ActiveRecord::Marshalling.format_version = 6.1
-          serialized_object = Marshal.dump(object)
-
-          ActiveRecord::Marshalling.format_version = 7.1
-          deserialized_object = Marshal.load(serialized_object)
-
-          expect(deserialized_object.virtual_string).to eq "foo"
-          expect(deserialized_object.persisted_string).to eq "bar"
-        end
-      end
-
-      describe "loading a object marshalled with format version 7.1, but the current version is 6.1" do
-        it "marshals attributes properly" do
-          object = RecordSpec::Record.create!(
-            virtual_string: "foo",
-            persisted_string: "bar"
-          )
-
-          ActiveRecord::Marshalling.format_version = 7.1
-          serialized_object = Marshal.dump(object)
-
-          ActiveRecord::Marshalling.format_version = 6.1
-          deserialized_object = Marshal.load(serialized_object)
-
-          expect(deserialized_object.virtual_string).to eq "foo"
-          expect(deserialized_object.persisted_string).to eq "bar"
-        end
-      end
-    else
       include_examples "marshalling attributes"
+    end
+
+    context 'for 7.1 marshalling' do
+      before do
+        ActiveRecord::Marshalling.format_version = 7.1
+      end
+
+      include_examples "marshalling attributes"
+    end
+
+    describe "loading a object marshalled with format version 6.1, but the current version is 7.1" do
+      it "marshals attributes properly" do
+        object = RecordSpec::Record.create!(
+          virtual_string: "foo",
+          persisted_string: "bar"
+        )
+
+        ActiveRecord::Marshalling.format_version = 6.1
+        serialized_object = Marshal.dump(object)
+
+        ActiveRecord::Marshalling.format_version = 7.1
+        deserialized_object = Marshal.load(serialized_object)
+
+        expect(deserialized_object.virtual_string).to eq "foo"
+        expect(deserialized_object.persisted_string).to eq "bar"
+      end
+    end
+
+    describe "loading a object marshalled with format version 7.1, but the current version is 6.1" do
+      it "marshals attributes properly" do
+        object = RecordSpec::Record.create!(
+          virtual_string: "foo",
+          persisted_string: "bar"
+        )
+
+        ActiveRecord::Marshalling.format_version = 7.1
+        serialized_object = Marshal.dump(object)
+
+        ActiveRecord::Marshalling.format_version = 6.1
+        deserialized_object = Marshal.load(serialized_object)
+
+        expect(deserialized_object.virtual_string).to eq "foo"
+        expect(deserialized_object.persisted_string).to eq "bar"
+      end
     end
   end
 end

@@ -2,7 +2,7 @@ require 'active_type/virtual_attributes'
 require 'active_type/record_extension'
 require 'active_type/nested_attributes'
 require 'active_type/change_association'
-require 'active_type/marshalling' if ActiveRecord::VERSION::MAJOR >= 7 && ActiveRecord::VERSION::MINOR >= 1
+require 'active_type/marshalling'
 
 module ActiveType
 
@@ -14,7 +14,7 @@ module ActiveType
     include NestedAttributes
     include RecordExtension
     include ChangeAssociation
-    include Marshalling::Methods if ActiveRecord::VERSION::MAJOR >= 7 && ActiveRecord::VERSION::MINOR >= 1
+    include Marshalling::Methods
 
   end
 
