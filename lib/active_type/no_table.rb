@@ -115,6 +115,12 @@ module ActiveType
 
       end
 
+      class DummyPool < ActiveRecord::ConnectionAdapters::NullPool
+        def with_pool_transaction_isolation_level(*_args)
+          yield
+        end
+      end
+
       class DummyConnection < ActiveRecord::ConnectionAdapters::AbstractAdapter
 
         attr_reader :schema_cache
@@ -122,10 +128,15 @@ module ActiveType
         def initialize(*)
           super
           @schema_cache = DummySchemaCache.new
+          @pool = DummyPool.new
         end
 
         def self.quote_column_name(column_name)
           column_name.to_s
+        end
+
+        def pool
+          @pool
         end
 
       end
@@ -173,7 +184,6 @@ module ActiveType
       def reload
         self
       end
-
 
       private
 
