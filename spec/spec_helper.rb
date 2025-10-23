@@ -40,7 +40,6 @@ ActiveRecord.class_eval do
 end
 
 ActiveRecord.version_agnostic_default_timezone = :local
-ActiveRecord::Base.raise_in_transactional_callbacks = true if ActiveRecord::Base.respond_to?(:raise_in_transactional_callbacks) && ActiveRecord::VERSION::MAJOR < 5
 
 Dir["#{File.dirname(__FILE__)}/support/*.rb"].each {|f| require f}
 Dir["#{File.dirname(__FILE__)}/shared_examples/*.rb"].each {|f| require f}

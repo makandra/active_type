@@ -222,24 +222,20 @@ describe ActiveType::Util do
         expect(extended_record).to be_readonly
       end
 
-      if ActiveRecord::VERSION::MAJOR >= 7 || (ActiveRecord::VERSION::MAJOR == 6 && ActiveRecord::VERSION::MINOR >= 1)
-        it 'preserves the strict loading status' do
-          base_record = UtilSpec::BaseRecord.create!
-          base_record.strict_loading!
-          expect(base_record).to be_strict_loading
-          extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
-          expect(extended_record).to be_strict_loading
-        end
+      it 'preserves the strict loading status' do
+        base_record = UtilSpec::BaseRecord.create!
+        base_record.strict_loading!
+        expect(base_record).to be_strict_loading
+        extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
+        expect(extended_record).to be_strict_loading
       end
 
-      if ActiveRecord::VERSION::MAJOR >= 7
-        it 'preserves the strict loading mode' do
-          base_record = UtilSpec::BaseRecord.create!
-          base_record.strict_loading!(mode: :n_plus_one_only)
-          expect(base_record.strict_loading_mode).to eq :n_plus_one_only
-          extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
-          expect(extended_record.strict_loading_mode).to eq :n_plus_one_only
-        end
+      it 'preserves the strict loading mode' do
+        base_record = UtilSpec::BaseRecord.create!
+        base_record.strict_loading!(mode: :n_plus_one_only)
+        expect(base_record.strict_loading_mode).to eq :n_plus_one_only
+        extended_record = ActiveType::Util.cast(base_record, UtilSpec::ExtendedRecord)
+        expect(extended_record.strict_loading_mode).to eq :n_plus_one_only
       end
 
       context 'altering the record used as base for casting' do

@@ -4,9 +4,7 @@ require 'ostruct'
 module ObjectSpec
 
   def self.type
-    if ActiveRecord::VERSION::MAJOR >= 5
-      @type ||= ActiveModel::Type::Value.new
-    end
+    @type ||= ActiveModel::Type::Value.new
   end
 
   class Object < ActiveType::Object
@@ -107,29 +105,27 @@ module ObjectSpec
 
   end
 
-  if ActiveRecord::VERSION::STRING >= '7.1.0'
-    ActiveRecord.belongs_to_required_validates_foreign_key = !ActiveRecord.belongs_to_required_validates_foreign_key
+  ActiveRecord.belongs_to_required_validates_foreign_key = !ActiveRecord.belongs_to_required_validates_foreign_key
 
-    class ObjectWithRequiredBelongsToFlippedValidatesForeignKey < Object
-      BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY = ActiveRecord.belongs_to_required_validates_foreign_key
+  class ObjectWithRequiredBelongsToFlippedValidatesForeignKey < Object
+    BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY = ActiveRecord.belongs_to_required_validates_foreign_key
 
-      attribute :child_id, :integer
+    attribute :child_id, :integer
 
-      belongs_to :child, optional: false
+    belongs_to :child, optional: false
 
-    end
-
-    class ObjectWithOptionalBelongsToFlippedValidatesForeignKey < Object
-      BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY = ActiveRecord.belongs_to_required_validates_foreign_key
-
-      attribute :child_id, :integer
-
-      belongs_to :child, optional: true
-
-    end
-
-    ActiveRecord.belongs_to_required_validates_foreign_key = !ActiveRecord.belongs_to_required_validates_foreign_key
   end
+
+  class ObjectWithOptionalBelongsToFlippedValidatesForeignKey < Object
+    BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY = ActiveRecord.belongs_to_required_validates_foreign_key
+
+    attribute :child_id, :integer
+
+    belongs_to :child, optional: true
+
+  end
+
+  ActiveRecord.belongs_to_required_validates_foreign_key = !ActiveRecord.belongs_to_required_validates_foreign_key
 
   class ObjectWithUnsupportedTypes < Object
     attribute :virtual_array, :array
@@ -413,20 +409,18 @@ describe ActiveType::Object do
     it_should_behave_like 'an optional belongs_to association', :child, ObjectSpec::Child
   end
 
-  if ActiveRecord::VERSION::STRING >= '7.1.0'
-    v = ObjectSpec::ObjectWithRequiredBelongsToFlippedValidatesForeignKey::BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY
-    describe "#belongs_to, optional: false, belongs_to_required_validates_foreign_key: #{v}" do
-      subject { ObjectSpec::ObjectWithRequiredBelongsToFlippedValidatesForeignKey.new }
+  v = ObjectSpec::ObjectWithRequiredBelongsToFlippedValidatesForeignKey::BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY
+  describe "#belongs_to, optional: false, belongs_to_required_validates_foreign_key: #{v}" do
+    subject { ObjectSpec::ObjectWithRequiredBelongsToFlippedValidatesForeignKey.new }
 
-      it_should_behave_like 'a required belongs_to association', :child, ObjectSpec::Child
-    end
+    it_should_behave_like 'a required belongs_to association', :child, ObjectSpec::Child
+  end
 
-    v = ObjectSpec::ObjectWithOptionalBelongsToFlippedValidatesForeignKey::BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY
-    describe "#belongs_to, optional: true, belongs_to_required_validates_foreign_key: #{v}" do
-      subject { ObjectSpec::ObjectWithOptionalBelongsToFlippedValidatesForeignKey.new }
+  v = ObjectSpec::ObjectWithOptionalBelongsToFlippedValidatesForeignKey::BELONGS_TO_REQUIRED_VALIDATES_FOREIGN_KEY
+  describe "#belongs_to, optional: true, belongs_to_required_validates_foreign_key: #{v}" do
+    subject { ObjectSpec::ObjectWithOptionalBelongsToFlippedValidatesForeignKey.new }
 
-      it_should_behave_like 'an optional belongs_to association', :child, ObjectSpec::Child
-    end
+    it_should_behave_like 'an optional belongs_to association', :child, ObjectSpec::Child
   end
 
   describe '#save' do
@@ -449,12 +443,8 @@ describe ActiveType::Object do
     %w[before_validation before_save].each do |callback|
 
       it "aborts the chain when #{callback} returns false" do
-        if ActiveRecord::VERSION::MAJOR >= 5
-          allow(subject).to receive("#{callback}_callback") do
-            throw(:abort)
-          end
-        else
-          allow(subject).to receive_messages("#{callback}_callback" => false)
+        allow(subject).to receive("#{callback}_callback") do
+          throw(:abort)
         end
 
         expect(subject.save).to be_falsey
@@ -488,14 +478,9 @@ describe ActiveType::Object do
 
   describe '.find' do
     it 'raises an error' do
-      error = if ActiveRecord::VERSION::MAJOR == 4 && ActiveRecord::VERSION::MINOR >= 1
-        ActiveRecord::UnknownPrimaryKey
-      else
-        ActiveRecord::RecordNotFound
-      end
       expect do
         ObjectSpec::Object.find(1)
-      end.to raise_error(error)
+      end.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
@@ -557,53 +542,48 @@ describe ActiveType::Object do
       end
     end
 
-    if ActiveRecord::VERSION::MAJOR >= 7 && ActiveRecord::VERSION::MINOR >= 1
-      context 'for 6.1 marshalling' do
-        before do
-          ActiveRecord::Marshalling.format_version = 6.1
-        end
-
-        include_examples "marshalling attributes"
+    context 'for 6.1 marshalling' do
+      before do
+        ActiveRecord::Marshalling.format_version = 6.1
       end
 
-      context 'for 7.1 marshalling' do
-        before do
-          ActiveRecord::Marshalling.format_version = 7.1
-        end
-
-        include_examples "marshalling attributes"
-      end
-
-      describe "loading a object marshalled with format version 6.1, but the current version is 7.1" do
-        it "marshals attributes properly" do
-          object = ObjectSpec::Object.create(virtual_attribute: "foobar")
-
-          ActiveRecord::Marshalling.format_version = 6.1
-          serialized_object = Marshal.dump(object)
-
-          ActiveRecord::Marshalling.format_version = 7.1
-          deserialized_object = Marshal.load(serialized_object)
-
-          expect(deserialized_object.virtual_attribute).to eq "foobar"
-        end
-      end
-
-      describe "loading a object marshalled with format version 7.1, but the current version is 6.1" do
-        it "marshals attributes properly" do
-          object = ObjectSpec::Object.create(virtual_attribute: "foobar")
-
-          ActiveRecord::Marshalling.format_version = 7.1
-          serialized_object = Marshal.dump(object)
-
-          ActiveRecord::Marshalling.format_version = 6.1
-          deserialized_object = Marshal.load(serialized_object)
-
-          expect(deserialized_object.virtual_attribute).to eq "foobar"
-        end
-      end
-
-    else
       include_examples "marshalling attributes"
+    end
+
+    context 'for 7.1 marshalling' do
+      before do
+        ActiveRecord::Marshalling.format_version = 7.1
+      end
+
+      include_examples "marshalling attributes"
+    end
+
+    describe "loading a object marshalled with format version 6.1, but the current version is 7.1" do
+      it "marshals attributes properly" do
+        object = ObjectSpec::Object.create(virtual_attribute: "foobar")
+
+        ActiveRecord::Marshalling.format_version = 6.1
+        serialized_object = Marshal.dump(object)
+
+        ActiveRecord::Marshalling.format_version = 7.1
+        deserialized_object = Marshal.load(serialized_object)
+
+        expect(deserialized_object.virtual_attribute).to eq "foobar"
+      end
+    end
+
+    describe "loading a object marshalled with format version 7.1, but the current version is 6.1" do
+      it "marshals attributes properly" do
+        object = ObjectSpec::Object.create(virtual_attribute: "foobar")
+
+        ActiveRecord::Marshalling.format_version = 7.1
+        serialized_object = Marshal.dump(object)
+
+        ActiveRecord::Marshalling.format_version = 6.1
+        deserialized_object = Marshal.load(serialized_object)
+
+        expect(deserialized_object.virtual_attribute).to eq "foobar"
+      end
     end
 
   end

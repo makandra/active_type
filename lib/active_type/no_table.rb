@@ -1,211 +1,115 @@
 module ActiveType
+  module NoTable
 
-  if ActiveRecord::VERSION::MAJOR < 5
+    extend ActiveSupport::Concern
 
-    module NoTable
+    class DummySchemaCache
 
-      extend ActiveSupport::Concern
-
-      module ClassMethods
-
-        def column_types
-          {}
-        end
-
-        def columns
-          []
-        end
-
-        def primary_key
-          nil
-        end
-
-        def destroy(*)
-          new
-        end
-
-        def destroy_all(*)
-          []
-        end
-
-        def find_by_sql(*)
-          []
-        end
-
+      def columns_hash(table_name)
+        {}
       end
 
-      def id
-        nil
+      def columns_hash?(table_name)
+        return false
       end
 
-      def attribute_names
+      def data_source_exists?(table_name)
+        false
+      end
+
+      def clear_data_source_cache!(table_name)
+      end
+
+    end
+
+    class DummyPool < ActiveRecord::ConnectionAdapters::NullPool
+      def with_pool_transaction_isolation_level(*_args)
+        yield
+      end
+    end
+
+    class DummyConnection < ActiveRecord::ConnectionAdapters::AbstractAdapter
+
+      attr_reader :schema_cache
+
+      def initialize(*)
+        super
+        @schema_cache = DummySchemaCache.new
+        @pool = DummyPool.new
+      end
+
+      def self.quote_column_name(column_name)
+        column_name.to_s
+      end
+
+      def pool
+        @pool
+      end
+
+    end
+
+    module ClassMethods
+
+      def connection
+        @connection ||= DummyConnection.new(nil)
+      end
+
+      def with_connection(**)
+        yield(connection)
+      end
+
+      def destroy(*)
+        new
+      end
+
+      def destroy_all(*)
         []
       end
 
-      def transaction(&block)
-        @_current_transaction_records ||= []
-        yield
+      def find_by_sql(*)
+        []
       end
 
-      def destroy
-        @destroyed = true
-        freeze
+      def _query_by_sql(*)
+        []
       end
 
-      def reload
-        self
+      def cached_find_by(*)
+        nil
       end
 
-
-      private
-
-      def create(*)
-        true
+      def schema_cache
+        DummySchemaCache.new
       end
-
-      def update(*)
-        true
-      end
-
-      if ActiveRecord::Base.private_method_defined?(:create_record)
-        def create_record(*)
-          true
-        end
-
-        def update_record(*)
-          true
-        end
-      else
-        def _create_record(*)
-          @new_record = false
-          true
-        end
-
-        def _update_record(*)
-          true
-        end
-      end
-
     end
 
-  else
+    def destroy
+      @destroyed = true
+      freeze
+    end
 
-    # Rails 5+
+    def reload
+      self
+    end
 
-    module NoTable
+    private
 
-      extend ActiveSupport::Concern
+    def create(*)
+      true
+    end
 
-      class DummySchemaCache
+    def update(*)
+      true
+    end
 
-        def columns_hash(table_name)
-          {}
-        end
+    def _create_record(*)
+      @new_record = false
+      true
+    end
 
-        def columns_hash?(table_name)
-          return false
-        end
-
-        def data_source_exists?(table_name)
-          false
-        end
-
-        def clear_data_source_cache!(table_name)
-        end
-
-      end
-
-      class DummyPool < ActiveRecord::ConnectionAdapters::NullPool
-        def with_pool_transaction_isolation_level(*_args)
-          yield
-        end
-      end
-
-      class DummyConnection < ActiveRecord::ConnectionAdapters::AbstractAdapter
-
-        attr_reader :schema_cache
-
-        def initialize(*)
-          super
-          @schema_cache = DummySchemaCache.new
-          @pool = DummyPool.new
-        end
-
-        def self.quote_column_name(column_name)
-          column_name.to_s
-        end
-
-        def pool
-          @pool
-        end
-
-      end
-
-      module ClassMethods
-
-        def connection
-          @connection ||= DummyConnection.new(nil)
-        end
-
-        def with_connection(**)
-          yield(connection)
-        end
-
-        def destroy(*)
-          new
-        end
-
-        def destroy_all(*)
-          []
-        end
-
-        def find_by_sql(*)
-          []
-        end
-
-        def _query_by_sql(*)
-          []
-        end
-
-        def cached_find_by(*)
-          nil
-        end
-
-        def schema_cache
-          DummySchemaCache.new
-        end
-      end
-
-      def destroy
-        @destroyed = true
-        freeze
-      end
-
-      def reload
-        self
-      end
-
-      private
-
-      def create(*)
-        true
-      end
-
-      def update(*)
-        true
-      end
-
-      def _create_record(*)
-        @new_record = false
-        true
-      end
-
-      def _update_record(*)
-        true
-      end
-
+    def _update_record(*)
+      true
     end
 
   end
-
 end
