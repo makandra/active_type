@@ -14,16 +14,14 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby: "2.7.8"
-            gemfile: Gemfile.6.1.sqlite3
-          - ruby: "3.0.7"
-            gemfile: Gemfile.7.1.sqlite3
           - ruby: "3.1.6"
             gemfile: Gemfile.7.2.sqlite3
           - ruby: "3.2.6"
             gemfile: Gemfile.7.2.sqlite3
           - ruby: "3.3.6"
             gemfile: Gemfile.8.0.sqlite3
+          - ruby: "3.4.7"
+            gemfile: Gemfile.8.1.sqlite3
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
 
@@ -96,12 +94,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby: "3.0.7"
-            gemfile: Gemfile.6.1.pg
-          - ruby: "3.2.6"
-            gemfile: Gemfile.7.1.pg
           - ruby: "3.2.6"
             gemfile: Gemfile.7.2.pg
+          - ruby: "3.4.7"
+            gemfile: Gemfile.8.1.pg
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
 

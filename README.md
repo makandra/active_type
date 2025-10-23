@@ -328,7 +328,7 @@ Supported options for `nests_many` / `nests_one` are:
   nests_many :documents, build_scope: proc { Document }, find_scope: proc { Document }
   ```
 
-  All `...scope` options are evaled in the context of the record on first use, and cached. 
+  All `...scope` options are evaled in the context of the record on first use, and cached.
 
 - `allow_destroy`
 
@@ -380,7 +380,7 @@ sign_up.is_a?(SignUp) # => true
 This is basically like [`ActiveRecord#becomes`](http://apidock.com/rails/v4.2.1/ActiveRecord/Persistence/becomes), but with less bugs and more consistent behavior.
 
 **Note that `cast` is destructive.** The originally casted record (`user`) and the returned record (`sign_up`)
-share internal state (such as attributes). To avoid unexpected behavior, the original record will raise an error when trying to change or persist it. Also, casting of a record that has changes in its loaded associations is prevented, because those changes would be lost.  
+share internal state (such as attributes). To avoid unexpected behavior, the original record will raise an error when trying to change or persist it. Also, casting of a record that has changes in its loaded associations is prevented, because those changes would be lost.
 If you know what you are doing and absolutely want that, you may use the option `force: true` to allow this potentially problematic behaviour, e.g. `sign_up = ActiveType.cast(user, SignUp, force: true)`
 
 
@@ -434,14 +434,14 @@ Now, if you load `credentials`, you will automatically receive records of type `
 Supported Rails versions
 ------------------------
 
-ActiveType is tested against ActiveRecord 6.1, 7.1, 7.2, 8.0.
+ActiveType is tested against ActiveRecord 7.2, 8.0, 8.1.
 
 Later versions might work, earlier will not.
 
 Supported Ruby versions
 ------------------------
 
-ActiveType is tested against Ruby 2.7+.
+ActiveType is tested against Ruby 3.0+.
 
 
 Installation
@@ -478,5 +478,3 @@ Credits
 Tobias Kraze from [makandra](http://makandra.com/)
 
 Henning Koch from [makandra](http://makandra.com/)
-
-
