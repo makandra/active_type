@@ -2,6 +2,9 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.7.1 (2025-11-03)
+* Fixed: Removed some unnecessary files from the packaged gem. Gets rid of symlink warnings during installation.
+
 ## 2.7.0 (2025-11-03)
 * Removed: Support for Ruby < 3.1, Rails < 7.
 * Fixed: Exception when using ActiveType::Record with Rails 8.1.
