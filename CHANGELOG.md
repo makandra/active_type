@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.7.0 (2025-11-03)
+* Removed: Support for Ruby < 3.1, Rails < 7.
+* Fixed: Exception when using ActiveType::Record with Rails 8.1.
+
 ## 2.6.5 (2025-10-16)
 
 * Fixed: ActiveType::Object and ActiveType::Record are now serialized/deserialized correctly using Marshal.dump/Marshal.load
