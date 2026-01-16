@@ -37,7 +37,9 @@ GEM
       concurrent-ruby (~> 1.0)
     json (2.15.1)
     logger (1.7.0)
-    minitest (5.26.0)
+    minitest (6.0.1)
+      prism (~> 1.5)
+    prism (1.8.0)
     rake (13.3.0)
     rspec (3.13.2)
       rspec-core (~> 3.13.0)
@@ -53,16 +55,16 @@ GEM
       rspec-support (~> 3.13.0)
     rspec-support (3.13.6)
     securerandom (0.4.1)
-    sqlite3 (2.7.4-aarch64-linux-gnu)
-    sqlite3 (2.7.4-aarch64-linux-musl)
-    sqlite3 (2.7.4-arm-linux-gnu)
-    sqlite3 (2.7.4-arm-linux-musl)
-    sqlite3 (2.7.4-arm64-darwin)
-    sqlite3 (2.7.4-x86-linux-gnu)
-    sqlite3 (2.7.4-x86-linux-musl)
-    sqlite3 (2.7.4-x86_64-darwin)
-    sqlite3 (2.7.4-x86_64-linux-gnu)
-    sqlite3 (2.7.4-x86_64-linux-musl)
+    sqlite3 (2.9.0-aarch64-linux-gnu)
+    sqlite3 (2.9.0-aarch64-linux-musl)
+    sqlite3 (2.9.0-arm-linux-gnu)
+    sqlite3 (2.9.0-arm-linux-musl)
+    sqlite3 (2.9.0-arm64-darwin)
+    sqlite3 (2.9.0-x86-linux-gnu)
+    sqlite3 (2.9.0-x86-linux-musl)
+    sqlite3 (2.9.0-x86_64-darwin)
+    sqlite3 (2.9.0-x86_64-linux-gnu)
+    sqlite3 (2.9.0-x86_64-linux-musl)
     timeout (0.4.3)
     tzinfo (2.0.6)
       concurrent-ruby (~> 1.0)
@@ -89,4 +91,4 @@ DEPENDENCIES
   sqlite3
 
 BUNDLED WITH
-   2.5.6
+   4.0.4

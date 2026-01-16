@@ -24,6 +24,8 @@ jobs:
             gemfile: Gemfile.8.0.sqlite3
           - ruby: "3.4.7"
             gemfile: Gemfile.8.1.sqlite3
+          - ruby: "4.0.1"
+            gemfile: Gemfile.8.1.sqlite3
     env:
       BUNDLE_GEMFILE: ${{ matrix.gemfile }}
 
