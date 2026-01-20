@@ -134,12 +134,33 @@ module ActiveType
       result
     end
 
+    def self.attribute_for_inspect(value)
+      if value.is_a?(String) && value.length > 50
+        "#{value[0, 50]}...".inspect
+      elsif value.is_a?(Date) || value.is_a?(Time)
+        %("#{value.to_formatted_s(:db)}")
+      elsif value.is_a?(Array) && value.size > 10
+        inspected = value.first(10).inspect
+        %(#{inspected[0...-1]}, ...])
+      else
+        value.inspect
+      end
+    end
+
     extend ActiveSupport::Concern
 
     included do
       include ActiveType::VirtualAttributes::Serialization
       class_attribute :virtual_columns_hash
       self.virtual_columns_hash = {}
+
+      if respond_to?(:attributes_for_inspect)
+        # 7.1 had [:id] as a default, we want a consistent default across all versions
+        self.attributes_for_inspect = :all
+      else
+        # ActiveRecord < 7.2
+        class_attribute :attributes_for_inspect, instance_accessor: false, default: :all
+      end
 
       class << self
         if method_defined?(:attribute)
@@ -270,25 +291,28 @@ module ActiveType
       virtual_attributes[name] = value
     end
 
-    # Returns the contents of the record as a nicely formatted string.
-    def inspect
-      inspection = attributes.collect do |name, value|
-        "#{name}: #{VirtualAttributes.attribute_for_inspect(value)}"
-      end.sort.compact.join(", ")
-      "#<#{self.class} #{inspection}>"
+    def attributes_for_inspect
+      self.class.attributes_for_inspect == :all ? attributes.keys : self.class.attributes_for_inspect
     end
 
-    def self.attribute_for_inspect(value)
-      if value.is_a?(String) && value.length > 50
-        "#{value[0, 50]}...".inspect
-      elsif value.is_a?(Date) || value.is_a?(Time)
-        %("#{value.to_formatted_s(:db)}")
-      elsif value.is_a?(Array) && value.size > 10
-        inspected = value.first(10).inspect
-        %(#{inspected[0...-1]}, ...])
-      else
-        value.inspect
-      end
+    def inspect
+      inspect_with_attributes(attributes_for_inspect)
+    end
+
+    def full_inspect
+      inspect_with_attributes(attributes.keys)
+    end
+
+    # Returns the contents of the record as a nicely formatted string.
+    def inspect_with_attributes(attribute_names)
+      inspection = attribute_names.collect do |name|
+        name = name.to_s
+        if attributes.key?(name)
+          value = attributes[name]
+          "#{name}: #{VirtualAttributes.attribute_for_inspect(value)}"
+        end
+      end.compact.sort.join(", ")
+      "#<#{self.class} #{inspection}>"
     end
 
     private

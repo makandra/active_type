@@ -131,6 +131,12 @@ module ObjectSpec
     attribute :virtual_hash, :hash
   end
 
+  class ObjectWithClassInspectFilter < ActiveType::Object
+    attribute :visible, :string
+    attribute :hidden, :string
+
+    self.attributes_for_inspect = [:visible]
+  end
 end
 
 
@@ -246,7 +252,6 @@ describe ActiveType::Object do
   end
 
   describe '#inspect' do
-
     it 'returns the contents of the object as a nicely formatted string' do
       t = Time.now
       subject.virtual_string = "string"
@@ -258,6 +263,24 @@ describe ActiveType::Object do
       expect(subject.inspect).to eq("#<ObjectSpec::Object virtual_attribute: nil, virtual_boolean: true, virtual_date: \"#{Date.today}\", virtual_integer: 17, virtual_string: \"string\", virtual_time: \"#{t.to_formatted_s(:db)}\", virtual_type_attribute: nil>")
     end
 
+    it 'does not filter out any attributes per default' do
+      object = ObjectSpec::ObjectWithClassInspectFilter.new(visible: 'seen', hidden: 'also-seen')
+      expect(object.full_inspect).to eq('#<ObjectSpec::ObjectWithClassInspectFilter hidden: "also-seen", visible: "seen">')
+    end
+
+    context 'with attributes_for_inspect class attribute' do
+      it 'filters attributes based on the class configuration' do
+        object = ObjectSpec::ObjectWithClassInspectFilter.new(visible: 'seen', hidden: 'invisible')
+        expect(object.inspect).to eq('#<ObjectSpec::ObjectWithClassInspectFilter visible: "seen">')
+      end
+    end
+  end
+
+  describe '#full_inspect' do
+    it 'shows all attributes' do
+      object = ObjectSpec::ObjectWithClassInspectFilter.new(visible: 'seen', hidden: 'not-so-invisible-anymore')
+      expect(object.full_inspect).to eq('#<ObjectSpec::ObjectWithClassInspectFilter hidden: "not-so-invisible-anymore", visible: "seen">')
+    end
   end
 
   describe '#attributes' do
