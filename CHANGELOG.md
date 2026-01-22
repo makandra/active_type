@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+## 2.8.0 (2026-01-22)
+* Added: Add support `attributes_for_inspect` on ActiveType::Object.
+  Tanks to @makmic.
+
 ## 2.7.1 (2025-11-03)
 * Fixed: Removed some unnecessary files from the packaged gem. Gets rid of symlink warnings during installation.
 
